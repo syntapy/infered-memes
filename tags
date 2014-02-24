@@ -1,0 +1,299 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+AND	src/ops.h	1;"	d
+AddArg	uneeded/parse.h	/^void AddArg(const char *symbol)$/;"	f
+AddOperator	uneeded/generate.h	/^void AddOperator(PrpsT **tree)\/\/, PrpsT **$/;"	f
+AddPrps	uneeded/parse.h	/^void AddPrps(const char *symbol)$/;"	f
+AllocateAsOprtr	src/_tree_gen.h	/^void AllocateAsOprtr(PrpsTree **node, int oprtr)$/;"	f
+AllocateAsPrps	src/_tree_gen.h	/^void AllocateAsPrps(PrpsTree **node, const char *prps)$/;"	f
+AlreadyMallocErr	src/err.h	/^void AlreadyMallocErr(const char *msg)$/;"	f
+ArgNode	src/hash.h	/^typedef struct ArgNode$/;"	s
+ArgNode	src/hash.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
+ArgNode	uneeded/hash_alloc.h	/^typedef struct ArgNode$/;"	s
+ArgNode	uneeded/hash_alloc.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
+ArgNode	uneeded/hash_check.h	/^typedef struct ArgNode$/;"	s
+ArgNode	uneeded/hash_check.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
+BOTH	src/ops.h	11;"	d
+CC	Makefile	/^CC=colorgcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS=-ggdb -lm -Isrc\/ -I.\/$/;"	m
+CNF	src/prps.h	/^void CNF(PrpsTree **tree)$/;"	f
+CNF_Step	src/prps.h	/^void CNF_Step(PrpsTree **tree, void (**pfi)())$/;"	f
+CheckChildrenOprtr	src/_prps_err.h	/^void CheckChildrenOprtr(PrpsTree **tree, int oprtr)$/;"	f
+CheckConsistency	src/_prps_err.h	/^void CheckConsistency(PrpsTree **tree)$/;"	f
+CheckEqualNodes	src/prps.h	/^int CheckEqualNodes(PrpsTree **node_a, PrpsTree **node_b)$/;"	f
+CheckEqualSubTrees	src/prps.h	/^int CheckEqualSubTrees(PrpsTree **tree_a, PrpsTree **tree_b)$/;"	f
+CheckOprtrNode	src/_prps_err.h	/^void CheckOprtrNode(PrpsTree **tree)$/;"	f
+CheckPrpsTreeNode	src/_prps_err.h	/^void CheckPrpsTreeNode(PrpsTree **tree)$/;"	f
+ContainsAnd	src/prps.h	/^int ContainsAnd(PrpsTree **tree)$/;"	f
+ContainsOnlyPositiveORs	src/prps.h	/^int ContainsOnlyPositiveORs(PrpsTree **tree)$/;"	f
+ConvertIMP	src/prps.h	/^void ConvertIMP(PrpsTree **tree)$/;"	f
+ConvertIsOR	src/prps.h	/^void ConvertIsOR(PrpsTree **tree)$/;"	f
+ConvertNotAnd	src/prps.h	/^void ConvertNotAnd(PrpsTree **tree)$/;"	f
+ConvertNotOr	src/prps.h	/^void ConvertNotOr(PrpsTree **tree)$/;"	f
+ConvertTAU	src/prps.h	/^void ConvertTAU(PrpsTree **tree)$/;"	f
+CopyNode	src/prps.h	/^PrpsTree **CopyNode(PrpsTree **node)$/;"	f
+CopySubTree	src/prps.h	/^PrpsTree **CopySubTree(PrpsTree **tree)$/;"	f
+DeallocateFromOprtr	src/_tree_gen.h	/^void DeallocateFromOprtr(PrpsTree **node)$/;"	f
+DeallocateFromPrps	src/_tree_gen.h	/^void DeallocateFromPrps(PrpsTree **node)$/;"	f
+DeathErr	src/err.h	/^void DeathErr(const char *msg)$/;"	f
+DeepestOprtr	src/prps.h	/^int DeepestOprtr(PrpsTree **node)$/;"	f
+DetatchChild	src/prps.h	/^PrpsTree **DetatchChild(PrpsTree **tree, int dir)$/;"	f
+DetatchParent	src/prps.h	/^PrpsTree **DetatchParent(PrpsTree **tree, int *dir)$/;"	f
+DetatchParentLeft	src/prps.h	/^PrpsTree **DetatchParentLeft(PrpsTree **tree)$/;"	f
+DetatchParentRight	src/prps.h	/^PrpsTree **DetatchParentRight(PrpsTree **tree)$/;"	f
+ElliminateInnerOrs	src/prps.h	/^void ElliminateInnerOrs(PrpsTree **tree)$/;"	f
+FALSE	src/ops.h	13;"	d
+FillHashTable	tester.h	/^void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, int seed)$/;"	f
+FreeSymbolArray	tester.h	/^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
+GenAlphaTree	tester.h	/^void GenAlphaTree(const char **symbols, PrpsTree ***alpha, int m, int n, int d)$/;"	f
+GenSequentialSymbol	tester.h	/^void GenSequentialSymbol(char **symbol, int f, int m)$/;"	f
+GenSkewedTree	tester.h	/^void GenSkewedTree(const char **symbols, int m, PrpsTree **tree, int d)$/;"	f
+GenSymbol	tester.h	/^void GenSymbol(char **symbol, int n)$/;"	f
+GenSymbolArray	tester.h	/^void GenSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
+GenerateAllocatedHashTable	src/hash.h	/^HashTable *GenerateAllocatedHashTable(int m, int n)$/;"	f
+GenerateAllocatedHashTable	uneeded/hash_alloc.h	/^HashTable *GenerateAllocatedHashTable(int m, int n)$/;"	f
+GenerateEmpty	src/_tree_gen.h	/^PrpsTree *GenerateEmpty()$/;"	f
+GetArgIndex	src/hash.h	/^int GetArgIndex(char arg[], int n)$/;"	f
+GetLeftMostByte	tester.h	/^void GetLeftMostByte(int *f, int *nmbr)$/;"	f
+GetOprtr	uneeded/parse.h	/^int GetOprtr(const char *symbol)$/;"	f
+GetPropIndex	src/hash.h	/^int GetPropIndex(char prop[], int m)$/;"	f
+GetType	src/prps.h	/^int GetType(PrpsTree **node)$/;"	f
+GetValueForArg	src/hash.h	/^int GetValueForArg(char prop[], char arg[], HashTable **hash, int m, int n)$/;"	f
+HashNode	src/hash.h	/^typedef struct HashNode$/;"	s
+HashNode	src/hash.h	/^} HashNode;$/;"	t	typeref:struct:HashNode
+HashNode	uneeded/hash_alloc.h	/^typedef struct HashNode$/;"	s
+HashNode	uneeded/hash_alloc.h	/^} HashNode;$/;"	t	typeref:struct:HashNode
+HashNode	uneeded/hash_check.h	/^typedef struct HashNode$/;"	s
+HashNode	uneeded/hash_check.h	/^} HashNode;$/;"	t	typeref:struct:HashNode
+HashTable	src/hash.h	/^typedef struct HashTable$/;"	s
+HashTable	src/hash.h	/^} HashTable;$/;"	t	typeref:struct:HashTable
+HashTable	uneeded/hash_alloc.h	/^typedef struct HashTable$/;"	s
+HashTable	uneeded/hash_alloc.h	/^} HashTable;$/;"	t	typeref:struct:HashTable
+HashTable	uneeded/hash_check.h	/^typedef struct HashTable$/;"	s
+HashTable	uneeded/hash_check.h	/^} HashTable;$/;"	t	typeref:struct:HashTable
+IMP	src/ops.h	4;"	d
+INFINITY	uneeded/printing/asciinode.h	175;"	d
+IS	src/ops.h	17;"	d
+InconsistencyErr	src/err.h	/^void InconsistencyErr(const char *msg)$/;"	f
+Infer	src/resolution.h	/^void Infer(PrpsTree **tree, PrpsTree **alpha)$/;"	f
+IsArg	uneeded/parse.h	/^int IsArg(char *sentence[], int i, int n)$/;"	f
+IsCNF	src/prps.h	/^int IsCNF(PrpsTree **tree)$/;"	f
+IsExistsClause	uneeded/parse.h	/^int IsExistsClause(char *sentence[], int i, int n)$/;"	f
+IsForallClause	uneeded/parse.h	/^int IsForallClause(char *sentence[], int i, int n)$/;"	f
+IsLeftChild	src/prps.h	/^int IsLeftChild(PrpsTree **tree)$/;"	f
+IsLowerCase	uneeded/parse.h	/^int IsLowerCase(char c)$/;"	f
+IsPrps	uneeded/parse.h	/^int IsPrps(char *sentence[], int i, int n)$/;"	f
+IsRightChild	src/prps.h	/^int IsRightChild(PrpsTree **tree)$/;"	f
+IsUpperCase	uneeded/parse.h	/^int IsUpperCase(char c)$/;"	f
+LEFT	src/ops.h	8;"	d
+LOWER_CASE_FIRST	src/ops.h	20;"	d
+LOWER_CASE_LAST	src/ops.h	21;"	d
+LeafNode	src/prps.h	/^int LeafNode(PrpsTree **tree)$/;"	f
+MAX	uneeded/printing/asciinode.h	/^int MAX (int X, int Y)  $/;"	f
+MAX_HEIGHT	uneeded/printing/asciinode.h	172;"	d
+MIN	uneeded/printing/asciinode.h	/^int MIN (int X, int Y)  $/;"	f
+MallocErr	src/err.h	/^void MallocErr(const char *msg) $/;"	f
+MaxCharsExceededWarn	src/err.h	/^void MaxCharsExceededWarn(const char *chars)$/;"	f
+MergeOrs	src/prps.h	/^void MergeOrs(PrpsTree **tree)$/;"	f
+MyString	src/hash.h	/^typedef struct MyString$/;"	s
+MyString	src/hash.h	/^} MyString;$/;"	t	typeref:struct:MyString
+MyString	uneeded/hash_alloc.h	/^typedef struct MyString$/;"	s
+MyString	uneeded/hash_alloc.h	/^} MyString;$/;"	t	typeref:struct:MyString
+MyString	uneeded/hash_check.h	/^typedef struct MyString$/;"	s
+MyString	uneeded/hash_check.h	/^} MyString;$/;"	t	typeref:struct:MyString
+NO	src/ops.h	14;"	d
+NONE	src/ops.h	10;"	d
+NOT	src/ops.h	18;"	d
+Negate	src/prps.h	/^void Negate(PrpsTree **node)$/;"	f
+NoArgWarn	src/err.h	/^void NoArgWarn(const char *msg)$/;"	f
+NoMallocErr	src/err.h	/^void NoMallocErr(const char *msg)$/;"	f
+OPRTR	src/ops.h	6;"	d
+OR	src/ops.h	2;"	d
+Oprtr	src/prps.h	/^PrpsTree **Oprtr(int neg_a, PrpsTree **tree_a, int neg_b, PrpsTree **tree_b, int neg_oprtr, int oprtr)$/;"	f
+Oprtr2	src/prps.h	/^PrpsTree **Oprtr2(int neg_a, PrpsTree **tree, int neg_b, const char *prps, int neg_oprtr, int oprtr)$/;"	f
+OprtrNode	src/prps.h	/^int OprtrNode(PrpsTree **tree)$/;"	f
+OprtrNodeType	src/prps.h	/^int OprtrNodeType(PrpsTree **node, int neg, int oprtr)$/;"	f
+PRPS	src/ops.h	7;"	d
+ParseErr	src/err.h	/^void ParseErr(const char *msg)$/;"	f
+PrpsNode	src/prps.h	/^int PrpsNode(PrpsTree **node)$/;"	f
+PrpsTree	src/prps.h	/^typedef struct PrpsTree$/;"	s
+PrpsTree	src/prps.h	/^} PrpsTree;$/;"	t	typeref:struct:PrpsTree
+PrpsTree	uneeded/printing/print.h	/^struct PrpsTree $/;"	s
+RIGHT	src/ops.h	9;"	d
+Read	uneeded/parse.h	/^void Read(char *sentence[], int i, int n, HashTable *hash)$/;"	f
+SetChild	src/prps.h	/^void SetChild(PrpsTree **parent, PrpsTree **child, int dir)$/;"	f
+SetLeftChild	src/prps.h	/^void SetLeftChild(PrpsTree **parent, PrpsTree **child)$/;"	f
+SetRightChild	src/prps.h	/^void SetRightChild(PrpsTree **parent, PrpsTree **child)$/;"	f
+SetValueForArg	src/hash.h	/^void SetValueForArg(char prop[], char arg[], int value, HashTable **hash, int m, int n)$/;"	f
+TAU	src/ops.h	5;"	d
+TRUE	src/ops.h	12;"	d
+TestErr	src/err.h	/^void TestErr(const char *msg)$/;"	f
+TraverseLeft	src/prps.h	/^PrpsTree **TraverseLeft(PrpsTree **tree)$/;"	f
+Tree	uneeded/printing/asciinode.h	/^struct Tree $/;"	s
+Tree	uneeded/printing/asciinode.h	/^typedef struct Tree Tree;$/;"	t	typeref:struct:Tree
+TreeConsistency	src/prps.h	/^void TreeConsistency(PrpsTree **tree)$/;"	f
+UPPER_CASE_FIRST	src/ops.h	22;"	d
+UPPER_CASE_LAST	src/ops.h	23;"	d
+YES	src/ops.h	15;"	d
+addArg	src/_hash_alloc.h	/^void addArg(char prop[], char arg[], HashTable **hash, int m, int n)$/;"	f
+addArg	uneeded/hash_alloc.h	/^void addArg(char prps[], char arg[], HashTable **hash, int m, int n)$/;"	f
+addSymbol	src/_hash_alloc.h	/^void addSymbol(char prop[], HashTable **hash, int m, int n)$/;"	f
+addSymbol	uneeded/hash_alloc.h	/^void addSymbol(char prps[], HashTable **hash, int m, int n)$/;"	f
+allocateArgNode	src/_hash_alloc.h	/^void allocateArgNode(char arg[], ArgNode **arg_ptr_ptr, int rgu, int s, int n)$/;"	f
+allocateArgNode	uneeded/hash_alloc.h	/^void allocateArgNode(char arg[], ArgNode **arg_ptr_ptr, int rgu, int s, int n)$/;"	f
+allocateEmptyArgNode	src/_hash_alloc.h	/^void allocateEmptyArgNode(ArgNode **arg_ptr_ptr)$/;"	f
+allocateEmptyArgNode	uneeded/hash_alloc.h	/^void allocateEmptyArgNode(ArgNode **arg_ptr_ptr)$/;"	f
+allocateEmptyHashNode	src/_hash_alloc.h	/^void allocateEmptyHashNode(HashNode **node_ptr_ptr)$/;"	f
+allocateEmptyHashNode	uneeded/hash_alloc.h	/^void allocateEmptyHashNode(HashNode **node_ptr_ptr)$/;"	f
+allocateNonEmptyArgNode	src/_hash_alloc.h	/^void allocateNonEmptyArgNode(ArgNode **arg_ptr_ptr, int s, int n)$/;"	f
+allocateNonEmptyArgNode	uneeded/hash_alloc.h	/^void allocateNonEmptyArgNode(ArgNode **arg_ptr_ptr, int s, int n)$/;"	f
+allocateNonEmptyHashNode	src/_hash_alloc.h	/^void allocateNonEmptyHashNode(HashNode **node_ptr_ptr, int s, int n)$/;"	f
+allocateNonEmptyHashNode	uneeded/hash_alloc.h	/^void allocateNonEmptyHashNode(HashNode **node_ptr_ptr, int s, int n)$/;"	f
+allocateNonEmptyString	src/_hash_alloc.h	/^void allocateNonEmptyString(MyString **arg_ptr_ptr, int s)$/;"	f
+allocateNonEmptyString	uneeded/hash_alloc.h	/^void allocateNonEmptyString(MyString **arg_ptr_ptr, int s)$/;"	f
+allocatePropNode	src/_hash_alloc.h	/^void allocatePropNode(char prop[], HashNode **node_ptr_ptr, int prp, int s, int n)$/;"	f
+allocatePrpsNode	uneeded/hash_alloc.h	/^void allocatePrpsNode(char prps[], HashNode **node_ptr_ptr, int prp, int s, int n)$/;"	f
+arg	src/hash.h	/^{   MyString *arg; \/\/ Argument name$/;"	m	struct:ArgNode
+arg	uneeded/hash_alloc.h	/^{   MyString *arg; \/\/ Argument name$/;"	m	struct:ArgNode
+arg	uneeded/hash_check.h	/^{   MyString *arg; \/\/ Argument name$/;"	m	struct:ArgNode
+arg_ptr	src/hash.h	/^    ArgNode *arg_ptr;   \/\/ Pointer variable used to set and retriev $/;"	m	struct:HashNode
+arg_ptr	uneeded/hash_alloc.h	/^    ArgNode *arg_ptr;   \/\/ Pointer variable used to set and retriev $/;"	m	struct:HashNode
+arg_ptr	uneeded/hash_check.h	/^    ArgNode *arg_ptr;   \/\/ Pointer variable used to set and retriev $/;"	m	struct:HashNode
+array	src/hash.h	/^    ArgNode *array;     \/\/ Array holding values corresponding to the $/;"	m	struct:HashNode
+array	uneeded/hash_alloc.h	/^    ArgNode *array;     \/\/ Array holding values corresponding to the $/;"	m	struct:HashNode
+array	uneeded/hash_check.h	/^    ArgNode *array;     \/\/ Array holding values corresponding to the $/;"	m	struct:HashNode
+asciinode	uneeded/printing/asciinode.h	/^typedef struct asciinode_struct asciinode;$/;"	t	typeref:struct:asciinode_struct
+asciinode_struct	uneeded/printing/asciinode.h	/^struct asciinode_struct$/;"	s
+asciinode_struct	uneeded/printing/print.h	/^struct asciinode_struct$/;"	s
+build_ascii_tree	uneeded/printing/asciinode.h	/^asciinode * build_ascii_tree(Tree * t) $/;"	f
+build_ascii_tree	uneeded/printing/print.h	/^asciinode * build_ascii_tree(PrpsTree * t) $/;"	f
+build_ascii_tree_recursive	uneeded/printing/asciinode.h	/^asciinode * build_ascii_tree_recursive(Tree * t) $/;"	f
+build_ascii_tree_recursive	uneeded/printing/print.h	/^asciinode * build_ascii_tree_recursive(PrpsTree * t) $/;"	f
+checkArgNodeEmpty	src/_hash_check.h	/^void checkArgNodeEmpty(ArgNode **arg_ptr)$/;"	f
+checkArgNodeEmpty	uneeded/hash_alloc.h	/^void checkArgNodeEmpty(ArgNode **arg_ptr)$/;"	f
+checkArgNodeEmpty	uneeded/hash_check.h	/^void checkArgNodeEmpty(ArgNode **arg_ptr)$/;"	f
+checkArgNodeEmpty2	src/_hash_check.h	/^void checkArgNodeEmpty2(ArgNode **arg_ptr)$/;"	f
+checkArgNodeEmpty2	uneeded/hash_alloc.h	/^void checkArgNodeEmpty2(ArgNode **arg_ptr)$/;"	f
+checkArgNodeEmpty2	uneeded/hash_check.h	/^void checkArgNodeEmpty2(ArgNode **arg_ptr)$/;"	f
+checkArgNodeNonEmpty	src/_hash_check.h	/^void checkArgNodeNonEmpty(ArgNode **arg_ptr)$/;"	f
+checkArgNodeNonEmpty	uneeded/hash_alloc.h	/^void checkArgNodeNonEmpty(ArgNode **arg_ptr)$/;"	f
+checkArgNodeNonEmpty	uneeded/hash_check.h	/^void checkArgNodeNonEmpty(ArgNode **arg_ptr)$/;"	f
+checkHashNodeEmpty	src/_hash_check.h	/^void checkHashNodeEmpty(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeEmpty	uneeded/hash_alloc.h	/^void checkHashNodeEmpty(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeEmpty	uneeded/hash_check.h	/^void checkHashNodeEmpty(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeNonEmpty	src/_hash_check.h	/^void checkHashNodeNonEmpty(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeNonEmpty	uneeded/hash_alloc.h	/^void checkHashNodeNonEmpty(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeNonEmpty	uneeded/hash_check.h	/^void checkHashNodeNonEmpty(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeNonEmpty2	src/_hash_check.h	/^void checkHashNodeNonEmpty2(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeNonEmpty2	uneeded/hash_alloc.h	/^void checkHashNodeNonEmpty2(HashNode **node_ptr_ptr)$/;"	f
+checkHashNodeNonEmpty2	uneeded/hash_check.h	/^void checkHashNodeNonEmpty2(HashNode **node_ptr_ptr)$/;"	f
+checkHashTableEmpty	src/_hash_check.h	/^void checkHashTableEmpty(HashTable **hash)$/;"	f
+checkHashTableEmpty	uneeded/hash_alloc.h	/^void checkHashTableEmpty(HashTable **hash)$/;"	f
+checkHashTableEmpty	uneeded/hash_check.h	/^void checkHashTableEmpty(HashTable **hash)$/;"	f
+checkHashTableNonEmpty	src/_hash_check.h	/^void checkHashTableNonEmpty(HashTable **hash)$/;"	f
+checkHashTableNonEmpty	uneeded/hash_alloc.h	/^void checkHashTableNonEmpty(HashTable **hash)$/;"	f
+checkHashTableNonEmpty	uneeded/hash_check.h	/^void checkHashTableNonEmpty(HashTable **hash)$/;"	f
+checkStringEmpty	src/_hash_check.h	/^void checkStringEmpty(MyString **arg_ptr_ptr)$/;"	f
+checkStringEmpty	uneeded/hash_alloc.h	/^void checkStringEmpty(MyString **arg_ptr_ptr)$/;"	f
+checkStringEmpty	uneeded/hash_check.h	/^void checkStringEmpty(MyString **arg_ptr_ptr)$/;"	f
+checkStringNonEmpty	src/_hash_check.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
+checkStringNonEmpty	uneeded/hash_alloc.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
+checkStringNonEmpty	uneeded/hash_check.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
+compute_edge_lengths	uneeded/printing/asciinode.h	/^void compute_edge_lengths(asciinode *node) $/;"	f
+compute_edge_lengths	uneeded/printing/print.h	/^void compute_edge_lengths(asciinode *node) $/;"	f
+compute_lprofile	uneeded/printing/asciinode.h	/^void compute_lprofile(asciinode *node, int x, int y) $/;"	f
+compute_lprofile	uneeded/printing/print.h	/^void compute_lprofile(asciinode *node, int x, int y) $/;"	f
+compute_rprofile	uneeded/printing/asciinode.h	/^void compute_rprofile(asciinode *node, int x, int y) $/;"	f
+compute_rprofile	uneeded/printing/print.h	/^void compute_rprofile(asciinode *node, int x, int y) $/;"	f
+edge_length	uneeded/printing/asciinode.h	/^  int edge_length; $/;"	m	struct:asciinode_struct
+edge_length	uneeded/printing/print.h	/^  int edge_length; $/;"	m	struct:asciinode_struct
+element	uneeded/printing/asciinode.h	/^  int element;$/;"	m	struct:Tree
+element	uneeded/printing/print.h	/^  int element;$/;"	m	struct:PrpsTree
+find	uneeded/printing/asciinode.h	/^Tree *find(int elem, Tree *t)$/;"	f
+find_max	uneeded/printing/asciinode.h	/^Tree *find_max(Tree *t)$/;"	f
+find_min	uneeded/printing/asciinode.h	/^Tree *find_min(Tree *t)$/;"	f
+free_ascii_tree	uneeded/printing/asciinode.h	/^void free_ascii_tree(asciinode *node) $/;"	f
+free_ascii_tree	uneeded/printing/print.h	/^void free_ascii_tree(asciinode *node) $/;"	f
+gap	uneeded/printing/asciinode.h	/^int gap = 3;  $/;"	v
+generateEmptyHashTable	src/hash.h	/^HashTable *generateEmptyHashTable()$/;"	f
+generateEmptyHashTable	uneeded/hash_alloc.h	/^HashTable *generateEmptyHashTable()$/;"	f
+head	src/hash.h	/^    struct HashNode *head;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+head	uneeded/hash_alloc.h	/^    struct HashNode *head;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+head	uneeded/hash_check.h	/^    struct HashNode *head;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+height	uneeded/printing/asciinode.h	/^  int height;      $/;"	m	struct:asciinode_struct
+height	uneeded/printing/print.h	/^  int height;      $/;"	m	struct:asciinode_struct
+insert	uneeded/printing/asciinode.h	/^Tree * insert(int value, Tree * t) $/;"	f
+label	uneeded/printing/asciinode.h	/^  char label[11];  $/;"	m	struct:asciinode_struct
+label	uneeded/printing/print.h	/^  char label[11];  $/;"	m	struct:asciinode_struct
+lablen	uneeded/printing/asciinode.h	/^  int lablen;$/;"	m	struct:asciinode_struct
+lablen	uneeded/printing/print.h	/^  int lablen;$/;"	m	struct:asciinode_struct
+left	src/prps.h	/^    struct PrpsTree *left;      \/\/ left child$/;"	m	struct:PrpsTree	typeref:struct:PrpsTree::PrpsTree
+left	uneeded/printing/asciinode.h	/^  Tree * left, * right;$/;"	m	struct:Tree
+left	uneeded/printing/asciinode.h	/^  asciinode * left, * right;$/;"	m	struct:asciinode_struct
+left	uneeded/printing/print.h	/^  PrpsTree * left, * right;$/;"	m	struct:PrpsTree
+left	uneeded/printing/print.h	/^  asciinode * left, * right;$/;"	m	struct:asciinode_struct
+lprofile	uneeded/printing/asciinode.h	/^int lprofile[MAX_HEIGHT];$/;"	v
+m	src/hash.h	/^    int *m;             \/\/ Number of hash nodes$/;"	m	struct:HashTable
+m	uneeded/hash_alloc.h	/^    int *m;             \/\/ Number of hash nodes$/;"	m	struct:HashTable
+m	uneeded/hash_check.h	/^    int *m;             \/\/ Number of hash nodes$/;"	m	struct:HashTable
+main	main.c	/^int main()$/;"	f
+main	uneeded/printing/asciinode.h	/^void main() $/;"	f
+main	uneeded/printing/main.c	/^int main()$/;"	f
+make_empty	uneeded/printing/asciinode.h	/^Tree *make_empty(Tree *t)$/;"	f
+n	src/hash.h	/^    int *n;             \/\/ Number of elements per hash node$/;"	m	struct:HashTable
+n	src/hash.h	/^{   int *n;             \/\/ Length of array held by node$/;"	m	struct:HashNode
+n	uneeded/hash_alloc.h	/^    int *n;             \/\/ Number of elements per hash node$/;"	m	struct:HashTable
+n	uneeded/hash_alloc.h	/^{   int *n;             \/\/ Length of array held by node$/;"	m	struct:HashNode
+n	uneeded/hash_check.h	/^    int *n;             \/\/ Number of elements per hash node$/;"	m	struct:HashTable
+n	uneeded/hash_check.h	/^{   int *n;             \/\/ Length of array held by node$/;"	m	struct:HashNode
+name	src/hash.h	/^    MyString *name;\/\/ String corresponding to the name$/;"	m	struct:HashNode
+name	uneeded/hash_alloc.h	/^    MyString *name;\/\/ String corresponding to the name$/;"	m	struct:HashNode
+name	uneeded/hash_check.h	/^    MyString *name;\/\/ String corresponding to the name$/;"	m	struct:HashNode
+neg	src/prps.h	/^    int *neg;           \/\/ = 1 if negated, otherwise 0$/;"	m	struct:PrpsTree
+next	src/hash.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
+next	src/hash.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+next	uneeded/hash_alloc.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
+next	uneeded/hash_alloc.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+next	uneeded/hash_check.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
+next	uneeded/hash_check.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+node_ptr	src/hash.h	/^    HashNode *node_ptr; \/\/ Pointer so that gcc will let me allocate $/;"	m	struct:HashTable
+node_ptr	uneeded/hash_alloc.h	/^    HashNode *node_ptr; \/\/ Pointer so that gcc will let me allocate $/;"	m	struct:HashTable
+node_ptr	uneeded/hash_check.h	/^    HashNode *node_ptr; \/\/ Pointer so that gcc will let me allocate $/;"	m	struct:HashTable
+nodes	src/hash.h	/^    HashNode *nodes;    \/\/ Array of HashNode structs$/;"	m	struct:HashTable
+nodes	uneeded/hash_alloc.h	/^    HashNode *nodes;    \/\/ Array of HashNode structs$/;"	m	struct:HashTable
+nodes	uneeded/hash_check.h	/^    HashNode *nodes;    \/\/ Array of HashNode structs$/;"	m	struct:HashTable
+oprtr	src/prps.h	/^    int *oprtr;         \/\/ var indicating type of logic operator$/;"	m	struct:PrpsTree
+p	src/prps.h	/^    struct PrpsTree *p;         \/\/ parent node$/;"	m	struct:PrpsTree	typeref:struct:PrpsTree::PrpsTree
+parent_dir	uneeded/printing/asciinode.h	/^  int parent_dir;   $/;"	m	struct:asciinode_struct
+parent_dir	uneeded/printing/print.h	/^  int parent_dir;   $/;"	m	struct:asciinode_struct
+print_ascii_tree	uneeded/printing/asciinode.h	/^void print_ascii_tree(Tree * t) $/;"	f
+print_ascii_tree	uneeded/printing/print.h	/^void print_ascii_tree(PrpsTree * t) $/;"	f
+print_level	uneeded/printing/asciinode.h	/^void print_level(asciinode *node, int x, int level) $/;"	f
+print_level	uneeded/printing/print.h	/^void print_level(asciinode *node, int x, int level) $/;"	f
+print_next	uneeded/printing/asciinode.h	/^int print_next;    $/;"	v
+print_oprtr	src/_prps_err.h	/^void print_oprtr(int oprtr)$/;"	f
+result	src/hash.h	/^    int *result;        \/\/ Result of passing argument arg to proposition$/;"	m	struct:ArgNode
+result	uneeded/hash_alloc.h	/^    int *result;        \/\/ Result of passing argument arg to prpsosition$/;"	m	struct:ArgNode
+result	uneeded/hash_check.h	/^    int *result;        \/\/ Result of passing argument arg to prpsosition$/;"	m	struct:ArgNode
+right	src/prps.h	/^    struct PrpsTree *right;     \/\/ right child$/;"	m	struct:PrpsTree	typeref:struct:PrpsTree::PrpsTree
+right	uneeded/printing/asciinode.h	/^  Tree * left, * right;$/;"	m	struct:Tree
+right	uneeded/printing/asciinode.h	/^  asciinode * left, * right;$/;"	m	struct:asciinode_struct
+right	uneeded/printing/print.h	/^  PrpsTree * left, * right;$/;"	m	struct:PrpsTree
+right	uneeded/printing/print.h	/^  asciinode * left, * right;$/;"	m	struct:asciinode_struct
+rprofile	uneeded/printing/asciinode.h	/^int rprofile[MAX_HEIGHT];$/;"	v
+s	src/hash.h	/^{   int *s;$/;"	m	struct:MyString
+s	uneeded/hash_alloc.h	/^{   int *s;$/;"	m	struct:MyString
+s	uneeded/hash_check.h	/^{   int *s;$/;"	m	struct:MyString
+setPointerToArg	src/_hash_alloc.h	/^int setPointerToArg(char arg[], HashTable **hash, int m, int n)$/;"	f
+setPointerToArg	uneeded/hash_alloc.h	/^int setPointerToArg(char arg[], HashTable **hash, int m, int n)$/;"	f
+setPointerToProp	src/_hash_alloc.h	/^int setPointerToProp(char prop[], HashTable **hash, int m, int n)$/;"	f
+setPointerToPrps	uneeded/hash_alloc.h	/^int setPointerToPrps(char prps[], HashTable **hash, int m, int n)$/;"	f
+stc	src/hash.h	/^    char *stc;$/;"	m	struct:MyString
+stc	uneeded/hash_alloc.h	/^    char *stc;$/;"	m	struct:MyString
+stc	uneeded/hash_check.h	/^    char *stc;$/;"	m	struct:MyString
+stmnt	src/prps.h	/^    MyString *stmnt;$/;"	m	struct:PrpsTree
+tree_print	src/_prps_err.h	/^void tree_print(PrpsTree **tree)$/;"	f
