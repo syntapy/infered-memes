@@ -2,54 +2,63 @@
 
 int main()
 {
-    //char **symbols = NULL;
-    //char **args = NULL;
+    char **symbols = NULL;
+    char **args = NULL;
     //char *buffer = NULL;
-    //const char **ptr = NULL;
+    const char **ptr = NULL;
 
     // n: # of symbols
     // m: max # chars in each symbol
-    int m = 15, n = 5, l = 5;
+    int m = 15, n = 8, l = 5;
     int i, d;
 
-    //PrpsTree **tree = NULL, **alpha = NULL;
-    //PrpsTree **tree_tmp = NULL;
+    PrpsTree **tree = NULL, **alpha = NULL;
+    PrpsTree **tree_tmp = NULL;
 
-    HashTable *hash = NULL;
+    HashTable **hash = NULL;
 
-    hash = malloc(sizeof(HashTable));
+    int *array = NULL, *array_ptr = NULL;
 
-    if (hash == NULL)
-        MallocErr("main 1");
+    //array = calloc(10, sizeof(int));
 
-    hash -> nodes = malloc(n * sizeof(HashNode));
-
-    if (hash -> nodes == NULL)
-        MallocErr("main 2");
-
-    //hash = calloc(1, sizeof(HashTable *));
-    //if (!hash)
+    //if (array == NULL)
     //    MallocErr("main 1");
+
+    //array_ptr = array + 3*sizeof(int);
+
+    //if (array_ptr != array)
+    //    DeathErr("main 2");
 
     int is_cnf;
 
     //tree = calloc(1, sizeof(PrpsTree *));
+    //d = 9;
 
-    d = 5;
+    GenSymbolArray(&symbols, n, m);
+    GenSymbolArray(&args, l, 0);
 
-    //GenSymbolArray(&symbols, n, m);
-    //GenSymbolArray(&args, l, 0);
-    //ptr = (const char **) symbols;
-    //srand(3);
+    ptr = (const char **) symbols;
+    srand(3);
 
-    //GenSkewedTree(ptr, m, tree, d);
-    //GenAlphaTree((const char **) symbols, &alpha, m, n, d);
+    GenSkewedTree(ptr, n, tree, d);
+    GenAlphaTree((const char **) symbols, &alpha, m, n, d);
 
-    //tree_tmp = tree;
-    //tree = Oprtr(NOT, tree_tmp, IS, alpha, IS, AND);
-    //free(tree_tmp); tree_tmp = NULL;
+    tree_tmp = tree;
+    tree = Oprtr(NOT, tree_tmp, IS, alpha, IS, AND);
+    free(tree_tmp); tree_tmp = NULL;
 
-    //(*hash) = GenerateAllocatedHashTable(n, l);
+    hash = GenerateAllocatedHashTable(n, l);
+    FillHashTable(hash, symbols, args, n, l, 7);
+
+    return 0;
+}
+
+    //printf("%d\n", GetValueForArg("E", "F", hash, n, l));
+
+    //hash -> node_ptr = hash -> nodes + 5 * sizeof(HashNode);
+    //(*hash) -> node_ptr = ((*hash) -> nodes) + 5 * sizeof(HashNode);
+    //(*hash) -> node_ptr -> name;
+
     //setPointerToProp("A", &hash, n, l);
 
     //for (i = 2; i < n; i++)
@@ -61,26 +70,12 @@ int main()
 
     //SetValueForArg("A", "x", 1, &hash, n, l);
 
-    //FillHashTable(&hash, symbols, args, n, l, 7);
+    //
 
     //tree_print(alpha);
     //fprintf(stdout, "\n");
     //TreeConsistency(tree);
 
-    //is_cnf = IsCNF(tree);
-    //fprintf(stdout, "Before operation: is_cnf = %d\n\n", is_cnf);
-    //fprintf(stdout, "\n");
-    //for (i = 0; i < d; i++)
-    //    CNF(tree);
-
-
-    //tree_print(tree);
-    //fprintf(stdout, "\n");
-
-    //is_cnf = IsCNF(tree);
-    //if (is_cnf != 1)
-    //    fprintf(stdout, "After operation: is_cnf = %d!\n", is_cnf);
-    //else fprintf(stdout, "Good\n");
 
     //for (i = 0; i < m; i++)
     //    fprintf(stdout, "%s\n", symbols[i]);
@@ -131,6 +126,4 @@ int main()
     //CNF(tree);
     //is_cnf = IsCNF(tree);
     //fprintf(stdout, "IsCNF(tree) = %d\n", is_cnf);
-
-    return 0;
-}
+//}

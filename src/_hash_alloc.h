@@ -119,14 +119,17 @@ void allocateNonEmptyArgNode(ArgNode **arg_ptr_ptr, int s, int n)
 void allocatePropNode(char prop[], HashNode **node_ptr_ptr, int prp, int s, int n)
 {
 
-    if (prp == -1)
+    if (prp == -1 || prp == 1)
     {   allocateNonEmptyHashNode(node_ptr_ptr, s, n);
         allocateEmptyHashNode(&((*node_ptr_ptr) -> next));
-    } else if (prp == 1)
-    {   allocateNonEmptyHashNode(node_ptr_ptr, s, n);
-        allocateEmptyHashNode(&((*node_ptr_ptr) -> next));
-    } else if (prp == 0)
-        InconsistencyErr("void allocatePropNode(args...)");
+    } 
+    
+    //else if (prp == 1)
+    //{   allocateNonEmptyHashNode(node_ptr_ptr, s, n);
+    //    allocateEmptyHashNode(&((*node_ptr_ptr) -> next));
+    //} 
+    //else if (prp == 0)
+    //    InconsistencyErr("void allocatePropNode(args...)");
     if ((*node_ptr_ptr) -> name -> stc == NULL)
         DeathErr("void setPointerToProp(char prop[], HashTable **hash, int m, int n)");
 }
@@ -138,20 +141,33 @@ void allocateArgNode(char arg[], ArgNode **arg_ptr_ptr, int rgu, int s, int n)
     } else if (rgu == 1)
     {   allocateNonEmptyArgNode(arg_ptr_ptr, s, n);
         allocateEmptyArgNode(&((*arg_ptr_ptr) -> next));
-    } else if (rgu == 0)
-        InconsistencyErr("void allocatePropNode(args...)");
+    } 
+    
+    //else if (rgu == 0)
+     //   InconsistencyErr("void allocatePropNode(args...)");
     if ((*arg_ptr_ptr) -> arg == NULL)
         DeathErr("void setPointerToProp(char prop[], HashTable **hash, int m, int n)");
 }
 
 int setPointerToProp(char prop[], HashTable **hash, int m, int n)
-{   if (*hash == NULL) 
+{   
+    /*
+        returns -1, 1, or 0
+        I can't see how this would retun -1
+        returns 1 if node pointed to is NULL, and thus hasn't been allocated yet
+
+        returns 0 if the prpositional symbol is already in the hash table
+
+    */
+
+    if (*hash == NULL) 
         NoMallocErr("void setPointerToProp(char prop[], HashTable **hash, int m, int n) 1 ");
 
     int index = GetPropIndex(prop, m);
     HashNode *tail_ptr;
 
-    (*hash) -> node_ptr = (*hash) -> nodes + index * sizeof(HashNode);
+    //(*hash) -> node_ptr = (*hash) -> nodes + index * sizeof(HashNode);
+    (*hash) -> node_ptr = &(((*hash) -> nodes)[index]);
 
     while (1)
     {   if ((*hash) -> node_ptr == NULL) 
@@ -176,15 +192,19 @@ int setPointerToArg(char arg[], HashTable **hash, int m, int n)
     checkHashNodeNonEmpty(&((*hash) -> node_ptr));
 
     // This function requires that hash -> node_ptr has already been appropriately set
-    (*hash) -> node_ptr -> arg_ptr = (*hash) -> node_ptr -> array + index * sizeof(ArgNode);
+    //(*hash) -> node_ptr -> arg_ptr = (*hash) -> node_ptr -> array + index * sizeof(ArgNode);
+    (*hash) -> node_ptr -> arg_ptr = &(((*hash) -> node_ptr -> array)[index]);
     arg_ptr = (*hash) -> node_ptr -> arg_ptr;
 
     while (1)
-    {   if (arg_ptr == NULL) return -1;
-        if (arg_ptr -> arg == NULL) return 1;
+    {   if (arg_ptr == NULL) 
+            return -1;
+        if (arg_ptr -> arg == NULL) 
+            return 1;
         if (arg_ptr -> arg -> stc == NULL)
             DeathErr("void setPointerToArg(args...)");
-        if (strcmp(arg_ptr -> arg -> stc, arg) == 0) return 0;
+        if (strcmp(arg_ptr -> arg -> stc, arg) == 0) 
+            return 0;
 
         arg_ptr = arg_ptr -> next;
         (*hash) -> node_ptr -> arg_ptr = arg_ptr;
@@ -220,8 +240,8 @@ void addSymbol(char prop[], HashTable **hash, int m, int n)
     prp = setPointerToProp(prop, hash, m, n);
     allocatePropNode(prop, &((*hash) -> node_ptr), prp, strlen(prop), n);
 
-    if (*((*hash) -> node_ptr -> name -> s) != strlen(prop))
-        InconsistencyErr("void addSymbol(char prop[], HashTable **hash, int m, int n)");
+    //if (*((*hash) -> node_ptr -> name -> s) != strlen(prop))
+    //    InconsistencyErr("void addSymbol(char prop[], HashTable **hash, int m, int n)");
 
     if (strcmp((*hash) -> node_ptr -> name -> stc, prop) != 0)
         strcpy((*hash) -> node_ptr -> name -> stc, prop);

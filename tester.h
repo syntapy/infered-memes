@@ -122,7 +122,9 @@ void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)
 }
 
 void GenSkewedTree(const char **symbols, int m, PrpsTree **tree, int d)
-{   int i, j, index;
+{   
+
+    int i, j, index;
     const char *ptr = NULL;
     long double nmbr;
     PrpsTree **left = NULL, **right = NULL;
@@ -205,15 +207,15 @@ void GenAlphaTree(const char **symbols, PrpsTree ***alpha, int m, int n, int d)
 
 void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, int seed)
 {
-    int i, j, value;
+    int i, j, value, value_retrieved;
     int a, b;
     int iterations;
 
     srand(seed);
 
-    for (i = 0; i < m; i++)
+    for (i = 0; i < m*50; i++)
     {
-        iterations = rand() % n;
+        iterations = 50 * n; //rand() % n;
 
         for (j = 0; j < iterations; j++)
         {
@@ -222,6 +224,11 @@ void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, 
             b = rand() % n;
 
             SetValueForArg(symbols[a], args[b], value, hash, m, n);
+
+            value_retrieved = GetValueForArg(symbols[a], args[b], hash, m, n);
+
+            if (value_retrieved != value)
+                InconsistencyErr("FillHashTable 1: Unit Test! ");
         }
     }
 }
