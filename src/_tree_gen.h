@@ -6,15 +6,15 @@ PrpsTree *GenerateEmpty()
      * which is a struct consisting of pointers
      */
  
-    PrpsTree **tree = NULL;
+    PrpsTree *tree = NULL;
 
-	tree = (PrpsTree **) calloc(1, sizeof(PrpsTree *));
+	tree = (PrpsTree *) calloc(1, sizeof(PrpsTree));
     if (tree == NULL) 
         MallocErr("PrpsTree *GenerateEmpty()");
 
-    *tree = (PrpsTree *) calloc(1, sizeof(PrpsTree));
-    if ((*tree) == NULL)
-        MallocErr("PrpsTree *GenerateEmpty()");
+    //*tree = (PrpsTree *) calloc(1, sizeof(PrpsTree));
+    //if ((*tree) == NULL)
+    //    MallocErr("PrpsTree *GenerateEmpty()");
 
     //(*tree) -> type = NULL;
     //(*tree) -> op = NULL;
@@ -23,10 +23,10 @@ PrpsTree *GenerateEmpty()
     //(*tree) -> left = NULL;
     //(*tree) -> right = NULL;
 
-    return *tree;
+    return tree;
 }
 
-void AllocateAsPrps(PrpsTree **node, const char *prps)
+void AllocateAsPrps(PrpsTree **node, const char *prps, const char *arg)
 {   /* memory for the pointer in the PrpsTree node (**node)
      *
      * i.e. it allocates memory for both 
@@ -41,13 +41,14 @@ void AllocateAsPrps(PrpsTree **node, const char *prps)
     if ((*node) -> oprtr != NULL) 
         InconsistencyErr("AllocateAsPrps");
 
-    if (/*(*node) -> type != NULL ||*/ (*node) -> stmnt != NULL)
+    if ((*node) -> argmnt != NULL || (*node) -> stmnt != NULL)
         InconsistencyErr("AllocateAsPrps");
     (*node) -> stmnt = (MyString *) calloc(1, sizeof(MyString));
+    (*node) -> argmnt = (MyString *) calloc(1, sizeof(MyString));
     //(*node) -> type = (int *) calloc(1, sizeof(int));
     (*node) -> neg = (int *) calloc(1, sizeof(int));
 
-    if (/*(*node) -> type == NULL ||*/ (*node) -> stmnt == NULL ||
+    if ((*node) -> argmnt == NULL || (*node) -> stmnt == NULL ||
             (*node) -> neg == NULL) 
         MallocErr("void AllocateAsPrps(PrpsTree **node, char prps[]");
 
@@ -55,15 +56,23 @@ void AllocateAsPrps(PrpsTree **node, const char *prps)
     allocateNonEmptyString(&((*node) -> stmnt), s);
     checkStringNonEmpty(&((*node) -> stmnt));
 
+    checkStringEmpty(&((*node) -> argmnt));
+    allocateNonEmptyString(&((*node) -> argmnt), s);
+    checkStringNonEmpty(&((*node) -> argmnt));
+
     //*((*node) -> type) = PRPS;
     strcpy((*node) -> stmnt -> stc, prps);
     *((*node) -> stmnt -> s) = s;
+
+    strcpy((*node) -> argmnt -> stc, arg);
+    *((*node) -> argmnt -> s) = s;
     //*((*node) -> neg) = neg;
 }
 
 void AllocateAsOprtr(PrpsTree **node, int oprtr)
 {   if (node == NULL || (*node) == NULL) DeathErr("AllocateAsOprtr");
     if ((*node) -> stmnt != NULL) InconsistencyErr("AllocateAsOprtr");
+    if ((*node) -> argmnt != NULL) InconsistencyErr("AllocateAsOprtr");
     if ((*node) -> oprtr != NULL /*|| (*node) -> type != NULL*/)
         InconsistencyErr("AllocateAsOprtr");
 
@@ -85,12 +94,20 @@ void DeallocateFromPrps(PrpsTree **node)
     free((*node) -> stmnt -> s);
     free((*node) -> stmnt -> stc);
 
+    free((*node) -> argmnt -> s);
+    free((*node) -> argmnt -> stc);
+
     (*node) -> stmnt -> s = NULL;
     (*node) -> stmnt -> stc = NULL;
+
+    (*node) -> argmnt -> s = NULL;
+    (*node) -> argmnt -> stc = NULL;
 
     free((*node) -> stmnt);
     (*node) -> stmnt = NULL;
 
+    free((*node) -> argmnt);
+    (*node) -> argmnt = NULL;
     //(*node) -> stmnt -> s = NULL;
     //(*node) -> stmnt -> stc = NULL;
     //free((*node) -> type);

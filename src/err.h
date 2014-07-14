@@ -27,15 +27,13 @@ void InconsistencyErr(const char *msg)
 void ParseErr(const char *msg)
 {   fprintf(stderr, "In function: %s:", msg);
     fprintf(stderr, "Problem Parsing Statment\n");
+
     exit(1);
 }
 
 void DeathErr(const char *msg)
 {   fprintf(stderr, "In function: %s:", msg);
     fprintf(stderr, "We're all gonna die......\n");
-    
-    //while (1)
-    //    sleep(2);
     
     exit(666);
 }
@@ -55,4 +53,11 @@ void NoArgWarn(const char *msg)
 void MaxCharsExceededWarn(const char *chars)
 {   fprintf(stderr, "WARNING: ");
     fprintf(stderr, "String length exceeds MAXCHARS: %s\n", chars);
+}
+
+void SyntaxErr(const char *msg)
+{
+    fprintf(stderr, "Warning, unexpected token: ");
+    fprintf(stderr, "%s\n", msg);
+
 }

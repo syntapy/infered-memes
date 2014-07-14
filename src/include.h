@@ -7,3 +7,5 @@
 #include "hash.h"
 #include "prps.h"
 #include "tester.h"
+#include "kb.h"
+#include "parse.h"

@@ -2,14 +2,17 @@
 
 int main()
 {
-    char **symbols = NULL;
-    char **args = NULL;
+    //char **symbols = NULL;
+    //char **args = NULL;
     //char *buffer = NULL;
     const char **ptr = NULL;
+    char *symbols[] = {"A", "B", "C", "D"};
+    char *args[] = {"a", "b", "c", "d"};
 
     // n: # of symbols
     // m: max # chars in each symbol
-    int m = 15, n = 8, l = 5;
+    // l: # of args
+    int m = 2, n = 4, l = 4;
     int i, d;
 
     PrpsTree **tree = NULL, **alpha = NULL;
@@ -29,26 +32,85 @@ int main()
     //if (array_ptr != array)
     //    DeathErr("main 2");
 
-    int is_cnf;
+    int is_cnf, tree_val = -1;
 
     //tree = calloc(1, sizeof(PrpsTree *));
-    //d = 9;
+    //alpha = calloc(1, sizeof(PrpsTree *));
+    //if (tree == NULL || alpha == NULL)
+    //    MallocErr("main 2");
 
-    GenSymbolArray(&symbols, n, m);
-    GenSymbolArray(&args, l, 0);
+    //tree_mpt = calloc(1, sizeof(PrpsTree *));
+    //if (tree == NULL)
+    //    MallocErr("main 3");
 
-    ptr = (const char **) symbols;
-    srand(3);
+    //(*tree) = GenerateEmpty();
+    //(*alpha) = GenerateEmpty();
 
-    GenSkewedTree(ptr, n, tree, d);
-    GenAlphaTree((const char **) symbols, &alpha, m, n, d);
-
-    tree_tmp = tree;
-    tree = Oprtr(NOT, tree_tmp, IS, alpha, IS, AND);
-    free(tree_tmp); tree_tmp = NULL;
+    //(*tree_tmp) = GenerateEmpty();
 
     hash = GenerateAllocatedHashTable(n, l);
-    FillHashTable(hash, symbols, args, n, l, 7);
+    tree = Read(hash, n, l);
+    TreeConsistency(tree);
+
+    fprintf(stdout, "Tree in original form:\t");
+    tree_print(tree);
+    fprintf(stdout, "\n");
+
+    d = 2;
+    for (i = 0; i < d; i++)
+        CNF(tree);
+
+    is_cnf = IsCNF(tree);
+    fprintf(stdout, "Tree is in CNF: %d\n", is_cnf);
+    fprintf(stdout, "Tree in CNF:\t");
+    tree_print(tree);
+    fprintf(stdout, "\n");
+
+    tree_val = GetTreeValue(tree, hash, n, l);
+    fprintf(stdout, "Truth value of tree: %d\n", tree_val);
+    fprintf(stdout, "1 = True, 0 = False, -1 = Unknown\n");
+
+    //GenSymbolArray(&symbols, n, m);
+    //GenSymbolArray(&args, l, 0);
+
+    //AllocateAsPrps(tree, (const char *) symbols[0], (const char *) args[0]);
+
+    //ptr = (const char **) symbols;
+    //agr = (const char **) args;
+    //srand(5);
+
+    //GenSkewedTree((const char **) symbols, (const char **) args, n, l, tree, d);
+    //GenAlphaTree((const char **) symbols, (const char **) args, &alpha, n, l, d);
+
+    //tree = OprtrWrap(NOT, tree, IS, (const char *) symbols[1], 
+    //    (const char *) args[0], IS, AND);
+    //tree = OprtrWrap(IS, tree, IS, (const char *) symbols[2], 
+    //    (const char *) args[1], IS, IMP);
+    //tree = OprtrWrap(IS, tree, NOT, (const char *) symbols[2], 
+    //    (const char *) args[2], IS, IMP);
+
+    //AllocateAsPrps(tree_tmp, (const char *) symbols[0], (const char *) args[0]);
+    //tree_tmp = OprtrWrap(IS, tree_tmp, IS, (const char *) symbols[2], (const char *) args[1], 
+    //IS, IMP);
+
+    //SetValueForArg(symbols[0], args[0], 0, hash, n, l);
+    //SetValueForArg(symbols[1], args[0], 1, hash, n, l);
+    //SetValueForArg(symbols[2], args[1], 1, hash, n, l);
+    //fprintf(stdout, "Val not in hash: %d\n", GetValueForArg(symbols[2], args[2], hash, n, l));
+
+    //fprintf(stdout, "%s[%s] = %d\n", symbols[0], args[0], 
+    //    GetValueForArg(symbols[0], args[0], hash, n, l));
+
+    //fprintf(stdout, "%s[%s] = %d\n", symbols[1], args[0], 
+    //    GetValueForArg(symbols[1], args[0], hash, n, l));
+
+    //fprintf(stdout, "%s[%s] = %d\n", symbols[2], args[1], 
+    //    GetValueForArg(symbols[2], args[1], hash, n, l));
+    //for (i = 0; i < d; i++)
+    //    CNF(tree);
+
+    //hash = GenerateAllocatedHashTable(n, l);
+    //FillHashTable(hash, symbols, args, n, l, 7);
 
     return 0;
 }
@@ -74,7 +136,6 @@ int main()
 
     //tree_print(alpha);
     //fprintf(stdout, "\n");
-    //TreeConsistency(tree);
 
 
     //for (i = 0; i < m; i++)
@@ -123,7 +184,4 @@ int main()
     //right = Oprtr(IS, right_a, IS, right_b, IS, AND);
 
     //tree = Oprtr(IS, left_a, IS, right_a, IS, TAU);
-    //CNF(tree);
-    //is_cnf = IsCNF(tree);
-    //fprintf(stdout, "IsCNF(tree) = %d\n", is_cnf);
 //}

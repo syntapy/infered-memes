@@ -14,10 +14,14 @@
 #define NO 0
 #define YES 1
 
+#define EXISTS 5
+#define FORALL 6
+
 #define IS NO
 #define NOT YES
 
-#define LOWER_CASE_FIRST 98
-#define LOWER_CASE_LAST 123
-#define UPPER_CASE_FIRST 66
-#define UPPER_CASE_LAST 91
+#define SPACE 32
+#define LOWER_CASE_FIRST 97
+#define LOWER_CASE_LAST 122
+#define UPPER_CASE_FIRST 65
+#define UPPER_CASE_LAST 90

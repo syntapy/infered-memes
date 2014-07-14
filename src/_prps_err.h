@@ -4,7 +4,7 @@ void CheckOprtrNode(PrpsTree **tree)
         InconsistencyErr("CheckLeafNode");
     //if ((*tree) -> type == NULL || *((*tree) -> type) != OPRTR)
     //    InconsistencyErr("CheckLeafNode 1");
-    if ((*tree) -> stmnt != NULL)
+    if ((*tree) -> stmnt != NULL || (*tree) -> argmnt != NULL)
         InconsistencyErr("CheckLeafNode 2");
     if ((*tree) -> oprtr == NULL)
         InconsistencyErr("CheckLeafNode 3");
@@ -19,10 +19,15 @@ void CheckPrpsTreeNode(PrpsTree **tree)
         InconsistencyErr("CheckPrpsTreeNode");
     //if ((*tree) -> type == NULL || *((*tree) -> type) != PRPS)
     //    InconsistencyErr("CheckPrpsTreeNode");
-    if ((*tree) -> stmnt == NULL || (*tree) -> stmnt -> stc == NULL
-            || (*tree) -> stmnt -> s == NULL)
+    if ((*tree) -> stmnt == NULL || (*tree) -> argmnt == NULL 
+            || (*tree) -> stmnt -> stc == NULL
+            || (*tree) -> stmnt -> s == NULL
+            || (*tree) -> argmnt -> stc == NULL
+            || (*tree) -> argmnt -> s == NULL)
         InconsistencyErr("CheckPrpsTreeNode");
     if (strlen((*tree) -> stmnt -> stc) != *((*tree) -> stmnt -> s))
+        InconsistencyErr("CheckPrpsTreeNode");
+    if (strlen((*tree) -> argmnt -> stc) != *((*tree) -> argmnt -> s))
         InconsistencyErr("CheckPrpsTreeNode");
     if ((*tree) -> oprtr != NULL)
         InconsistencyErr("CheckPrpsTreeNode");
@@ -71,8 +76,6 @@ void CheckChildrenOprtr(PrpsTree **tree, int oprtr)
         NoMallocErr("ConvertIMP");
 }
 
-//void print_prps(
-
 void print_oprtr(int oprtr)
 {
     if (oprtr == AND)
@@ -84,7 +87,6 @@ void print_oprtr(int oprtr)
     else if (oprtr == TAU)
         fprintf(stdout, " == ");
 }
-
 
 void tree_print(PrpsTree **tree)
 {
@@ -108,10 +110,9 @@ void tree_print(PrpsTree **tree)
     {
         if (*(*tree) -> neg == NOT)
             fprintf(stdout, "~");
-        fprintf(stdout, "%s", (*tree) -> stmnt -> stc);
+        fprintf(stdout, "%s[%s]", (*tree) -> stmnt -> stc, (*tree) -> argmnt -> stc);
     }
 
-    else InconsistencyErr("tree_print 1");
+    else 
+        InconsistencyErr("tree_print 1");
 }
-
-

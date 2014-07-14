@@ -66,7 +66,8 @@ void GenSymbol(char **symbol, int n)
 }
 
 void GenSymbolArray(char ***symbols, unsigned long int n, unsigned int m)
-{   /*  Generate an array of n strings
+{   
+    /*  Generate an array of n strings
      *
      *  Not sure if the m argument (arg 2) is useful. Supposedly it is 
      *  the max # of chars per string, but if its too small it gets set 
@@ -121,11 +122,11 @@ void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)
     }
 }
 
-void GenSkewedTree(const char **symbols, int m, PrpsTree **tree, int d)
-{   
+void GenSkewedTree(const char **symbols, const char **args, int m, int n, PrpsTree **tree, int d)
+{
 
     int i, j, index;
-    const char *ptr = NULL;
+    const char *ptr = NULL, *arg = NULL;
     long double nmbr;
     PrpsTree **left = NULL, **right = NULL;
     //if (tree == NULL)
@@ -149,8 +150,8 @@ void GenSkewedTree(const char **symbols, int m, PrpsTree **tree, int d)
             nmbr = (long double) rand();
             nmbr = (d - 1) * ((int) rintl(logl(nmbr) / logl((long double) RAND_MAX)));
 
-            GenSkewedTree(symbols, m, left, d - 1);
-            GenSkewedTree(symbols, m, right, d - 1 - nmbr);
+            GenSkewedTree(symbols, args, m, n, left, d - 1);
+            GenSkewedTree(symbols, args, m, n, right, d - 1 - nmbr);
 
             SetLeftChild(tree, left);
             SetRightChild(tree, right);
@@ -166,7 +167,10 @@ void GenSkewedTree(const char **symbols, int m, PrpsTree **tree, int d)
         {   
             j = rand() % m;
             ptr = symbols[j];
-            AllocateAsPrps(tree, ptr);
+            j = rand() % n;
+            arg = args[j];
+
+            AllocateAsPrps(tree, ptr, arg);
 
             //for (i = 0; i < d; i++)
             //{   
@@ -182,10 +186,10 @@ void GenSkewedTree(const char **symbols, int m, PrpsTree **tree, int d)
     }
 }
 
-void GenAlphaTree(const char **symbols, PrpsTree ***alpha, int m, int n, int d)
+void GenAlphaTree(const char **symbols, const char **args, PrpsTree ***alpha, int m, int n, int d)
 {
     int i, j;
-    const char *symbol_tmp = NULL;
+    const char *symbol_tmp = NULL, *arg_tmp;
     //PrpsTree **alpha = NULL;
 
     if (alpha == NULL)
@@ -199,10 +203,13 @@ void GenAlphaTree(const char **symbols, PrpsTree ***alpha, int m, int n, int d)
         MallocErr("GenAlphaTree 3");
     (**alpha) = GenerateEmpty();
 
-    i = rand() % n;
-
+    i = rand() % m;
     symbol_tmp = symbols[i];
-    AllocateAsPrps(*alpha, symbol_tmp);
+
+    i = rand() % n;
+    arg_tmp = args[i];
+
+    AllocateAsPrps(*alpha, symbol_tmp, arg_tmp);
 }
 
 void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, int seed)

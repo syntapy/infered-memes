@@ -4,7 +4,8 @@ typedef struct PrpsTree
     //int *type;          // Bool var: 1 if type
     int *oprtr;         // var indicating type of logic operator
     int *neg;           // = 1 if negated, otherwise 0
-    MyString *stmnt;
+    int value;          // Truth value of subtree
+    MyString *stmnt, *argmnt;
 
     //struct PrpsTree **root;     // ptr_ptr to the root of tree. *root is constant
     struct PrpsTree *p;         // parent node
@@ -84,7 +85,8 @@ PrpsTree **Oprtr(int neg_a, PrpsTree **tree_a, int neg_b, PrpsTree **tree_b, int
 
     PrpsTree **new_root = NULL;
     new_root = malloc(sizeof(PrpsTree *));
-    if (new_root == NULL) MallocErr("Oprtr");
+    if (new_root == NULL) 
+        MallocErr("Oprtr");
     (*new_root) = GenerateEmpty();
 
     AllocateAsOprtr(new_root, oprtr);
@@ -109,7 +111,7 @@ PrpsTree **Oprtr(int neg_a, PrpsTree **tree_a, int neg_b, PrpsTree **tree_b, int
     return new_root;
 }
 
-PrpsTree **Oprtr2(int neg_a, PrpsTree **tree, int neg_b, const char *prps, int neg_oprtr, int oprtr)
+PrpsTree **Oprtr2(int neg_a, PrpsTree **tree, int neg_b, const char *prps, const char *arg, int neg_oprtr, int oprtr)
 {   /* Basically a wrapper function for Oprtr(args...) so that you can just combine a current tree
      * with a string statement corresponding to statement prps[]
      */
@@ -117,8 +119,20 @@ PrpsTree **Oprtr2(int neg_a, PrpsTree **tree, int neg_b, const char *prps, int n
     PrpsTree *new_right_child = NULL; // This is set as the 
 
     new_right_child = GenerateEmpty();
-    AllocateAsPrps(&new_right_child, prps);
+    AllocateAsPrps(&new_right_child, prps, arg);
     tree = Oprtr(neg_a, tree, neg_b, &new_right_child, neg_oprtr, oprtr);
+    return tree;
+}
+
+PrpsTree **OprtrWrap(int neg_a, PrpsTree **tree, int neg_b, const char *prps, const char *arg, int neg_oprtr, int oprtr)
+{
+    PrpsTree **tree_tmp = NULL;
+    tree_tmp = tree;
+
+    tree = Oprtr2(neg_a, tree_tmp, neg_b, prps, arg, neg_oprtr, oprtr);
+
+    free(tree_tmp);
+
     return tree;
 }
 
@@ -133,6 +147,8 @@ int LeafNode(PrpsTree **tree)
     //    return_val = FALSE;
     if ((*tree) -> stmnt == NULL)// || (*tree) -> stmnt -> stc == NULL
             //|| (*tree) -> stmnt -> s == NULL)
+        return_val = FALSE;
+    else if ((*tree) -> argmnt == NULL)
         return_val = FALSE;
     //else if (strlen((*tree) -> stmnt -> stc) != *((*tree) -> stmnt -> s))
     //    InconsistencyErr("LeafNode 1");
@@ -150,6 +166,8 @@ int OprtrNode(PrpsTree **tree)
     //if (LeafNode(tree) == TRUE)
     //    return_val = FALSE;
     if ((*tree) -> stmnt != NULL)
+        return_val = FALSE;
+    else if ((*tree) -> argmnt != NULL)
         return_val = FALSE;
     else if ((*tree) -> oprtr == NULL)
         return_val = FALSE;
@@ -371,7 +389,9 @@ PrpsTree **CopyNode(PrpsTree **node)
     } 
 
     else if (PrpsNode(node) == TRUE/**((*node) -> type) == PRPS*/)
-    {   AllocateAsPrps(nvw_ptr_ptr, (*node) -> stmnt -> stc);
+    {   AllocateAsPrps(nvw_ptr_ptr, 
+            (*node) -> stmnt -> stc, 
+            (*node) -> argmnt -> stc);
         *((*nvw_ptr_ptr) -> neg) = *((*node) -> neg);
     } 
 
@@ -446,6 +466,10 @@ int CheckEqualNodes(PrpsTree **node_a, PrpsTree **node_b)
                 return_val = FALSE;
             else if (strcmp((*node_a) -> stmnt -> stc, (*node_b) -> stmnt -> stc) != FALSE)
                 return_val = FALSE;
+            else if (*((*node_a) -> argmnt -> s) != *((*node_b) -> argmnt -> s))
+                return_val = FALSE;
+            else if (strcmp((*node_a) -> argmnt -> stc, (*node_b) -> argmnt -> stc) != FALSE)
+                return_val = FALSE;
         }
     } 
 
@@ -496,7 +520,6 @@ void TreeConsistency(PrpsTree **tree)
             InconsistencyErr("TreeConsistency 1");
     }
 }
-
 
 
 /* L O G I C A L - I D E N T I T Y - O P E R A T I O N S */
