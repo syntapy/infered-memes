@@ -239,3 +239,39 @@ void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, 
         }
     }
 }
+
+void DepthFirstTraversal(PrpsTree **tree, const char *prps, const char *arg, int *true_f, int *false_f)
+{
+    if (tree != NULL)
+        if ((*tree) != NULL)
+        {
+            if ((*tree) -> left != NULL)
+                DepthFirstTraversal(&((*tree) -> left), prps, arg, true_f, false_f);
+            if ((*tree) -> right != NULL)
+                DepthFirstTraversal(&((*tree) -> right), prps, arg, true_f, false_f);
+
+            if ((*tree) -> stmnt != NULL && (*tree) -> argmnt != NULL)
+            {   if (strcmp((*tree) -> stmnt -> stc, prps) == 0)
+                    if (*((*tree) -> neg) == 1)
+                        (*false_f)++;
+                    else
+                        (*true_f)++;
+            }
+        }
+}
+
+int Infer(PrpsTree **tree, const char *prps, const char *arg)
+{
+    int true_f = 0, false_f = 0;
+    int return_val;
+
+    DepthFirstTraversal(tree, prps, arg, &true_f, &false_f);
+
+    if (true_f > 0 && false_f > 0)
+        return_val = 1;
+
+    else 
+        return_val = 0;
+
+    return return_val;
+}

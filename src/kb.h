@@ -30,7 +30,6 @@ int KB_Or(int left_val, int right_val)
 {
     int return_val = -1;
 
-
     if (left_val == 1 || right_val == 1)
         return_val = 1;
     else if (left_val == 0 && right_val == 0)

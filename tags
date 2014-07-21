@@ -10,7 +10,7 @@ AddToken	src/parse.h	/^void AddToken(Tokens **head, char token)$/;"	f
 AdvanceToClosingParenthese	src/parse.h	/^void AdvanceToClosingParenthese(Tokens **tokens)$/;"	f
 AllocateAsOprtr	src/_tree_gen.h	/^void AllocateAsOprtr(PrpsTree **node, int oprtr)$/;"	f
 AllocateAsPrps	src/_tree_gen.h	/^void AllocateAsPrps(PrpsTree **node, const char *prps, const char *arg)$/;"	f
-AlphaToTree	src/parse.h	/^PrpsTree **AlphaToTree(char *input)$/;"	f
+AlphaToTree	src/parse.h	/^PrpsTree **AlphaToTree(char *input, int *hash_val)$/;"	f
 AlreadyMallocErr	src/err.h	/^void AlreadyMallocErr(const char *msg)$/;"	f
 ArgNode	src/hash.h	/^typedef struct ArgNode$/;"	s
 ArgNode	src/hash.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
@@ -42,6 +42,7 @@ DeallocateFromOprtr	src/_tree_gen.h	/^void DeallocateFromOprtr(PrpsTree **node)$
 DeallocateFromPrps	src/_tree_gen.h	/^void DeallocateFromPrps(PrpsTree **node)$/;"	f
 DeathErr	src/err.h	/^void DeathErr(const char *msg)$/;"	f
 DeepestOprtr	src/prps.h	/^int DeepestOprtr(PrpsTree **node)$/;"	f
+DepthFirstTraversal	tester.h	/^void DepthFirstTraversal(PrpsTree **tree, const char *prps, const char *arg, int *true_f, int *false_f)$/;"	f
 DetatchChild	src/prps.h	/^PrpsTree **DetatchChild(PrpsTree **tree, int dir)$/;"	f
 DetatchParent	src/prps.h	/^PrpsTree **DetatchParent(PrpsTree **tree, int *dir)$/;"	f
 DetatchParentLeft	src/prps.h	/^PrpsTree **DetatchParentLeft(PrpsTree **tree)$/;"	f
@@ -85,6 +86,7 @@ INFINITY	src/uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
 InconsistencyErr	src/err.h	/^void InconsistencyErr(const char *msg)$/;"	f
 Infer	src/resolution.h	/^void Infer(PrpsTree **tree, PrpsTree **alpha)$/;"	f
+Infer	tester.h	/^int Infer(PrpsTree **tree, const char *prps, const char *arg)$/;"	f
 IsCNF	src/prps.h	/^int IsCNF(PrpsTree **tree)$/;"	f
 IsLeftChild	src/prps.h	/^int IsLeftChild(PrpsTree **tree)$/;"	f
 IsLowerCase	src/parse.h	/^int IsLowerCase(char c)$/;"	f
@@ -135,7 +137,7 @@ PrpsTree	src/prps.h	/^typedef struct PrpsTree$/;"	s
 PrpsTree	src/prps.h	/^} PrpsTree;$/;"	t	typeref:struct:PrpsTree
 PrpsTree	src/uneeded/printing/print.h	/^struct PrpsTree $/;"	s
 RIGHT	src/ops.h	9;"	d
-Read	src/parse.h	/^PrpsTree **Read(HashTable **hash, int h, int k)$/;"	f
+Read	src/parse.h	/^char **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)$/;"	f
 ReadALPHA	src/parse.h	/^char *ReadALPHA(const char *filename)$/;"	f
 ReadKB	src/parse.h	/^char **ReadKB(int m, const char *filename)$/;"	f
 ReadPRPS	src/parse.h	/^char *ReadPRPS(const char *filename)$/;"	f

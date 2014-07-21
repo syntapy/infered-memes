@@ -24,5 +24,8 @@ dev:
 tdev:
 	vim src/ops.h src/err.h src/include.h
 
+input:
+	vim KB.txt PRPS.txt ALPHA.txt
+
 tags:
 	ctags -R *

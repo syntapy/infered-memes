@@ -300,7 +300,7 @@ Tokens *PrpsTokenizer(char *input, int *n)
     return tokens;
 }
 
-PrpsTree **AlphaToTree(char *input)
+PrpsTree **AlphaToTree(char *input, int *hash_val)
 {
     char *prps = NULL, *arg = NULL;
     int i = 0, val = -1;
@@ -349,6 +349,8 @@ PrpsTree **AlphaToTree(char *input)
         *((*alpha) -> neg) = 1;
     else if (val == 1)
         *((*alpha) -> neg) = 0;
+
+    (*hash_val) = val;
 
     return alpha;
 }
@@ -546,7 +548,7 @@ PrpsTree **TokensToTree(Tokens **tokens, int global_negate)
     return return_tree;
 }
 
-PrpsTree **Read(HashTable **hash, int h, int k)
+char **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
 {   /* This reads the Prpsositional sentence char *sentence[]
      * and turns it into a knowledge base representation.
      * This knowledge base consists of a prpsositional 
@@ -568,13 +570,31 @@ PrpsTree **Read(HashTable **hash, int h, int k)
     char *prps = NULL;
     int m = 4;
     int nn = 0;
+    //int hash_val;
 
+    char *a_prps = NULL, *a_arg = NULL;
     const char *filename_kb = "KB.txt";
     const char *filename_prps = "PRPS.txt";
     const char *filename_alpha = "ALPHA.txt";
 
-    PrpsTree **tree = NULL, **alpha = NULL,  **return_tree = NULL;
+    char **return_val = NULL;
+
+    return_val = calloc(2, sizeof(char *));
+    if (return_val == NULL)
+        MallocErr("Read -1");
+
+    return_val[0] = calloc(2, sizeof(char));
+    return_val[1] = calloc(2, sizeof(char));
+
+    if (return_val[0] == NULL || return_val[1] == NULL)
+        MallocErr("Read -2");
+
+    PrpsTree **tree_tmp = NULL, **alpha = NULL,  **return_tree = NULL;
     Tokens **tokens = NULL;
+
+    a_prps = calloc(2, sizeof(char)); a_arg = calloc(2, sizeof(char));
+    if (a_prps == NULL || a_arg == NULL)
+        MallocErr("Read 0");
 
     tokens = calloc(1, sizeof(Tokens *));
     if (tokens == NULL)
@@ -587,16 +607,23 @@ PrpsTree **Read(HashTable **hash, int h, int k)
     LearnKB(hash, kb_string, m, h, k);
     (*tokens) = PrpsTokenizer(prps, &nn);
 
-    tree = TokensToTree(tokens, 0);
-    alpha = AlphaToTree(alpha_string);
-    return_tree = Oprtr(NOT, tree, IS, alpha, OR, IS);
+    tree_tmp = TokensToTree(tokens, 0);
+    alpha = AlphaToTree(alpha_string, hash_val);
 
-    free(tree); free(alpha);
-    tree = NULL; alpha = NULL;
+    return_val[0][0] = ((*alpha) -> stmnt -> stc)[0];
+    return_val[1][0] = ((*alpha) -> argmnt -> stc)[0];
+    return_val[0][1] = '\0'; return_val[1][1] = '\0';
+
+    (*tree) = Oprtr(NOT, tree_tmp, IS, alpha, IS, OR);
+
+    free(tree_tmp); free(alpha);
+    tree_tmp = NULL; alpha = NULL;
+
+    //Negate((*tree));
 
     //print_tokens((*tokens));
-    //tree_print(tree);
+    //tree_print(return_tree);
     //printf("\n");
 
-    return return_tree;
+    return return_val;
 }
