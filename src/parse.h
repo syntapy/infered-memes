@@ -168,19 +168,24 @@ char *ReadPRPS(const char *filename)
     return prps;
 }
 
-char *ReadALPHA(const char *filename)
+/*char *ReadALPHA(const char *filename)
 {
-    char *alpha = NULL;
-    int n;
+    char **alpha = NULL;
+    int m, n;
+
+    alpha = calloc(2, sizeof(char *));
+    if (alpha == NULL)
+        MallocErr("ReadALPHA 1");
 
     FILE *f = fopen(filename, "r");
 
-    getline(&alpha, &n, f);
+    getline(&(alpha[0]), &m, f);
+    getline(&(alpha[1]), &n, f);
 
     fclose(f);
 
     return alpha;
-}
+}*/
 
 void AddToken(Tokens **head, char token)
 {
@@ -548,28 +553,13 @@ PrpsTree **TokensToTree(Tokens **tokens, int global_negate)
     return return_tree;
 }
 
-char **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
-{   /* This reads the Prpsositional sentence char *sentence[]
-     * and turns it into a knowledge base representation.
-     * This knowledge base consists of a prpsositional 
-     * tree and a hash table that can be used to look up
-     * the values the prpsositional functions give for 
-     * each of the arguments.
-     *
-     * This is a recursive function. 
-     * i is the index in the prpsosition sentence that it
-     * is currently looking at. The sentence is basically 
-     * an array of strings. Each string has a maximum length
-     * defined by the value of MAXCHARS in the ops.h file.
-     * 
-     * n is the number of strings in the array of strings.
-     */
-
+PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
+{
     char **kb_string = NULL;
-    char *alpha_string = NULL;
-    char *prps = NULL;
+    char **alpha_string = NULL;
+    char *prps = NULL, *alpha = NULL;
     int m = 4;
-    int nn = 0;
+    int nn = 0, mm = 0;
     //int hash_val;
 
     char *a_prps = NULL, *a_arg = NULL;
@@ -577,7 +567,7 @@ char **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
     const char *filename_prps = "PRPS.txt";
     const char *filename_alpha = "ALPHA.txt";
 
-    char **return_val = NULL;
+    PrpsTree **return_val = NULL;
 
     return_val = calloc(2, sizeof(char *));
     if (return_val == NULL)
@@ -589,35 +579,37 @@ char **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
     if (return_val[0] == NULL || return_val[1] == NULL)
         MallocErr("Read -2");
 
-    PrpsTree **tree_tmp = NULL, **alpha = NULL,  **return_tree = NULL;
-    Tokens **tokens = NULL;
+    PrpsTree **tree_tmp = NULL, **alpha_tree = NULL,  **return_tree = NULL;
+    Tokens **tokens_prps = NULL, **tokens_alpha = NULL;
 
     a_prps = calloc(2, sizeof(char)); a_arg = calloc(2, sizeof(char));
     if (a_prps == NULL || a_arg == NULL)
         MallocErr("Read 0");
 
-    tokens = calloc(1, sizeof(Tokens *));
-    if (tokens == NULL)
+    tokens_prps = calloc(1, sizeof(Tokens *));
+    tokens_alpha = calloc(1, sizeof(Tokens *));
+    if (tokens_prps == NULL || tokens_alpha == NULL)
         MallocErr("Read 1");
 
     kb_string = ReadKB(m, filename_kb);
     prps = ReadPRPS(filename_prps);
-    alpha_string = ReadALPHA(filename_alpha);
+    alpha = ReadPRPS(filename_alpha);
+    (*tokens_prps) = PrpsTokenizer(prps, &nn);
+    (*tokens_alpha) = PrpsTokenizer(alpha, &mm);
 
     LearnKB(hash, kb_string, m, h, k);
-    (*tokens) = PrpsTokenizer(prps, &nn);
 
-    tree_tmp = TokensToTree(tokens, 0);
-    alpha = AlphaToTree(alpha_string, hash_val);
+    tree_tmp = TokensToTree(tokens_prps, 0);
+    alpha_tree = TokensToTree(tokens_alpha, 0);
 
-    return_val[0][0] = ((*alpha) -> stmnt -> stc)[0];
-    return_val[1][0] = ((*alpha) -> argmnt -> stc)[0];
-    return_val[0][1] = '\0'; return_val[1][1] = '\0';
+    return_val = CopySubTree(alpha_tree);
+    //return_val[1][0] = ((*alpha_tree) -> argmnt -> stc)[0];
+    //return_val[0][1] = '\0'; return_val[1][1] = '\0';
 
-    (*tree) = Oprtr(NOT, tree_tmp, IS, alpha, IS, OR);
+    (*tree) = Oprtr(NOT, tree_tmp, IS, alpha_tree, IS, OR);
 
-    free(tree_tmp); free(alpha);
-    tree_tmp = NULL; alpha = NULL;
+    free(tree_tmp); free(alpha_tree);
+    tree_tmp = NULL; alpha_tree = NULL;
 
     //Negate((*tree));
 

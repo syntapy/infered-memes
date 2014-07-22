@@ -21,7 +21,7 @@ ArgNode	src/uneeded/hash_check.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
 BOTH	src/ops.h	11;"	d
 CC	Makefile	/^CC=colorgcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS=-ggdb3 -Isrc\/ -I.\/ -lm$/;"	m
-CNF	src/prps.h	/^void CNF(PrpsTree **tree)$/;"	f
+CNF	src/prps.h	/^void CNF(PrpsTree **tree, int d)$/;"	f
 CNF_Step	src/prps.h	/^void CNF_Step(PrpsTree **tree, void (**pfi)())$/;"	f
 CheckChildrenOprtr	src/_prps_err.h	/^void CheckChildrenOprtr(PrpsTree **tree, int oprtr)$/;"	f
 CheckConsistency	src/_prps_err.h	/^void CheckConsistency(PrpsTree **tree)$/;"	f
@@ -85,7 +85,6 @@ IMP	src/ops.h	4;"	d
 INFINITY	src/uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
 InconsistencyErr	src/err.h	/^void InconsistencyErr(const char *msg)$/;"	f
-Infer	src/resolution.h	/^void Infer(PrpsTree **tree, PrpsTree **alpha)$/;"	f
 Infer	tester.h	/^int Infer(PrpsTree **tree, const char *prps, const char *arg)$/;"	f
 IsCNF	src/prps.h	/^int IsCNF(PrpsTree **tree)$/;"	f
 IsLeftChild	src/prps.h	/^int IsLeftChild(PrpsTree **tree)$/;"	f
@@ -137,8 +136,7 @@ PrpsTree	src/prps.h	/^typedef struct PrpsTree$/;"	s
 PrpsTree	src/prps.h	/^} PrpsTree;$/;"	t	typeref:struct:PrpsTree
 PrpsTree	src/uneeded/printing/print.h	/^struct PrpsTree $/;"	s
 RIGHT	src/ops.h	9;"	d
-Read	src/parse.h	/^char **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)$/;"	f
-ReadALPHA	src/parse.h	/^char *ReadALPHA(const char *filename)$/;"	f
+Read	src/parse.h	/^PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)$/;"	f
 ReadKB	src/parse.h	/^char **ReadKB(int m, const char *filename)$/;"	f
 ReadPRPS	src/parse.h	/^char *ReadPRPS(const char *filename)$/;"	f
 SPACE	src/ops.h	23;"	d
