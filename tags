@@ -5,7 +5,9 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 AND	src/ops.h	1;"	d
+AND_SubTree	src/prps.h	/^int AND_SubTree(PrpsTree **tree)$/;"	f
 AddOperator	src/uneeded/generate.h	/^void AddOperator(PrpsT **tree)\/\/, PrpsT **$/;"	f
+AddStmnt	src/tester.h	/^void AddStmnt(FindList **list, char *prps, char *arg, int neg)$/;"	f
 AddToken	src/parse.h	/^void AddToken(Tokens **head, char token)$/;"	f
 AdvanceToClosingParenthese	src/parse.h	/^void AdvanceToClosingParenthese(Tokens **tokens)$/;"	f
 AllocateAsOprtr	src/_tree_gen.h	/^void AllocateAsOprtr(PrpsTree **node, int oprtr)$/;"	f
@@ -20,7 +22,9 @@ ArgNode	src/uneeded/hash_check.h	/^typedef struct ArgNode$/;"	s
 ArgNode	src/uneeded/hash_check.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
 BOTH	src/ops.h	11;"	d
 CC	Makefile	/^CC=colorgcc$/;"	m
+CC	test/Makefile	/^CC=colorgcc$/;"	m
 CFLAGS	Makefile	/^CFLAGS=-ggdb3 -Isrc\/ -I.\/ -lm$/;"	m
+CFLAGS	test/Makefile	/^CFLAGS=-ggdb3 -Isrc\/ -I.\/ -lm$/;"	m
 CNF	src/prps.h	/^void CNF(PrpsTree **tree, int d)$/;"	f
 CNF_Step	src/prps.h	/^void CNF_Step(PrpsTree **tree, void (**pfi)())$/;"	f
 CheckChildrenOprtr	src/_prps_err.h	/^void CheckChildrenOprtr(PrpsTree **tree, int oprtr)$/;"	f
@@ -42,27 +46,31 @@ DeallocateFromOprtr	src/_tree_gen.h	/^void DeallocateFromOprtr(PrpsTree **node)$
 DeallocateFromPrps	src/_tree_gen.h	/^void DeallocateFromPrps(PrpsTree **node)$/;"	f
 DeathErr	src/err.h	/^void DeathErr(const char *msg)$/;"	f
 DeepestOprtr	src/prps.h	/^int DeepestOprtr(PrpsTree **node)$/;"	f
-DepthFirstTraversal	tester.h	/^void DepthFirstTraversal(PrpsTree **tree, const char *prps, const char *arg, int *true_f, int *false_f)$/;"	f
+DepthFirstTraversal	src/tester.h	/^int DepthFirstTraversal(PrpsTree **tree, FindList **list)$/;"	f
 DetatchChild	src/prps.h	/^PrpsTree **DetatchChild(PrpsTree **tree, int dir)$/;"	f
 DetatchParent	src/prps.h	/^PrpsTree **DetatchParent(PrpsTree **tree, int *dir)$/;"	f
 DetatchParentLeft	src/prps.h	/^PrpsTree **DetatchParentLeft(PrpsTree **tree)$/;"	f
 DetatchParentRight	src/prps.h	/^PrpsTree **DetatchParentRight(PrpsTree **tree)$/;"	f
+DistributeOrs	src/prps.h	/^void DistributeOrs(PrpsTree **tree, PrpsTree **tree_insert)$/;"	f
+DistributeOrs_Caller	src/prps.h	/^void DistributeOrs_Caller(PrpsTree **tree)$/;"	f
 EXISTS	src/ops.h	17;"	d
 ElliminateInnerOrs	src/prps.h	/^void ElliminateInnerOrs(PrpsTree **tree)$/;"	f
 FALSE	src/ops.h	13;"	d
 FORALL	src/ops.h	18;"	d
-FillHashTable	tester.h	/^void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, int seed)$/;"	f
-FreeSymbolArray	tester.h	/^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
-GenAlphaTree	tester.h	/^void GenAlphaTree(const char **symbols, const char **args, PrpsTree ***alpha, int m, int n, int d)$/;"	f
-GenSequentialSymbol	tester.h	/^void GenSequentialSymbol(char **symbol, int f, int m)$/;"	f
-GenSkewedTree	tester.h	/^void GenSkewedTree(const char **symbols, const char **args, int m, int n, PrpsTree **tree, int d)$/;"	f
-GenSymbol	tester.h	/^void GenSymbol(char **symbol, int n)$/;"	f
-GenSymbolArray	tester.h	/^void GenSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
+FillHashTable	src/tester.h	/^void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, int seed)$/;"	f
+FindList	src/tester.h	/^typedef struct FindList$/;"	s
+FindList	src/tester.h	/^} FindList;$/;"	t	typeref:struct:FindList
+FreeSymbolArray	src/tester.h	/^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
+GenAlphaTree	src/tester.h	/^void GenAlphaTree(const char **symbols, const char **args, PrpsTree ***alpha, int m, int n, int d)$/;"	f
+GenSequentialSymbol	src/tester.h	/^void GenSequentialSymbol(char **symbol, int f, int m)$/;"	f
+GenSkewedTree	src/tester.h	/^void GenSkewedTree(const char **symbols, const char **args, int m, int n, PrpsTree **tree, int d)$/;"	f
+GenSymbol	src/tester.h	/^void GenSymbol(char **symbol, int n)$/;"	f
+GenSymbolArray	src/tester.h	/^void GenSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
 GenerateAllocatedHashTable	src/hash.h	/^HashTable **GenerateAllocatedHashTable(int m, int n)$/;"	f
 GenerateAllocatedHashTable	src/uneeded/hash_alloc.h	/^HashTable *GenerateAllocatedHashTable(int m, int n)$/;"	f
 GenerateEmpty	src/_tree_gen.h	/^PrpsTree *GenerateEmpty()$/;"	f
 GetArgIndex	src/hash.h	/^int GetArgIndex(char arg[], int n)$/;"	f
-GetLeftMostByte	tester.h	/^void GetLeftMostByte(int *f, int *nmbr)$/;"	f
+GetLeftMostByte	src/tester.h	/^void GetLeftMostByte(int *f, int *nmbr)$/;"	f
 GetNodeValue	src/kb.h	/^int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)$/;"	f
 GetOprtr	src/parse.h	/^int GetOprtr(const char *symbol)$/;"	f
 GetPropIndex	src/hash.h	/^int GetPropIndex(char prop[], int m)$/;"	f
@@ -85,7 +93,7 @@ IMP	src/ops.h	4;"	d
 INFINITY	src/uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
 InconsistencyErr	src/err.h	/^void InconsistencyErr(const char *msg)$/;"	f
-Infer	tester.h	/^int Infer(PrpsTree **tree, const char *prps, const char *arg)$/;"	f
+Infer	src/tester.h	/^int Infer(PrpsTree **tree)$/;"	f
 IsCNF	src/prps.h	/^int IsCNF(PrpsTree **tree)$/;"	f
 IsLeftChild	src/prps.h	/^int IsLeftChild(PrpsTree **tree)$/;"	f
 IsLowerCase	src/parse.h	/^int IsLowerCase(char c)$/;"	f
@@ -146,6 +154,7 @@ SetRightChild	src/prps.h	/^void SetRightChild(PrpsTree **parent, PrpsTree **chil
 SetValueForArg	src/hash.h	/^void SetValueForArg(char prop[], char arg[], int value, HashTable **hash, int m, int n)$/;"	f
 SyntaxErr	src/err.h	/^void SyntaxErr(const char *msg)$/;"	f
 TAU	src/ops.h	5;"	d
+TESTS	test/Makefile	/^TESTS = unit_fixtures$/;"	m
 TRUE	src/ops.h	12;"	d
 TestErr	src/err.h	/^void TestErr(const char *msg)$/;"	f
 Tokens	src/parse.h	/^typedef struct Tokens$/;"	s
@@ -180,6 +189,7 @@ allocateNonEmptyString	src/uneeded/hash_alloc.h	/^void allocateNonEmptyString(My
 allocatePropNode	src/_hash_alloc.h	/^void allocatePropNode(char prop[], HashNode **node_ptr_ptr, int prp, int s, int n)$/;"	f
 allocatePrpsNode	src/uneeded/hash_alloc.h	/^void allocatePrpsNode(char prps[], HashNode **node_ptr_ptr, int prp, int s, int n)$/;"	f
 arg	src/hash.h	/^{   MyString *arg; \/\/ Argument name$/;"	m	struct:ArgNode
+arg	src/tester.h	/^    char *prps, *arg;$/;"	m	struct:FindList
 arg	src/uneeded/hash_alloc.h	/^{   MyString *arg; \/\/ Argument name$/;"	m	struct:ArgNode
 arg	src/uneeded/hash_check.h	/^{   MyString *arg; \/\/ Argument name$/;"	m	struct:ArgNode
 arg_ptr	src/hash.h	/^    ArgNode *arg_ptr;   \/\/ Pointer variable used to set and retriev $/;"	m	struct:HashNode
@@ -226,6 +236,7 @@ checkStringEmpty	src/uneeded/hash_check.h	/^void checkStringEmpty(MyString **arg
 checkStringNonEmpty	src/_hash_check.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
 checkStringNonEmpty	src/uneeded/hash_alloc.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
 checkStringNonEmpty	src/uneeded/hash_check.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
+check_PROGRAMS	test/Makefile	/^check_PROGRAMS = unit_fixtures$/;"	m
 compute_edge_lengths	src/uneeded/printing/asciinode.h	/^void compute_edge_lengths(asciinode *node) $/;"	f
 compute_edge_lengths	src/uneeded/printing/print.h	/^void compute_edge_lengths(asciinode *node) $/;"	f
 compute_lprofile	src/uneeded/printing/asciinode.h	/^void compute_lprofile(asciinode *node, int x, int y) $/;"	f
@@ -250,6 +261,8 @@ head	src/uneeded/hash_check.h	/^    struct HashNode *head;$/;"	m	struct:HashNode
 height	src/uneeded/printing/asciinode.h	/^  int height;      $/;"	m	struct:asciinode_struct
 height	src/uneeded/printing/print.h	/^  int height;      $/;"	m	struct:asciinode_struct
 insert	src/uneeded/printing/asciinode.h	/^Tree * insert(int value, Tree * t) $/;"	f
+is	src/tester.h	/^    int is, is_not;$/;"	m	struct:FindList
+is_not	src/tester.h	/^    int is, is_not;$/;"	m	struct:FindList
 label	src/uneeded/printing/asciinode.h	/^  char label[11];  $/;"	m	struct:asciinode_struct
 label	src/uneeded/printing/print.h	/^  char label[11];  $/;"	m	struct:asciinode_struct
 lablen	src/uneeded/printing/asciinode.h	/^  int lablen;$/;"	m	struct:asciinode_struct
@@ -282,6 +295,7 @@ next	src/hash.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struc
 next	src/parse.h	/^    struct OprtrList *next;$/;"	m	struct:OprtrList	typeref:struct:OprtrList::OprtrList
 next	src/parse.h	/^    struct Tokens *next;$/;"	m	struct:Tokens	typeref:struct:Tokens::Tokens
 next	src/parse.h	/^    struct TreeList *next;$/;"	m	struct:TreeList	typeref:struct:TreeList::TreeList
+next	src/tester.h	/^    struct FindList *next;$/;"	m	struct:FindList	typeref:struct:FindList::FindList
 next	src/uneeded/hash_alloc.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
 next	src/uneeded/hash_alloc.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
 next	src/uneeded/hash_check.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
@@ -304,6 +318,7 @@ print_level	src/uneeded/printing/print.h	/^void print_level(asciinode *node, int
 print_next	src/uneeded/printing/asciinode.h	/^int print_next;    $/;"	v
 print_oprtr	src/_prps_err.h	/^void print_oprtr(int oprtr)$/;"	f
 print_tokens	src/parse.h	/^void print_tokens(Tokens *tokens)$/;"	f
+prps	src/tester.h	/^    char *prps, *arg;$/;"	m	struct:FindList
 result	src/hash.h	/^    int *result;        \/\/ Result of passing argument arg to proposition$/;"	m	struct:ArgNode
 result	src/uneeded/hash_alloc.h	/^    int *result;        \/\/ Result of passing argument arg to prpsosition$/;"	m	struct:ArgNode
 result	src/uneeded/hash_check.h	/^    int *result;        \/\/ Result of passing argument arg to prpsosition$/;"	m	struct:ArgNode
@@ -328,4 +343,5 @@ test_cnf	test_main.c	/^int test_cnf(PrpsTree **tree, int d)$/;"	f
 token	src/parse.h	/^    char token;$/;"	m	struct:Tokens
 tree	src/parse.h	/^    PrpsTree **tree;$/;"	m	struct:TreeList
 tree_print	src/_prps_err.h	/^void tree_print(PrpsTree **tree)$/;"	f
+unit_fixtures_SOURCES	test/Makefile	/^unit_fixtures_SOURCES = unit_fixtures.c $(top_buliddir)\/src\/main.c$/;"	m
 value	src/prps.h	/^    int value;          \/\/ Truth value of subtree$/;"	m	struct:PrpsTree

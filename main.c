@@ -1,6 +1,6 @@
 #include <check.h>
 #include "include.h"
-#include "test/unit_fixtures.h"
+//#include "test/unit_fixtures.h"
 
 int main()
 {
@@ -52,7 +52,7 @@ int main()
     CNF(tree, d);
 
     is_cnf = IsCNF(tree);
-    fprintf(stdout, "Tree is in CNF: %d\n", is_cnf);
+    //fprintf(stdout, "Tree is in CNF: %d\n", is_cnf);
     fprintf(stdout, "Full tree in conjunctive normal form:\n\t");
     tree_print(tree);
     fprintf(stdout, "\n\n");
@@ -60,7 +60,8 @@ int main()
     //tree_val = GetTreeValue(tree, hash, n, l);
     //fprintf(stdout, "Truth value of full tree after conversion to conjuctive normal form: %d\n", tree_val);
 
-    //infered = Infer(tree, alpha_info[0], alpha_info[1]);
+    infered = Infer(tree);
+    printf("Tree defaults to True: %d\n", infered);
     //if (infered)
     //    fprintf(stdout, "True\n");
     //else fprintf(stdout, "False\n");

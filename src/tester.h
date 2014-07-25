@@ -1,6 +1,12 @@
 //#include "prps.h"
 // 65 - 90: A - Z
 // 97 - 122: a - z
+typedef struct FindList
+{
+    char *prps, *arg;
+    struct FindList *next;
+    int is, is_not;
+} FindList;
 
 void GetLeftMostByte(int *f, int *nmbr)
 {
@@ -240,38 +246,92 @@ void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, 
     }
 }
 
-void DepthFirstTraversal(PrpsTree **tree, const char *prps, const char *arg, int *true_f, int *false_f)
+void AddStmnt(FindList **list, char *prps, char *arg, int neg)
 {
+    FindList **head = NULL;
+    int return_val = 0;
+
+    head = list;
+    while (head != NULL && (*head) != NULL)
+    {
+        if (strcmp((*list) -> prps, prps) == 0 && strcmp((*list) -> arg, arg) == 0)
+        {
+            if (neg == 0)
+                (*list) -> is += 1;
+            else if (neg == 1)
+                (*list) -> is_not += 1;
+            break;
+        }
+
+        head = &((*head) -> next);
+    }
+
+    if ((*head) == NULL)
+    {
+        (*head) = calloc(1, sizeof(FindList));
+        if ((*head) == NULL)
+            MallocErr("AddStmnt 1");
+
+        (*head) -> is = 0;
+        (*head) -> is_not = 0;
+        (*head) -> prps = calloc(2, sizeof(char));
+        (*head) -> arg = calloc(2, sizeof(char));
+        if ((*head) -> prps == NULL || (*head) -> arg == NULL)
+            MallocErr("AddSmnt 2");
+
+        ((*head) -> prps)[0] = prps[0];
+        ((*head) -> arg)[0] = arg[0];
+        ((*head) -> prps)[1] = '\0';
+        ((*head) -> arg)[1] = '\0';
+    }
+}
+
+int DepthFirstTraversal(PrpsTree **tree, FindList **list)
+{
+    PrpsTree **left, **right;
+    
     if (tree != NULL)
         if ((*tree) != NULL)
-        {
-            if ((*tree) -> left != NULL)
-                DepthFirstTraversal(&((*tree) -> left), prps, arg, true_f, false_f);
-            if ((*tree) -> right != NULL)
-                DepthFirstTraversal(&((*tree) -> right), prps, arg, true_f, false_f);
+        {   
+            if (OprtrNodeType(tree, IS, OR))
+            {
+                left = &((*tree) -> left);
+                right = &((*tree) -> right);
 
-            if ((*tree) -> stmnt != NULL && (*tree) -> argmnt != NULL)
-            {   if (strcmp((*tree) -> stmnt -> stc, prps) == 0)
-                    if (*((*tree) -> neg) == 1)
-                        (*false_f)++;
-                    else
-                        (*true_f)++;
+                DepthFirstTraversal(left, list);
+                DepthFirstTraversal(right, list);
+
             }
+            else if (PrpsNode(tree))
+                AddStmnt(list, (*tree) -> stmnt -> stc, (*tree) -> argmnt -> stc, *((*tree) -> neg));
         }
 }
 
-int Infer(PrpsTree **tree, const char *prps, const char *arg)
+int Infer(PrpsTree **tree)
 {
-    int true_f = 0, false_f = 0;
+    FindList **list = NULL, **head = NULL;
+    int left, right;
     int return_val;
 
-    DepthFirstTraversal(tree, prps, arg, &true_f, &false_f);
+    if (OprtrNodeType(tree, IS, AND))
+    {
+        left = Infer(&((*tree) -> left));
+        right = Infer(&((*tree) -> right));
 
-    if (true_f > 0 && false_f > 0)
-        return_val = 1;
+        return_val = left && right;
+    }
 
-    else 
-        return_val = 0;
+    else if (OprtrNodeType(tree, IS, OR))
+    {
+        list = calloc(1, sizeof(FindList *));
+        if (list == NULL)
+            MallocErr("Infer 0");
+
+        return_val = DepthFirstTraversal(tree, list);
+    }
+
+    else
+        InconsistencyErr("Infer 1");
 
     return return_val;
 }
