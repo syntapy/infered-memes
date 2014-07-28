@@ -90,7 +90,7 @@ void print_oprtr(int oprtr)
 
 void tree_print(PrpsTree **tree)
 {
-    CheckConsistency(tree);
+    //CheckConsistency(tree);
 
     if ((*tree) -> left != NULL && (*tree) -> right != NULL)
     {

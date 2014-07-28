@@ -254,7 +254,7 @@ void AddStmnt(FindList **list, char *prps, char *arg, int neg)
     head = list;
     while (head != NULL && (*head) != NULL)
     {
-        if (strcmp((*list) -> prps, prps) == 0 && strcmp((*list) -> arg, arg) == 0)
+        if (strcmp((*head) -> prps, prps) == 0 && strcmp((*head) -> arg, arg) == 0)
         {
             if (neg == 0)
                 (*list) -> is += 1;
@@ -274,6 +274,12 @@ void AddStmnt(FindList **list, char *prps, char *arg, int neg)
 
         (*head) -> is = 0;
         (*head) -> is_not = 0;
+
+        if (neg == 0)
+            (*head) -> is = 1;
+        else if (neg == 1)
+            (*head) -> is_not = 1;
+
         (*head) -> prps = calloc(2, sizeof(char));
         (*head) -> arg = calloc(2, sizeof(char));
         if ((*head) -> prps == NULL || (*head) -> arg == NULL)
@@ -286,11 +292,12 @@ void AddStmnt(FindList **list, char *prps, char *arg, int neg)
     }
 }
 
-int DepthFirstTraversal(PrpsTree **tree, FindList **list)
+void DepthFirstTraversal(PrpsTree **tree, FindList **list)
 {
     PrpsTree **left, **right;
     
     if (tree != NULL)
+    {
         if ((*tree) != NULL)
         {   
             if (OprtrNodeType(tree, IS, OR))
@@ -305,6 +312,28 @@ int DepthFirstTraversal(PrpsTree **tree, FindList **list)
             else if (PrpsNode(tree))
                 AddStmnt(list, (*tree) -> stmnt -> stc, (*tree) -> argmnt -> stc, *((*tree) -> neg));
         }
+    }
+}
+
+int DefaultsToTrue(FindList **list)
+{
+    int return_val = 0;
+
+    FindList **head = list;
+
+    if (list != NULL)
+        while ((*head) != NULL)
+        {
+            if ((*list) -> is && (*list) -> is_not)
+            {
+                return_val = 1;
+                break;
+            }
+
+            head = &((*head) -> next);
+        }
+
+    return return_val;
 }
 
 int Infer(PrpsTree **tree)
@@ -327,7 +356,8 @@ int Infer(PrpsTree **tree)
         if (list == NULL)
             MallocErr("Infer 0");
 
-        return_val = DepthFirstTraversal(tree, list);
+        DepthFirstTraversal(tree, list);
+        return_val = DefaultsToTrue(list);
     }
 
     else

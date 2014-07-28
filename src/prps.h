@@ -609,8 +609,14 @@ void ElliminateInnerOrs(PrpsTree **tree)
 
         if (OprtrNodeType(&((*tree) -> left), IS, AND) || OprtrNodeType(&((*tree) -> right), IS, AND))
         {
+            //printf("full:\t"); tree_print(tree); printf("\n");
+
             left = DetatchChild(tree, LEFT);
             right = DetatchChild(tree, RIGHT);
+
+            //printf("root:\t"); printf("%d", *((*tree) -> oprtr)); printf("\n");
+            //printf("left:\t"); tree_print(left); printf("\n");
+            //printf("right:\t"); tree_print(right); printf("\n");
 
             if (!OprtrNodeType(left, IS, AND))
             {
@@ -620,8 +626,8 @@ void ElliminateInnerOrs(PrpsTree **tree)
 
                 if (!OprtrNodeType(right, IS, AND))
                     DeathErr("ElliminateInnerOrs 4");
-                if (!PrpsNode(left))
-                    DeathErr("ElliminateInnerOrs 6");
+                //if (!PrpsNode(left))
+                //    DeathErr("ElliminateInnerOrs 6");
 
                 //tree_p = malloc(sizeof(PrpsTree *));
                 //if (tree_p == NULL)
@@ -753,6 +759,7 @@ void ElliminateInnerOrs(PrpsTree **tree)
             CheckConsistency(tree);
             CheckConsistency(&((*tree) -> left));
             CheckConsistency(&((*tree) -> right));
+            //printf("post:\t"); tree_print(tree); printf("\n");
         }
     }
 }
@@ -1079,14 +1086,15 @@ void CNF_Step(PrpsTree **tree, void (**pfi)())
         if (!tree_left || !tree_right)
             MallocErr("CNF_Step");
 
-        (*tree_left) = (*tree) -> left;
-        (*tree_right) = (*tree) -> right;
 
         // Operate!
         (**pfi)(tree);
 
-        CNF_Step(tree_left, pfi);
-        CNF_Step(tree_right, pfi);
+        //(*tree_left) = (*tree) -> left;
+        //(*tree_right) = (*tree) -> right;
+
+        CNF_Step(&((*tree) -> left), pfi);
+        CNF_Step(&((*tree) -> right), pfi);
 
         free(tree_right); 
         free(tree_left); 
@@ -1108,95 +1116,51 @@ void CNF(PrpsTree **tree, int d)
     // (a = b) -> [ (!a && !b) || (a && b) ]
     // (a -> b) && (b -> a) = 
     // = (!a || b) && (!b || a)
-    //TreeConsistency(tree);
     pfi = &ConvertTAU;
-    //for (i = 0; i < d; i++)
-    //{
-        CNF_Step(tree, &pfi);
-        printf("1:\t");
-        tree_print(tree);
-        printf("\n");
-    //}
+    CNF_Step(tree, &pfi);
 
     // (a -> b ) -> (!a || b)
-    //TreeConsistency(tree);
+    printf("1:\t"); tree_print(tree); printf("\n");
     pfi = &ConvertIMP;
-    //for (i = 0; i < d; i++)
-    //{
-        CNF_Step(tree, &pfi);
-    //}
-        
-        printf("2:\t");
-        tree_print(tree);
-        printf("\n");
+    CNF_Step(tree, &pfi);
 
-    // !(a || b) -> (!a && !b)
-    //TreeConsistency(tree);
     for (i = 0; i < 2; i++)
     {
+        // !(a || b) -> (!a && !b)
+        printf("2.%d:\t", i); tree_print(tree); printf("\n");
         pfi = &ConvertNotOr;
-    //for (i = 0; i < d; i++)
-    //{
         CNF_Step(tree, &pfi);
-        printf("3%d:\t", i);
-        tree_print(tree);
-        printf("\n");
-    //}
 
-    // !(a && b) = (!a || !b)
-    //TreeConsistency(tree);
+        // !(a && b) = (!a || !b)
+        printf("3.%d:\t", i); tree_print(tree); printf("\n");
         pfi = &ConvertNotAnd;
-    //for (i = 0; i < d; i++)
-    //{
         CNF_Step(tree, &pfi);
-        printf("4%d:\t", i);
-        tree_print(tree);
-        printf("\n");
-    //}
     }
 
-    printf("\n");
-
-    //return;
 
     //  (a && b) || (c && d)
     //  = (a || c) && (a || d) && (b || c) && (b || d) 
     //           O R 
     //  a || (c && d)
-    //  = a && (a || d) && (a || c) && (a || d)
+    //  = (a || d) && (a || c) && (a || d)
+    //      here a could be a subtree also
     //           O R
     //  (a && b) || c
     //  = (a || c) && (b || c)
+    //      here c could be a subtree also
+    printf("4:\t"); tree_print(tree); printf("\n");
     pfi = &ElliminateInnerOrs;
-    //for (i = 0; i < d; i++)
-    {
-        CNF_Step(tree, &pfi);
-        printf("5:\t");
-        tree_print(tree);
-        printf("\n");
-    }
+    CNF_Step(tree, &pfi);
 
     // (a || b) || (c || d)
     // = (a || c) && (a || d) && (b || c) && (b || d)
-    //TreeConsistency(tree);
+    printf("5:\t"); tree_print(tree); printf("\n");
     pfi = &MergeOrs;
-    //for (i = 0; i < d; i++)
-    {
-        CNF_Step(tree, &pfi);
-        printf("6:\t");
-        tree_print(tree);
-        printf("\n");
-    }
+    CNF_Step(tree, &pfi);
 
-    //TreeConsistency(tree);
+    printf("6:\t"); tree_print(tree); printf("\n");
     pfi = &ElliminateInnerOrs;
-    //for (i = 0; i < d; i++)
-    //{
-        CNF_Step(tree, &pfi);
-        printf("7:\t");
-        tree_print(tree);
-        printf("\n\n\n");
-    //}
+    CNF_Step(tree, &pfi);
 }
 
 int ContainsAnd(PrpsTree **tree)

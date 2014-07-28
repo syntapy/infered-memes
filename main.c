@@ -30,41 +30,34 @@ int main()
     alpha = Read(&tree, hash, n, l, &hash_val);
     TreeConsistency(tree);
 
-    //SetValueForArg(alpha_info[0], alpha_info[1], hash_val, hash, n, l);
-
-    
-    //fprintf(stdout, "Original sentence in original form:\n\t");
     Negate(&((*tree) -> left));
     tree_print(&((*tree) -> left));
     Negate(&((*tree) -> left));
     fprintf(stdout, " implies ");
 
-    //fprintf(stdout, "Statement to be inferred:\n\t");
     tree_print(&((*tree) -> right));
     fprintf(stdout, "\n\n");
 
-    //fprintf(stdout, "Full tree in original form:\n\t");
-    //tree_print(tree);
-    //fprintf(stdout, "\n");
+    d = 3;
 
-    d = 7;
-    //for (i = 0; i < d; i++)
-    CNF(tree, d);
+    // Convert tree to conjuctive normal form
+    for (i = 0; i < d; i++)
+        CNF(tree, d);
 
+    // Checks if tree is in conjunctive normal form
     is_cnf = IsCNF(tree);
-    //fprintf(stdout, "Tree is in CNF: %d\n", is_cnf);
-    fprintf(stdout, "Full tree in conjunctive normal form:\n\t");
+    if (is_cnf)
+        printf("Tree has been converted to conjunctive normal form\n\n");
+    fprintf(stdout, "Full tree in conjunctive normal form: \n");
     tree_print(tree);
     fprintf(stdout, "\n\n");
 
-    //tree_val = GetTreeValue(tree, hash, n, l);
-    //fprintf(stdout, "Truth value of full tree after conversion to conjuctive normal form: %d\n", tree_val);
-
     infered = Infer(tree);
-    printf("Tree defaults to True: %d\n", infered);
-    //if (infered)
-    //    fprintf(stdout, "True\n");
-    //else fprintf(stdout, "False\n");
+
+    if (infered)
+        printf("Tree defaults to True, and thus the statement is infered\n");
+    else
+        printf("Tree does NOT default to True, so no inference can take place here\n");
 
     return 0;
 }
