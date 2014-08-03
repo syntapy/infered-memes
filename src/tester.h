@@ -8,6 +8,13 @@ typedef struct FindList
     int is, is_not;
 } FindList;
 
+typedef struct ClauseList
+{   //PrpsTree **clause;
+    char ***clause_array;
+    int array_len;
+    struct ClauseList *next;
+} ClauseList;
+
 void GetLeftMostByte(int *f, int *nmbr)
 {
     *nmbr = *f;
@@ -248,6 +255,8 @@ void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, 
 
 void AddStmnt(FindList **list, char *prps, char *arg, int neg)
 {
+    /*  
+     */
     FindList **head = NULL;
     int return_val = 0;
 
@@ -292,25 +301,23 @@ void AddStmnt(FindList **list, char *prps, char *arg, int neg)
     }
 }
 
-void DepthFirstTraversal(PrpsTree **tree, FindList **list)
+void DepthFirstTraversal(PrpsTree **clause, FindList **list)
 {
+    /*
+     */
     PrpsTree **left, **right;
     
-    if (tree != NULL)
-    {
-        if ((*tree) != NULL)
-        {   
-            if (OprtrNodeType(tree, IS, OR))
-            {
-                left = &((*tree) -> left);
-                right = &((*tree) -> right);
+    if (clause != NULL)
+    {   if ((*clause) != NULL)
+        {   if (OprtrNodeType(clause, IS, OR))
+            {   left = &((*clause) -> left);
+                right = &((*clause) -> right);
 
                 DepthFirstTraversal(left, list);
                 DepthFirstTraversal(right, list);
-
             }
-            else if (PrpsNode(tree))
-                AddStmnt(list, (*tree) -> stmnt -> stc, (*tree) -> argmnt -> stc, *((*tree) -> neg));
+            else if (PrpsNode(clause))
+                AddStmnt(list, (*clause) -> stmnt -> stc, (*clause) -> argmnt -> stc, *((*clause) -> neg));
         }
     }
 }
@@ -336,32 +343,202 @@ int DefaultsToTrue(FindList **list)
     return return_val;
 }
 
-int Infer(PrpsTree **tree)
+/*FindList ***GetLiterals(PrpsTree **tree, FindList ***clause_array, int *k)
 {
     FindList **list = NULL, **head = NULL;
     int left, right;
-    int return_val;
+    FindList **return_val;
 
     if (OprtrNodeType(tree, IS, AND))
     {
-        left = Infer(&((*tree) -> left));
-        right = Infer(&((*tree) -> right));
-
-        return_val = left && right;
+        GetLiterals(&((*tree) -> left), clause_array, k);
+        GetLiterals(&((*tree) -> right), clause_array, k);
     }
 
-    else if (OprtrNodeType(tree, IS, OR))
+    if (OprtrNodeType(tree, IS, OR))
     {
         list = calloc(1, sizeof(FindList *));
         if (list == NULL)
-            MallocErr("Infer 0");
+            MallocErr("GetLiterals 0");
 
         DepthFirstTraversal(tree, list);
         return_val = DefaultsToTrue(list);
     }
 
     else
-        InconsistencyErr("Infer 1");
+        InconsistencyErr("GetLiterals 1");
+
+    return list;
+}*/
+
+int CountLiterals(PrpsTree **tree)
+{
+    int return_val = 0;
+
+    if (OprtrNode(tree))
+    {
+        return_val += CountLiterals(&((*tree) -> left));
+        return_val += CountLiterals(&((*tree) -> right));
+    }
+    else if (PrpsNode(tree))
+        return_val = 1;
 
     return return_val;
+}
+
+void AddLiterals(PrpsTree **sub_tree, ClauseList **head, int *index)
+{
+    /*  Adds all the symbols of all literals in the clause which 
+     *  PrpsTree **sub_tree is a subtree of, to the clause_array 
+     *  array of head
+     */
+
+    char neg = ' ';
+    if (OprtrNodeType(sub_tree, IS, OR))
+    {
+        AddLiterals(&((*sub_tree) -> left), head, index);
+        AddLiterals(&((*sub_tree) -> right), head, index);
+    }
+
+    else if (PrpsNode(sub_tree))
+    {
+        ((*head) -> clause_array)[*index] = calloc(3, sizeof(char *));
+
+        if (((*head) -> clause_array)[*index] == NULL)
+            MallocErr("AddLiterals 1");
+
+        if (*((*sub_tree) -> neg) == 1)
+            neg = '~';
+
+        ((*head) -> clause_array)[*index][0] = calloc(2, sizeof(char));
+        if (((*head) -> clause_array)[*index][0] == NULL)
+            MallocErr("AddLiterals 2");
+
+        ((*head) -> clause_array)[*index][0][0] = neg;
+        ((*head) -> clause_array)[*index][0][1] = '\0';
+        ((*head) -> clause_array)[*index][1] = (*sub_tree) -> stmnt -> stc;
+        ((*head) -> clause_array)[*index][2] = (*sub_tree) -> argmnt -> stc;
+        *index += 1;
+    }
+}
+
+void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail, int *index, int num_literals)
+{
+    /*
+        Produces a linked list of subtrees, each of which is a clause
+        The ClauseList ** is the linked list
+    */
+
+    int inc_array = 0;
+    ClauseList **tmp = NULL;
+    if (OprtrNode(tree) || PrpsNode(tree))
+    {
+        if (OprtrNodeType(tree, IS, AND))
+        {   GetClauses(&((*tree) -> left), head, tail, index, num_literals);
+            GetClauses(&((*tree) -> right), head, tail, index, num_literals);
+        }
+
+        else if (OprtrNodeType(tree, IS, OR) || PrpsNode(tree))
+        {   
+            if ((*head) == NULL)
+            {   
+                (*head) = calloc(1, sizeof(ClauseList));
+                if ((*head) == NULL)
+                    MallocErr("GetClauses 2");
+                (*tail) = (*head);
+            }
+
+            else
+            {
+                (*head) -> next = calloc(1, sizeof(ClauseList));
+                if ((*head) -> next == NULL)
+                    MallocErr("GetClauses 3");
+                (*head) = (*head) -> next;
+            }
+
+            num_literals = CountLiterals(tree);
+            ((*head) -> clause_array) = calloc(num_literals, sizeof(char **));
+            (*head) -> array_len = num_literals;
+            AddLiterals(tree, head, index);
+            *index = 0;
+        }
+        else
+            InconsistencyErr("GetClauses 3");
+    }
+}
+
+void print_clauses(ClauseList *clause_list)
+{
+    int i;
+    while (clause_list != NULL)
+    {   for (i = 0; i < clause_list -> array_len; i++)
+        {   if ((clause_list -> clause_array)[i][0] == NULL)
+                break;
+
+            printf("%c%c[%c] ", (clause_list -> clause_array)[i][0][0], 
+                (clause_list -> clause_array)[i][1][0],
+                (clause_list -> clause_array)[i][2][0]);
+        }
+
+        printf("\n");
+        clause_list = clause_list -> next;
+    }
+}
+
+PL_Resolve(char ***Pa, char ***Pb)
+{
+    
+}
+
+int Resolve(ClauseList **clause_list)
+{
+    /* Resolves the clauses in clause_list. If 
+
+     */
+
+    int return_val = 0;
+
+    ClauseList **ptr_tail = NULL, **ptr_head = NULL, **ptr_mid = NULL;
+
+    ptr_tail = calloc(1, sizeof(ClauseList *));
+    ptr_head = calloc(1, sizeof(ClauseList *));
+    ptr_mid = calloc(1, sizeof(ClauseList *));
+
+    if (!ptr_tail || !ptr_head || !ptr_mid)
+        MallocErr("Resolve 1");
+
+    *ptr_tail = *clause_list;
+    *ptr_head = *clause_list;
+
+    while ((*ptr_head) != NULL)
+        (*ptr_head) = (*ptr_head) -> next;
+
+    if ((*ptr_tail) != NULL)
+        (*ptr_mid) = (*ptr_tail) -> next;
+
+    if (
+}
+
+int Resolution(PrpsTree **tree)
+{
+    /*
+
+    */
+
+    int return_val, index = 0, num_literals = -1;
+    ClauseList **clause_list_ptr = NULL;
+    ClauseList **tail_ptr = NULL;
+
+    clause_list_ptr = calloc(1, sizeof(ClauseList *));
+    tail_ptr = calloc(1, sizeof(ClauseList *));
+    if (clause_list_ptr == NULL || tail_ptr == NULL)
+        MallocErr("PL_Resolution 1");
+
+    GetClauses(tree, clause_list_ptr, tail_ptr, &index, num_literals);
+    //(*clause_list_ptr) = (*tail_ptr);
+
+    return_val = Resolve(tail_ptr);
+    //print_clauses((*clause_list_ptr));
+
+    return 0;
 }

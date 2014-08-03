@@ -1,0 +1,65 @@
+First an is read from a text file, then it is stored in memory as a binary tree.
+
+The function CNF calls the following functions that modify the equation tree:
+
+    ConvertTAU 
+    ConvertIMP
+    ConvertNotOr
+    ConvertNotAnd
+    ElliminateInnerOrs
+
+These are applied once each in the order listed above.
+Each of these is a recursive function which starts at the root of the tree and checks the current node and the children to see if an operation is to be done. After completing the operation, the same is done recursively on each of the child nodes.
+
+ConvertTAU: (a = b) becomes (!a || b) && (a || !b)
+ConvertIMP: (a -> b) becomes (!a || b)
+ConvertNotOr: !(a || b) becomes (!a && !b)
+ConvertNotAnd: !(a && b) becomes (!a || !b)
+ElliminateInnerOrs: 
+                    if a || (c && d) 
+                        Converted to (a || c) && (a || d)
+                    if (a && b) || c
+                        Converted to (a || c) && (b || c)
+                    if (a && b) || (c && d)
+                        Converted to ((a || c) && (a || d)) && ((b || c) && (b || d))
+
+                    In the first case shown above, that the ElliminateInnerOrs function involves, a is either a literal 
+                        or a sentence without the ^ operator as the root operator
+                    In the second case the same is with c
+                    In the third case, a, b, c, and d can be either a literal, or a sentence with any operator.
+
+CNF is called on the entire tree several times, until cunjuctive normal form is reached.
+
+After conjunctive normal form is reached, another function checks if each clause is defaulted to TRUE by checking whether it includes a literal and also its negation. For instance, the clause (a v b v c v !a) defaults to true. If every clause defaults to true, then the entire sentence is determined to be true.
+
+When given the original sentence (a -> b) ^ (b -> c) -> (a -> c)
+conversion to conjunctive normal form results in a tree in which each clause is evidently true. However, this is different than the algorithm in Fig. 7.12 on pg 255, in that PL-Resolve is not implemented, and each clause is checked only once.
+
+
+However, I do plan on implemting PL-Resolve, but I'm not quite sure how to do it.
+
+
+ConvertTAU Proof:
+    (a = b) 
+    = [(a -> b) ^ (b -> a)] 
+    = (!a || b) ^ (!b || a)
+
+ConvertIMP Proof:
+    (a -> b) = (!a || b) (listed on pg 249 of textbook)
+
+ConvertNotOr Proof: This is DeMorgan law listed on pg 249 of textbook
+ConvertNotAnd Proof: This is DeMorgan law listed on pg 249 of textbook
+ElliminateInnerOrs::
+    Case 1: a || (c && d) = (a || c) && (a || d)
+        Distributivity of || over &&, listed on pg 249
+    Case 2: (a && b) || c = (a || c) && (b || c)
+        Distributivity of || over &&, listed on pg 249
+    Case 3: (a && b) || (c && d) = (a || c) && (a || d) && (b || c) && (b || d)
+        Suppose x = (c && d)
+        Then the statement is (a && b) || x
+        By distributivity it becomes 
+            (a || x) && (b || x) = (a || (c && d)) && (b || (c && d))
+        By distributivity this becomes
+            ((a || c) && (a || d)) && ((b || c) && (b || d))
+            And this is actually what is represented in the tree structure after the operation
+        

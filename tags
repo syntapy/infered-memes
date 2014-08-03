@@ -6,6 +6,7 @@
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 AND	src/ops.h	1;"	d
 AND_SubTree	src/prps.h	/^int AND_SubTree(PrpsTree **tree)$/;"	f
+AddLiterals	src/tester.h	/^void AddLiterals(PrpsTree **sub_tree, ClauseList **head, int *index)$/;"	f
 AddOperator	uneeded/generate.h	/^void AddOperator(PrpsT **tree)\/\/, PrpsT **$/;"	f
 AddStmnt	src/tester.h	/^void AddStmnt(FindList **list, char *prps, char *arg, int neg)$/;"	f
 AddToken	src/parse.h	/^void AddToken(Tokens **head, char token)$/;"	f
@@ -33,6 +34,8 @@ CheckEqualNodes	src/prps.h	/^int CheckEqualNodes(PrpsTree **node_a, PrpsTree **n
 CheckEqualSubTrees	src/prps.h	/^int CheckEqualSubTrees(PrpsTree **tree_a, PrpsTree **tree_b)$/;"	f
 CheckOprtrNode	src/_prps_err.h	/^void CheckOprtrNode(PrpsTree **tree)$/;"	f
 CheckPrpsTreeNode	src/_prps_err.h	/^void CheckPrpsTreeNode(PrpsTree **tree)$/;"	f
+ClauseList	src/tester.h	/^typedef struct ClauseList$/;"	s
+ClauseList	src/tester.h	/^} ClauseList;$/;"	t	typeref:struct:ClauseList
 ContainsAnd	src/prps.h	/^int ContainsAnd(PrpsTree **tree)$/;"	f
 ContainsOnlyPositiveORs	src/prps.h	/^int ContainsOnlyPositiveORs(PrpsTree **tree)$/;"	f
 ConvertIMP	src/prps.h	/^void ConvertIMP(PrpsTree **tree)$/;"	f
@@ -42,12 +45,13 @@ ConvertNotOr	src/prps.h	/^void ConvertNotOr(PrpsTree **tree)$/;"	f
 ConvertTAU	src/prps.h	/^void ConvertTAU(PrpsTree **tree)$/;"	f
 CopyNode	src/prps.h	/^PrpsTree **CopyNode(PrpsTree **node)$/;"	f
 CopySubTree	src/prps.h	/^PrpsTree **CopySubTree(PrpsTree **tree)$/;"	f
+CountLiterals	src/tester.h	/^int CountLiterals(PrpsTree **tree)$/;"	f
 DeallocateFromOprtr	src/_tree_gen.h	/^void DeallocateFromOprtr(PrpsTree **node)$/;"	f
 DeallocateFromPrps	src/_tree_gen.h	/^void DeallocateFromPrps(PrpsTree **node)$/;"	f
 DeathErr	src/err.h	/^void DeathErr(const char *msg)$/;"	f
 DeepestOprtr	src/prps.h	/^int DeepestOprtr(PrpsTree **node)$/;"	f
 DefaultsToTrue	src/tester.h	/^int DefaultsToTrue(FindList **list)$/;"	f
-DepthFirstTraversal	src/tester.h	/^void DepthFirstTraversal(PrpsTree **tree, FindList **list)$/;"	f
+DepthFirstTraversal	src/tester.h	/^void DepthFirstTraversal(PrpsTree **clause, FindList **list)$/;"	f
 DetatchChild	src/prps.h	/^PrpsTree **DetatchChild(PrpsTree **tree, int dir)$/;"	f
 DetatchParent	src/prps.h	/^PrpsTree **DetatchParent(PrpsTree **tree, int *dir)$/;"	f
 DetatchParentLeft	src/prps.h	/^PrpsTree **DetatchParentLeft(PrpsTree **tree)$/;"	f
@@ -71,6 +75,7 @@ GenerateAllocatedHashTable	src/hash.h	/^HashTable **GenerateAllocatedHashTable(i
 GenerateAllocatedHashTable	uneeded/hash_alloc.h	/^HashTable *GenerateAllocatedHashTable(int m, int n)$/;"	f
 GenerateEmpty	src/_tree_gen.h	/^PrpsTree *GenerateEmpty()$/;"	f
 GetArgIndex	src/hash.h	/^int GetArgIndex(char arg[], int n)$/;"	f
+GetClauses	src/tester.h	/^void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail, int *index, int num_literals)$/;"	f
 GetLeftMostByte	src/tester.h	/^void GetLeftMostByte(int *f, int *nmbr)$/;"	f
 GetNodeValue	src/kb.h	/^int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)$/;"	f
 GetOprtr	src/parse.h	/^int GetOprtr(const char *symbol)$/;"	f
@@ -94,7 +99,6 @@ IMP	src/ops.h	4;"	d
 INFINITY	uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
 InconsistencyErr	src/err.h	/^void InconsistencyErr(const char *msg)$/;"	f
-Infer	src/tester.h	/^int Infer(PrpsTree **tree)$/;"	f
 IsCNF	src/prps.h	/^int IsCNF(PrpsTree **tree)$/;"	f
 IsLeftChild	src/prps.h	/^int IsLeftChild(PrpsTree **tree)$/;"	f
 IsLowerCase	src/parse.h	/^int IsLowerCase(char c)$/;"	f
@@ -148,6 +152,8 @@ RIGHT	src/ops.h	9;"	d
 Read	src/parse.h	/^PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)$/;"	f
 ReadKB	src/parse.h	/^char **ReadKB(int m, const char *filename)$/;"	f
 ReadPRPS	src/parse.h	/^char *ReadPRPS(const char *filename)$/;"	f
+Resolution	src/tester.h	/^int Resolution(PrpsTree **tree)$/;"	f
+Resolve	src/tester.h	/^PrpsTree **Resolve(PrpsTree **P_a, PrpsTree **P_b)$/;"	f
 SPACE	src/ops.h	23;"	d
 SetChild	src/prps.h	/^void SetChild(PrpsTree **parent, PrpsTree **child, int dir)$/;"	f
 SetLeftChild	src/prps.h	/^void SetLeftChild(PrpsTree **parent, PrpsTree **child)$/;"	f
@@ -200,6 +206,7 @@ argmnt	src/prps.h	/^    MyString *stmnt, *argmnt;$/;"	m	struct:PrpsTree
 array	src/hash.h	/^    ArgNode *array;     \/\/ Array holding values corresponding to the $/;"	m	struct:HashNode
 array	uneeded/hash_alloc.h	/^    ArgNode *array;     \/\/ Array holding values corresponding to the $/;"	m	struct:HashNode
 array	uneeded/hash_check.h	/^    ArgNode *array;     \/\/ Array holding values corresponding to the $/;"	m	struct:HashNode
+array_len	src/tester.h	/^    int array_len;$/;"	m	struct:ClauseList
 asciinode	uneeded/printing/asciinode.h	/^typedef struct asciinode_struct asciinode;$/;"	t	typeref:struct:asciinode_struct
 asciinode_struct	uneeded/printing/asciinode.h	/^struct asciinode_struct$/;"	s
 asciinode_struct	uneeded/printing/print.h	/^struct asciinode_struct$/;"	s
@@ -238,6 +245,7 @@ checkStringNonEmpty	src/_hash_check.h	/^void checkStringNonEmpty(MyString **arg_
 checkStringNonEmpty	uneeded/hash_alloc.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
 checkStringNonEmpty	uneeded/hash_check.h	/^void checkStringNonEmpty(MyString **arg_name)$/;"	f
 check_PROGRAMS	test/Makefile	/^check_PROGRAMS = unit_fixtures$/;"	m
+clause_array	src/tester.h	/^    char ***clause_array;$/;"	m	struct:ClauseList
 compute_edge_lengths	uneeded/printing/asciinode.h	/^void compute_edge_lengths(asciinode *node) $/;"	f
 compute_edge_lengths	uneeded/printing/print.h	/^void compute_edge_lengths(asciinode *node) $/;"	f
 compute_lprofile	uneeded/printing/asciinode.h	/^void compute_lprofile(asciinode *node, int x, int y) $/;"	f
@@ -296,6 +304,7 @@ next	src/hash.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struc
 next	src/parse.h	/^    struct OprtrList *next;$/;"	m	struct:OprtrList	typeref:struct:OprtrList::OprtrList
 next	src/parse.h	/^    struct Tokens *next;$/;"	m	struct:Tokens	typeref:struct:Tokens::Tokens
 next	src/parse.h	/^    struct TreeList *next;$/;"	m	struct:TreeList	typeref:struct:TreeList::TreeList
+next	src/tester.h	/^    struct ClauseList *next;$/;"	m	struct:ClauseList	typeref:struct:ClauseList::ClauseList
 next	src/tester.h	/^    struct FindList *next;$/;"	m	struct:FindList	typeref:struct:FindList::FindList
 next	uneeded/hash_alloc.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
 next	uneeded/hash_alloc.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
@@ -314,6 +323,7 @@ parent_dir	uneeded/printing/asciinode.h	/^  int parent_dir;   $/;"	m	struct:asci
 parent_dir	uneeded/printing/print.h	/^  int parent_dir;   $/;"	m	struct:asciinode_struct
 print_ascii_tree	uneeded/printing/asciinode.h	/^void print_ascii_tree(Tree * t) $/;"	f
 print_ascii_tree	uneeded/printing/print.h	/^void print_ascii_tree(PrpsTree * t) $/;"	f
+print_clauses	src/tester.h	/^void print_clauses(ClauseList *clause_list)$/;"	f
 print_level	uneeded/printing/asciinode.h	/^void print_level(asciinode *node, int x, int level) $/;"	f
 print_level	uneeded/printing/print.h	/^void print_level(asciinode *node, int x, int level) $/;"	f
 print_next	uneeded/printing/asciinode.h	/^int print_next;    $/;"	v

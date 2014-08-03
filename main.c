@@ -14,12 +14,14 @@ int main()
     int m = 2, n = 4, l = 4;
     int i, d;
     int hash_val;
-    int infered;
+    int infered = 0;
+    int is_true;
 
     char **alpha_info = NULL;
 
     PrpsTree **tree = NULL, **alpha = NULL;
     PrpsTree **tree_tmp = NULL;
+    PrpsTree **left = NULL;
 
     HashTable **hash = NULL;
 
@@ -30,19 +32,31 @@ int main()
     alpha = Read(&tree, hash, n, l, &hash_val);
     TreeConsistency(tree);
 
-    Negate(&((*tree) -> left));
-    tree_print(&((*tree) -> left));
-    Negate(&((*tree) -> left));
-    fprintf(stdout, " implies ");
+    //Negate(&((*tree) -> left));
+    //tree_print(&((*tree) -> left));
+    //Negate(&((*tree) -> left));
+    //fprintf(stdout, " implies ");
 
-    tree_print(&((*tree) -> right));
-    fprintf(stdout, "\n\n");
-
-    d = 3;
+    //tree_print(&((*tree) -> right));
+    //fprintf(stdout, "\n\n");
+    printf("Original Formula: "); tree_print(tree); printf("\n");
+    d = 5;
 
     // Convert tree to conjuctive normal form
-    for (i = 0; i < d; i++)
-        CNF(tree, d);
+    //for (i = 0; i < d; i++)
+    //left = calloc(1, sizeof(PrpsTree *));
+    //if (left == NULL)
+    //    MallocErr("Main 1");
+
+    //*left = (*tree) -> left;
+    //DetatchParentLeft(left);
+    //left = DetatchChild(tree, LEFT);
+ 
+    tree_print(tree); fprintf(stdout, "\n\n");
+    
+    CNF(tree, d);
+    is_true = Resolution(tree);
+    //UNIFY(tree);
 
     // Checks if tree is in conjunctive normal form
     is_cnf = IsCNF(tree);
@@ -52,12 +66,12 @@ int main()
     tree_print(tree);
     fprintf(stdout, "\n\n");
 
-    infered = Infer(tree);
+    //infered = Infer(tree);
 
-    if (infered)
-        printf("Tree defaults to True, and thus the statement is infered\n");
-    else
-        printf("Tree does NOT default to True, so no inference can take place here\n");
+    //if (infered)
+    //    printf("Tree defaults to True, and thus the statement is infered\n");
+    //else
+    //    printf("Tree does NOT default to True, so no inference can take place here\n");
 
     return 0;
 }

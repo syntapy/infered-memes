@@ -364,7 +364,7 @@ void print_tokens(Tokens *tokens)
 {
     Tokens *head = tokens;
 
-    while (head -> next != NULL);
+    while (head -> next != NULL)
     {
         fprintf(stdout, "%c", head -> token);
         head = head -> next;
@@ -464,6 +464,12 @@ PrpsTree **TokensToTree(Tokens **tokens, int global_negate)
                 MallocErr("TokensToTree 1");
             tree_tmp = NULL;
             continue;
+        }
+
+        if (token == ')')
+        {
+            (*tokens) = (*tokens) -> next;
+            break;
         }
 
         token = (*tokens) -> token;
@@ -569,15 +575,15 @@ PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
 
     PrpsTree **return_val = NULL;
 
-    return_val = calloc(2, sizeof(char *));
-    if (return_val == NULL)
-        MallocErr("Read -1");
+    //return_val = calloc(2, sizeof(char *));
+    //if (return_val == NULL)
+    //    MallocErr("Read -1");
 
-    return_val[0] = calloc(2, sizeof(char));
-    return_val[1] = calloc(2, sizeof(char));
+    //return_val[0] = calloc(2, sizeof(char));
+    //return_val[1] = calloc(2, sizeof(char));
 
-    if (return_val[0] == NULL || return_val[1] == NULL)
-        MallocErr("Read -2");
+    //if (return_val[0] == NULL || return_val[1] == NULL)
+    //    MallocErr("Read -2");
 
     PrpsTree **tree_tmp = NULL, **alpha_tree = NULL,  **return_tree = NULL;
     Tokens **tokens_prps = NULL, **tokens_alpha = NULL;
@@ -597,6 +603,7 @@ PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
     (*tokens_prps) = PrpsTokenizer(prps, &nn);
     (*tokens_alpha) = PrpsTokenizer(alpha, &mm);
 
+    //print_tokens((*tokens_prps));
     LearnKB(hash, kb_string, m, h, k);
 
     tree_tmp = TokensToTree(tokens_prps, 0);
@@ -606,7 +613,7 @@ PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
     //return_val[1][0] = ((*alpha_tree) -> argmnt -> stc)[0];
     //return_val[0][1] = '\0'; return_val[1][1] = '\0';
 
-    (*tree) = Oprtr(NOT, tree_tmp, IS, alpha_tree, IS, OR);
+    (*tree) = Oprtr(IS, tree_tmp, NOT, alpha_tree, IS, AND);
 
     free(tree_tmp); free(alpha_tree);
     tree_tmp = NULL; alpha_tree = NULL;
