@@ -236,7 +236,7 @@ Tokens *PrpsTokenizer(char *input, int *n)
         if (input[i] == '\n')
             break;
 
-        if (input[i] == '~' || input[i] == '(' || input[i] == ')')
+        if (input[i] == '!' || input[i] == '(' || input[i] == ')')
         {
             AddToken(&head, input[i++]);
             continue;
@@ -446,7 +446,7 @@ PrpsTree **TokensToTree(Tokens **tokens, int global_negate)
     {   
         token = (*tokens) -> token;
 
-        if (token == '~')
+        if (token == '!')
         {
             (*tokens) = (*tokens) -> next;
             token = (*tokens) -> token;
@@ -511,6 +511,8 @@ PrpsTree **TokensToTree(Tokens **tokens, int global_negate)
                     prps = NULL; arg = NULL;
 
                     (*tree_list_head) -> tree = tree_tmp;
+                    if (subtree_negate)
+                        Negate(tree_tmp);
                     tree_list_head = &((*tree_list_head) -> next);
                     (*tree_list_head) = calloc(1, sizeof(TreeList)); 
                     if ((*tree_list_head) == NULL)

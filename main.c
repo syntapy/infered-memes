@@ -22,6 +22,7 @@ int main()
     PrpsTree **tree = NULL, **alpha = NULL;
     PrpsTree **tree_tmp = NULL;
     PrpsTree **left = NULL;
+    PrpsTree **KB, **alpha_cpy;
 
     HashTable **hash = NULL;
 
@@ -32,6 +33,8 @@ int main()
     alpha = Read(&tree, hash, n, l, &hash_val);
     TreeConsistency(tree);
 
+    //KB = CopySubTree(&((*tree) -> left));
+
     //Negate(&((*tree) -> left));
     //tree_print(&((*tree) -> left));
     //Negate(&((*tree) -> left));
@@ -39,7 +42,7 @@ int main()
 
     //tree_print(&((*tree) -> right));
     //fprintf(stdout, "\n\n");
-    printf("Original Formula: "); tree_print(tree); printf("\n");
+    printf("Original Formula:\n\t"); tree_print(tree); printf("\n");
     d = 5;
 
     // Convert tree to conjuctive normal form
@@ -52,19 +55,25 @@ int main()
     //DetatchParentLeft(left);
     //left = DetatchChild(tree, LEFT);
  
-    tree_print(tree); fprintf(stdout, "\n\n");
+    //tree_print(tree); fprintf(stdout, "\n\n");
     
     CNF(tree, d);
-    is_true = Resolution(tree);
     //UNIFY(tree);
 
     // Checks if tree is in conjunctive normal form
     is_cnf = IsCNF(tree);
     if (is_cnf)
-        printf("Tree has been converted to conjunctive normal form\n\n");
-    fprintf(stdout, "Full tree in conjunctive normal form: \n");
-    tree_print(tree);
-    fprintf(stdout, "\n\n");
+    {
+        printf("\nTree has been converted to conjunctive normal form:\n\t");
+        tree_print(tree);
+        fprintf(stdout, "\n\n");
+    }
+
+    is_true = Resolution(tree);
+    if (is_true)
+        printf("\nInference takes place\n");
+    else
+        printf("Inference does not take place\n");
 
     //infered = Infer(tree);
 

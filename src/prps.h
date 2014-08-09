@@ -603,14 +603,14 @@ void ElliminateInnerOrs(PrpsTree **tree)
 
         if (OprtrNodeType(&((*tree) -> left), IS, AND) || OprtrNodeType(&((*tree) -> right), IS, AND))
         {
-            printf("full:\t"); tree_print(tree); printf("\n");
+            //printf("full:\t"); tree_print(tree); printf("\n");
 
             left = DetatchChild(tree, LEFT);
             right = DetatchChild(tree, RIGHT);
 
-            printf("root:\t"); printf("%d", *((*tree) -> oprtr)); printf("\n");
-            printf("left:\t"); tree_print(left); printf("\n");
-            printf("right:\t"); tree_print(right); printf("\n");
+            //printf("root:\t"); printf("%d", *((*tree) -> oprtr)); printf("\n");
+            //printf("left:\t"); tree_print(left); printf("\n");
+            //printf("right:\t"); tree_print(right); printf("\n");
 
             if (!OprtrNodeType(left, IS, AND))
             {
@@ -753,7 +753,7 @@ void ElliminateInnerOrs(PrpsTree **tree)
             CheckConsistency(tree);
             CheckConsistency(&((*tree) -> left));
             CheckConsistency(&((*tree) -> right));
-            printf("post:\t"); tree_print(tree); printf("\n");
+            //printf("post:\t"); tree_print(tree); printf("\n");
         }
     }
 }
