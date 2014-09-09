@@ -1,3 +1,4 @@
+#include <string.h>
 // Requires string.h library !!! //
 
 
@@ -33,10 +34,18 @@
 //**************************************************************
 
 typedef struct Tokens
-{
+{   // Used in parsing non-quantifier text
+    //    and existential quantifiers
     char token;
     struct Tokens *next;
 } Tokens;
+
+typedef struct Args
+{   // Used in implementing universal quantifiers
+    char token;
+    Tokens *token_ptr;
+    struct Args *next;
+} Args;
 
 typedef struct TreeList
 {
@@ -50,9 +59,11 @@ typedef struct OprtrList
     struct OprtrList *next;
 } OprtrList;
 
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant);
+
 int IsLowerCase(char c)
 {   int return_val = FALSE;
-    if ((int) c <= LOWER_CASE_LAST && (int) c >= LOWER_CASE_FIRST)
+    if ((int) c <= LOWER_CASE_LAST && (int) c >= LOWER_CASE_FIRST && c != 'v')
         return_val = TRUE;
     return return_val;
 }
@@ -64,108 +75,30 @@ int IsUpperCase(char c)
     return return_val;
 }
 
-int GetOprtr(const char *symbol)
+int GetOprtr(char symbol)
 {
-    if (strcmp(symbol, "^") == 0)
+    if (symbol == '^')
         return AND;
-    else if (strcmp(symbol, "v") == 0)
+    else if (symbol == 'v')
         return OR;
-    else if (strcmp(symbol, "=") == 0)
+    else if (symbol == '=')
         return TAU;
-    else if (strcmp(symbol, ">") == 0)
+    else if (symbol == '>')
         return IMP;
     else return -1;
 }
 
-int IsOprtr(const char *symbol)
+int IsOprtr(char token)
 {
     int oprtr;
     int return_val = FALSE;
 
-    oprtr = GetOprtr(symbol);
+    oprtr = GetOprtr(token);
 
     if (oprtr == AND || oprtr == OR || oprtr == IMP || oprtr == TAU)
         return_val = TRUE;   
 
     return return_val;
-}
-
-char **ReadKB(int m, const char *filename)
-{
-    char **kb_string;
-    FILE *f = fopen(filename, "r");
-    int n[m];
-    int i;
-
-    kb_string = calloc(m, sizeof(char *));
-    if (kb_string == NULL)
-        MallocErr("ReadKB 1");
-
-    for (i = 0; i < m; i++)
-        getline(&(kb_string[i]), &(n[i]), f);
-
-    fclose(f);
-
-    return kb_string;
-}
-
-void LearnKB(HashTable **hash, char **kb_string, int m, int h, int k)
-{
-    int i = 0, j;
-    int n = strlen(kb_string[0]);
-    int hash_val;
-
-    char **args = NULL, **prps = NULL;
-    args = calloc(n-2, sizeof(char *));
-    prps = calloc(m-1, sizeof(char *));
-
-    if (args == NULL || prps == NULL)
-        MallocErr("LearnKB 1");
-
-    for (j = 1; j < n-1; j++)
-    {   args[j-1] = calloc(2, sizeof(char));
-        if (args[j-1] == NULL)
-            MallocErr("LearnKB 3");
-        args[j-1][0] = kb_string[0][j];
-        args[j-1][1] = '\0';
-    }
-
-    for (j = 0; j < m-1; j++)
-    {   
-        prps[j] = calloc(2, sizeof(char));
-        if (prps[j] == NULL)
-            MallocErr("LearnKB 2");
-
-        prps[j][0] = kb_string[j+1][0];
-        prps[j][1] = '\0';
-    }
-
-    for (i = 1; i < m; i++)
-        for (j = 1; j < n-1; j++)
-        {
-            if (kb_string[i][j] == ' ')
-                hash_val = -1;
-            else if (kb_string[i][j] == '1')
-                hash_val = 1;
-            else if (kb_string[i][j] == '0')
-                hash_val = 0;
-
-            SetValueForArg(prps[i-1], args[j-1], hash_val, hash, h, k);
-        }
-}
-
-char *ReadPRPS(const char *filename)
-{
-    char *prps = NULL;
-    int n;
-
-    FILE *f = fopen(filename, "r");
-
-    getline(&prps, &n, f);
-    
-    fclose(f);
-
-    return prps;
 }
 
 /*char *ReadALPHA(const char *filename)
@@ -187,386 +120,116 @@ char *ReadPRPS(const char *filename)
     return alpha;
 }*/
 
-void AddToken(Tokens **head, char token)
+#include "_read.h"
+
+#include "_list.h"
+
+#include "_tree_synth.h"
+
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)
 {
-    char buf[2];
-    sprintf(buf, "%c", token);
+    /*  returns 0 if (*u_args_ptr) -> token_ptr -> next == NULL
+     *  i.e. it is at end of linked list (Tokens **) arg_list 
+     */
 
-    if (head == NULL || *head == NULL)
-        NoMallocErr("AddToken 1");
+    int return_val = 1;
 
-    (*head) -> token = token;
-    (*head) -> next = calloc(1, sizeof(Tokens));
-
-    if ((*head) -> next == NULL)
-        MallocErr("AddTokens 2");
-
-    *head = (*head) -> next;
-}
-
-Tokens *PrpsTokenizer(char *input, int *n)
-{
-    /*  char *input: raw input
-        char **sentence[]: tokenized version of input; passed by reference
-        int *n: number of tokens in output; passed by reference
-    */
-    int i, j;
-    int space;
-    *n = strlen(input);
-
-    Tokens *tokens = NULL, *head = NULL;
-    tokens = calloc(1, sizeof(Tokens));
-
-    if (tokens == NULL)
-        MallocErr("");
-
-    head = tokens;
-
-    i = 0; j = 0;
-    space = 0;
-
-    while (i < *n)
+    if (quant == '4')
     {
-        if (input[i] == SPACE)
+        if (arg_list == NULL || u_args_ptr == NULL ||
+            (*arg_list) == NULL || (*u_args_ptr) == NULL)
+            return_val = 0;
+
+        else if ((*u_args_ptr) -> token_ptr -> next == NULL)
         {
-            i++;
-            continue;
+            (*u_args_ptr) -> token_ptr = (*arg_list);
+            return_val = 0;
         }
 
-        if (input[i] == '\n')
-            break;
-
-        if (input[i] == '!' || input[i] == '(' || input[i] == ')')
-        {
-            AddToken(&head, input[i++]);
-            continue;
-        }
-
-        if (input[i] >= UPPER_CASE_FIRST && input[i] <= UPPER_CASE_LAST)
-        {
-            AddToken(&head, input[i++]);
-
-            if (input[i] == '[')
-            {
-                i++;
-                if (input[i] >= LOWER_CASE_FIRST && input[i] <= LOWER_CASE_LAST)
-                {
-                    AddToken(&head, input[i++]);
-
-                    if (input[i] == ']')
-                    { 	i++;
-                        continue;
-                    }
-                }
-            }
-        }
-
-        else if (input[i] == '^')
-        {
-            AddToken(&head, input[i++]);
-            continue;
-        }
-
-        else if (input[i] == 'v')
-        {
-            AddToken(&head, input[i++]);
-            continue;
-        }
-
-        else if (input[i] == '|')
-        {
-            i++;
-            if (input[i] == '|')
-            {
-                AddToken(&head, input[i++]);
-                continue;
-            }
-        }
-
-        else if (input[i] == '=')
-        {
-            AddToken(&head, input[i++]);
-            continue;
-        }
-
-        else if (input[i] == '-')
-        {
-            i++;
-            if (input[i] == '>')
-            {
-                AddToken(&head, input[i++]);
-                continue;
-            }
-        }
-
-        ParseErr("Unexpected symbol");
+        else if (IncrementConditional(arg_list, 
+                    &((*u_args_ptr) -> next), quant) == 0)
+            (*u_args_ptr) -> token_ptr =
+                (*u_args_ptr) -> token_ptr -> next;
     }
 
-    return tokens;
+    else
+        return_val = 0;
+
+    return return_val;
 }
 
-PrpsTree **AlphaToTree(char *input, int *hash_val)
+Tokens **ReadArgs(char *input, int n)
 {
-    char *prps = NULL, *arg = NULL;
-    int i = 0, val = -1;
+    int i = -1, j = 0;
+    Tokens **head = NULL, *tail = NULL;
+    Tokens **return_val = NULL;
+    int quantifier = 0, parentheses = 0, quant_parent = 0;
+    Tokens **oprtrs = NULL, **oprtrs_tail = NULL;
 
-    PrpsTree **alpha = NULL;
+    head = calloc(1, sizeof(Tokens *));
+    oprtrs = calloc(1, sizeof(Tokens *));
+    //tail = calloc(1, sizeof(Tokens));
+    if (head == NULL || oprtrs == NULL)
+        MallocErr("ReadArgs 1");
 
-    while (input[i] != '\0')
+    while (++i < n)
     {
-        if (IsUpperCase(input[i]))
+        head = &tail;
+        if (input[i] == '3' || input[i] == '4')
         {
-            prps = calloc(2, sizeof(char));
-            if (prps == NULL)
-                MallocErr("AlphaToTree 1");
-            prps[0] = input[i];
-            prps[1] = '\0';
-        }
-
-        else if (IsLowerCase(input[i]))
-        {
-            arg = calloc(2, sizeof(char));
-            if (arg == NULL)
-                MallocErr("AlphaToTree 2");
-            arg[0] = input[i];
-            arg[1] = '\0';
-        }
-
-        else if (input[i] == '0')
-            val = 0;
-        else if (input[i] == '1')
-            val = 1;
-
-        i++;
-    }
-
-    if (prps == NULL || arg == NULL || val == -1)
-        InconsistencyErr("AlphaToTree 3");
-
-    alpha = calloc(1, sizeof(PrpsTree *));
-    if (alpha == NULL)
-        MallocErr("AlphaToTree 4");
-
-    (*alpha) = GenerateEmpty();
-    AllocateAsPrps(alpha, (const char *) prps, (const char *) arg);
-
-    if (val == 0)
-        *((*alpha) -> neg) = 1;
-    else if (val == 1)
-        *((*alpha) -> neg) = 0;
-
-    (*hash_val) = val;
-
-    return alpha;
-}
-
-void print_tokens(Tokens *tokens)
-{
-    Tokens *head = tokens;
-
-    while (head -> next != NULL)
-    {
-        fprintf(stdout, "%c", head -> token);
-        head = head -> next;
-    } 
-
-    fprintf(stdout, "\n");
-}
-
-void AdvanceToClosingParenthese(Tokens **tokens)
-{
-    int count = 0;
-
-    count = 1;
-
-    do {
-        (*tokens) = (*tokens) -> next;
-        if ((*tokens) -> token == '(')
-            count++;
-        else if ((*tokens) -> token == ')')
-            count--;
-
-    } while (count > 0);
-
-    (*tokens) = (*tokens) -> next;
-}
-
-PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list)
-{
-    PrpsTree **tree = NULL, **tree_tmp = NULL, **tree_new = NULL;
-
-    TreeList *tree_list_head = NULL;
-    OprtrList *oprtr_list_head = NULL;
-    int oprtr = -1;
-    char *prps = NULL;
-    //tree = calloc(1, sizeof(PrpsTree *));
-    //if (tree == NULL)
-    //    MallocErr("TreeListToTree 1");
-    //(*tree) = Generate
-    tree = tree_list -> tree;
-    tree_list_head = tree_list -> next;
-    oprtr_list_head = oprtr_list;
-
-    while (tree_list_head != NULL && tree_list_head -> tree != NULL)
-    {
-        oprtr = oprtr_list_head -> oprtr;
-        tree_tmp = tree_list_head -> tree;
-        tree_new = Oprtr(IS, tree, IS, tree_tmp, IS, oprtr);
-        free(tree); tree = tree_new; tree_new = NULL;
-        tree_list_head = tree_list_head -> next;
-        oprtr_list_head = oprtr_list_head -> next;
-    }
-
-    return tree;
-}
-
-PrpsTree **TokensToTree(Tokens **tokens, int global_negate)
-{
-    int subtree_negate = 0, oprtr = -1;
-    char *prps = NULL, *arg = NULL;
-    char token;
-
-    PrpsTree **tree_tmp = NULL, **return_tree = NULL;
-    TreeList *tree_list = NULL, **tree_list_head = NULL;
-    OprtrList *oprtr_list = NULL, **oprtr_list_head = NULL;
-
-    tree_list = calloc(1, sizeof(TreeList));
-    tree_list_head = &tree_list; //calloc(1, sizeof(TreeList *));
-
-    oprtr_list = calloc(1, sizeof(OprtrList));
-    oprtr_list_head = &oprtr_list; //calloc(1, sizeof(OprtrList *));
-
-    if (tree_list == NULL || oprtr_list == NULL ||
-        tree_list_head == NULL || oprtr_list_head == NULL)
-        MallocErr("TokensToTree 1");
-
-    (*tree_list_head) = tree_list; (*oprtr_list_head) = oprtr_list;
-
-    while ((*tokens) -> next != NULL) // && (*tokens) -> token != ')')
-    {   
-        token = (*tokens) -> token;
-
-        if (token == '!')
-        {
-            (*tokens) = (*tokens) -> next;
-            token = (*tokens) -> token;
-            subtree_negate = !subtree_negate;
-        }
-
-        if (token == '(')
-        {
-            (*tokens) = (*tokens) -> next;
-            tree_tmp = TokensToTree(tokens, subtree_negate);
-            (*tree_list_head) -> tree = tree_tmp;
-            tree_list_head = &((*tree_list_head) -> next);
-            (*tree_list_head) = calloc(1, sizeof(TreeList));
-            if ((*tree_list_head) == NULL)
-                MallocErr("TokensToTree 1");
-            tree_tmp = NULL;
-            continue;
-        }
-
-        if (token == ')')
-        {
-            (*tokens) = (*tokens) -> next;
-            break;
-        }
-
-        token = (*tokens) -> token;
-
-        if (IsUpperCase(token))
-        {
-            if (prps == NULL)
+            quantifier++;
+            while (1)
             {
-                prps = calloc(2, sizeof(char));
-                if (prps == NULL)
-                    MallocErr("TokensToTree 2");
-                prps[0] = token; prps[1] = '\0';
-            }
-            else InconsistencyErr("TokensToTree 3");
-
-            (*tokens) = (*tokens) -> next;
-            token = (*tokens) -> token;
-
-            if (IsLowerCase(token))
-            {
-                if (arg == NULL)
+                if (IsLowerCase(input[i]))
+                    E_AddArg(oprtrs, input[i++]);
+                else if (input[i] == '{')
                 {
-                    arg = calloc(2, sizeof(char));
-                    if (arg == NULL)
-                        MallocErr("TokensToTree 4");
-
-                    arg[0] = token; arg[1] = '\0';
-                    (*tokens) = (*tokens) -> next;
-                }
-                else InconsistencyErr("TokensToTree 5");
-
-                if (tree_tmp == NULL)
-                {
-                    tree_tmp = calloc(1, sizeof(PrpsTree *));
-                    if (tree_tmp == NULL)
-                        MallocErr("TokensToTree 6");
-                    (*tree_tmp) = GenerateEmpty();
-                    AllocateAsPrps(tree_tmp, prps, arg);
-                    prps = NULL; arg = NULL;
-
-                    (*tree_list_head) -> tree = tree_tmp;
-                    if (subtree_negate)
-                        Negate(tree_tmp);
-                    tree_list_head = &((*tree_list_head) -> next);
-                    (*tree_list_head) = calloc(1, sizeof(TreeList)); 
-                    if ((*tree_list_head) == NULL)
-                        MallocErr("TokensToTree 7");
-
-                    tree_tmp = NULL;
+                    i++;
+                    break;
                 }
 
-                else InconsistencyErr("TokensToTree 8");
-            }
-            else InconsistencyErr("TokensToTree 9");
-
-            token = (*tokens) -> token;
-            if (token == ')')
-            {
-                (*tokens) = (*tokens) -> next;
-                break;
+                else
+                    i++;
             }
         }
 
-        if (token == '^' || token == 'v' || token == '=' || token == '>')
+        if (input[i] == '}')
         {
-            if (token == 'v')
-                oprtr = OR;
-            else if (token == '^')
-                oprtr = AND;
-            else if (token == '=')
-                oprtr = TAU;
-            else if (token == '>')
-                oprtr = IMP;
+            quantifier--;
+            i++;
+        }
 
-            (*oprtr_list_head) -> oprtr = oprtr;
-            oprtr_list_head = &((*oprtr_list_head) -> next);
-            (*oprtr_list_head) = calloc(1, sizeof(OprtrList));
+        if (input[i] >= LOWER_CASE_FIRST && 
+            input[i] <= LOWER_CASE_LAST && 
+            input[i] != 'v')
+        {
 
-            if ((*oprtr_list_head) == NULL)
-                MallocErr("TokensToTree 10");
-
-            oprtr = -1;
-            (*tokens) = (*tokens) -> next;
+            if (quantifier > 0)
+            {
+                if (!T_Contains(oprtrs, input[i]))
+                    E_AddArg(head, input[i]);
+            }
+            else if (quantifier == 0)
+                E_AddArg(head, input[i]);
         }
     }
 
-    return_tree = TreeListToTree(tree_list, oprtr_list);
+    return_val = calloc(1, sizeof(Tokens *));
+    if (return_val == NULL)
+        MallocErr("ReadArgs 2");
+    (*return_val) = tail;
+    //print_tokens(tail);
 
-    return return_tree;
+    return return_val;
 }
 
-PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
+PrpsTree **Read(PrpsTree ***tree, HashTable **hash, 
+    int h, int k, int *hash_val)
 {
     char **kb_string = NULL;
     char **alpha_string = NULL;
-    char *prps = NULL, *alpha = NULL;
-    int m = 4;
+    char *prps = NULL, *alpha = NULL, prps_alpha = NULL;
+    int m = 4, n;
     int nn = 0, mm = 0;
     //int hash_val;
 
@@ -590,6 +253,10 @@ PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
     PrpsTree **tree_tmp = NULL, **alpha_tree = NULL,  **return_tree = NULL;
     Tokens **tokens_prps = NULL, **tokens_alpha = NULL;
 
+    //  List of argument symbols, and list of symbols generated
+    //  by existential quantifiers
+    Tokens **arg_list = NULL, **exist_arg_list = NULL;
+
     a_prps = calloc(2, sizeof(char)); a_arg = calloc(2, sizeof(char));
     if (a_prps == NULL || a_arg == NULL)
         MallocErr("Read 0");
@@ -602,21 +269,30 @@ PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)
     kb_string = ReadKB(m, filename_kb);
     prps = ReadPRPS(filename_prps);
     alpha = ReadPRPS(filename_alpha);
+
+    n = strlen((const char *) prps);
+    arg_list = ReadArgs(prps, n);
+
+    exist_arg_list = calloc(1, sizeof(Tokens *));
+    if (exist_arg_list == NULL)
+        MallocErr("Read 2");
+
     (*tokens_prps) = PrpsTokenizer(prps, &nn);
     (*tokens_alpha) = PrpsTokenizer(alpha, &mm);
 
     //print_tokens((*tokens_prps));
     LearnKB(hash, kb_string, m, h, k);
 
-    tree_tmp = TokensToTree(tokens_prps, 0);
-    alpha_tree = TokensToTree(tokens_alpha, 0);
+    tree_tmp = TokensToTree(tokens_prps, arg_list, 0);
+    tree_print(tree_tmp);
+    printf("\n\n");
 
+    alpha_tree = TokensToTree(tokens_alpha, arg_list, 0);
     return_val = CopySubTree(alpha_tree);
     //return_val[1][0] = ((*alpha_tree) -> argmnt -> stc)[0];
     //return_val[0][1] = '\0'; return_val[1][1] = '\0';
 
     (*tree) = Oprtr(IS, tree_tmp, NOT, alpha_tree, IS, AND);
-
     free(tree_tmp); free(alpha_tree);
     tree_tmp = NULL; alpha_tree = NULL;
 

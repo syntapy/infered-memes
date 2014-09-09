@@ -1,5 +1,11 @@
+A[a] ^ 3 z{A[z]}
+A[a] ^ A[b] ^ 4 x{ P[x] -> Q[x]} ^ 4 y{Q[y] -> R[y]} ^ 3 z{A[z]}
+
+
 (!B[b]) ^ (B[b] = (P[a] v P[d] v P[e])) ^ (!P[d]) ^ (!P[e])
+
 ((~P[a]) ^ (B[a] = (P[b] v P[c])) ^ (B[c] = (P[a] v P[d] v P[e])) ^ (~B[a]) ^ (B[c]))
+
 
 1, 1:   a
 1, 2:   b

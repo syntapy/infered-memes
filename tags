@@ -6,13 +6,17 @@
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 AND	src/ops.h	1;"	d
 AND_SubTree	src/prps.h	/^int AND_SubTree(PrpsTree **tree)$/;"	f
+A_Contains	src/_list.h	/^Args *A_Contains(Args **args, char arg)$/;"	f
 AddOperator	uneeded/generate.h	/^void AddOperator(PrpsT **tree)\/\/, PrpsT **$/;"	f
-AddStmnt	src/tester.h	/^void AddStmnt(FindList **list, char *prps, char *arg, int neg)$/;"	f
-AddToken	src/parse.h	/^void AddToken(Tokens **head, char token)$/;"	f
-AdvanceToClosingParenthese	src/parse.h	/^void AdvanceToClosingParenthese(Tokens **tokens)$/;"	f
+AddOprtr	src/_tree_synth.h	/^void AddOprtr(OprtrList ***oprtr_list_head, int oprtr)$/;"	f
+AddStmnt	src/tester.h	/^void AddStmnt(FindList **list, char *prps, char *arg, int is, int is_not)$/;"	f
+AddToken	src/_list.h	/^void AddToken(Tokens **head, char token)$/;"	f
+AddTree	src/_tree_synth.h	/^void AddTree(Tokens **tokens, Tokens **arg_list,$/;"	f
+AddTreeNode	src/_tree_synth.h	/^void AddTreeNode(TreeList ***tree_list_head, $/;"	f
+AdvanceToClosingParenthese	src/_tree_synth.h	/^void AdvanceToClosingParenthese(Tokens **tokens)$/;"	f
 AllocateAsOprtr	src/_tree_gen.h	/^void AllocateAsOprtr(PrpsTree **node, int oprtr)$/;"	f
 AllocateAsPrps	src/_tree_gen.h	/^void AllocateAsPrps(PrpsTree **node, const char *prps, const char *arg)$/;"	f
-AlphaToTree	src/parse.h	/^PrpsTree **AlphaToTree(char *input, int *hash_val)$/;"	f
+AlphaToTree	src/_tree_synth.h	/^PrpsTree **AlphaToTree(char *input, int *hash_val)$/;"	f
 AlreadyMallocErr	src/err.h	/^void AlreadyMallocErr(const char *msg)$/;"	f
 ArgNode	src/hash.h	/^typedef struct ArgNode$/;"	s
 ArgNode	src/hash.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
@@ -20,6 +24,8 @@ ArgNode	uneeded/hash_alloc.h	/^typedef struct ArgNode$/;"	s
 ArgNode	uneeded/hash_alloc.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
 ArgNode	uneeded/hash_check.h	/^typedef struct ArgNode$/;"	s
 ArgNode	uneeded/hash_check.h	/^} ArgNode;$/;"	t	typeref:struct:ArgNode
+Args	src/parse.h	/^typedef struct Args$/;"	s
+Args	src/parse.h	/^} Args;$/;"	t	typeref:struct:Args
 BOTH	src/ops.h	11;"	d
 CC	Makefile	/^CC=colorgcc$/;"	m
 CC	test/Makefile	/^CC=colorgcc$/;"	m
@@ -36,6 +42,8 @@ CheckPrpsTreeNode	src/_prps_err.h	/^void CheckPrpsTreeNode(PrpsTree **tree)$/;"	
 ClauseList	src/tester.h	/^typedef struct ClauseList$/;"	s
 ClauseList	src/tester.h	/^} ClauseList;$/;"	t	typeref:struct:ClauseList
 ContainsAnd	src/prps.h	/^int ContainsAnd(PrpsTree **tree)$/;"	f
+ContainsClause	src/tester.h	/^int ContainsClause(ClauseList **clause, FindList **P_new)$/;"	f
+ContainsLiteral	src/tester.h	/^int ContainsLiteral(FindList **Pa, FindList **Pb)$/;"	f
 ContainsOnlyPositiveORs	src/prps.h	/^int ContainsOnlyPositiveORs(PrpsTree **tree)$/;"	f
 ConvertIMP	src/prps.h	/^void ConvertIMP(PrpsTree **tree)$/;"	f
 ConvertIsOR	src/prps.h	/^void ConvertIsOR(PrpsTree **tree)$/;"	f
@@ -57,32 +65,41 @@ DetatchParentRight	src/prps.h	/^PrpsTree **DetatchParentRight(PrpsTree **tree)$/
 DistributeOrs	src/prps.h	/^void DistributeOrs(PrpsTree **tree, PrpsTree **tree_insert)$/;"	f
 DistributeOrs_Caller	src/prps.h	/^void DistributeOrs_Caller(PrpsTree **tree)$/;"	f
 EXISTS	src/ops.h	17;"	d
+E_AddArg	src/_list.h	/^void E_AddArg(Tokens **e_args, char arg)$/;"	f
+E_GetIndex	src/_list.h	/^int E_GetIndex(Tokens **tokens, char token)$/;"	f
 ElliminateClause	src/tester.h	/^void ElliminateClause(FindList **clause)$/;"	f
 ElliminateDefaultTrues	src/tester.h	/^int ElliminateDefaultTrues(ClauseList **clause_list)$/;"	f
 ElliminateInnerOrs	src/prps.h	/^void ElliminateInnerOrs(PrpsTree **tree)$/;"	f
+EqualClauses	src/tester.h	/^int EqualClauses(FindList **Pa, FindList **Pb)$/;"	f
 FALSE	src/ops.h	13;"	d
 FORALL	src/ops.h	18;"	d
-FillHashTable	src/tester.h	/^void FillHashTable(HashTable **hash, char **symbols, char **args, int m, int n, int seed)$/;"	f
+FillHashTable	src/tester.h	/^void FillHashTable(HashTable **hash, char **symbols, char **args, $/;"	f
 FindList	src/tester.h	/^typedef struct FindList$/;"	s
 FindList	src/tester.h	/^} FindList;$/;"	t	typeref:struct:FindList
+FreeArgs	src/_list.h	/^void FreeArgs(Args **args)$/;"	f
+FreeOprtrList	src/_tree_synth.h	/^void FreeOprtrList(OprtrList **oprtr_list)$/;"	f
 FreeSymbolArray	src/tester.h	/^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
-GenAlphaTree	src/tester.h	/^void GenAlphaTree(const char **symbols, const char **args, PrpsTree ***alpha, int m, int n, int d)$/;"	f
+FreeTokens	src/_list.h	/^void FreeTokens(Tokens **tokens)$/;"	f
+FreeTreeList	src/_tree_synth.h	/^void FreeTreeList(TreeList **tree_list)$/;"	f
+GenAlphaTree	src/tester.h	/^void GenAlphaTree(const char **symbols, const char **args, $/;"	f
 GenSequentialSymbol	src/tester.h	/^void GenSequentialSymbol(char **symbol, int f, int m)$/;"	f
-GenSkewedTree	src/tester.h	/^void GenSkewedTree(const char **symbols, const char **args, int m, int n, PrpsTree **tree, int d)$/;"	f
+GenSkewedTree	src/tester.h	/^void GenSkewedTree(const char **symbols, const char **args, $/;"	f
 GenSymbol	src/tester.h	/^void GenSymbol(char **symbol, int n)$/;"	f
 GenSymbolArray	src/tester.h	/^void GenSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$/;"	f
 GenerateAllocatedHashTable	src/hash.h	/^HashTable **GenerateAllocatedHashTable(int m, int n)$/;"	f
 GenerateAllocatedHashTable	uneeded/hash_alloc.h	/^HashTable *GenerateAllocatedHashTable(int m, int n)$/;"	f
 GenerateEmpty	src/_tree_gen.h	/^PrpsTree *GenerateEmpty()$/;"	f
+GetArg	src/_list.h	/^Args *GetArg(Args **args, char arg)$/;"	f
 GetArgIndex	src/hash.h	/^int GetArgIndex(char arg[], int n)$/;"	f
-GetClauses	src/tester.h	/^void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail, int *index, int num_literals)$/;"	f
+GetClauses	src/tester.h	/^void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail, $/;"	f
 GetLeftMostByte	src/tester.h	/^void GetLeftMostByte(int *f, int *nmbr)$/;"	f
 GetNodeValue	src/kb.h	/^int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)$/;"	f
-GetOprtr	src/parse.h	/^int GetOprtr(const char *symbol)$/;"	f
+GetOprtr	src/parse.h	/^int GetOprtr(char symbol)$/;"	f
 GetPropIndex	src/hash.h	/^int GetPropIndex(char prop[], int m)$/;"	f
 GetTreeValue	src/kb.h	/^int GetTreeValue(PrpsTree **tree, HashTable **hash, int m, int n)$/;"	f
 GetType	src/prps.h	/^int GetType(PrpsTree **node)$/;"	f
 GetValueForArg	src/hash.h	/^int GetValueForArg(char prop[], char arg[], HashTable **hash, int m, int n)$/;"	f
+HasComplimentary	src/tester.h	/^int HasComplimentary(FindList **clause, FindList **literal)$/;"	f
 HashNode	src/hash.h	/^typedef struct HashNode$/;"	s
 HashNode	src/hash.h	/^} HashNode;$/;"	t	typeref:struct:HashNode
 HashNode	uneeded/hash_alloc.h	/^typedef struct HashNode$/;"	s
@@ -99,10 +116,11 @@ IMP	src/ops.h	4;"	d
 INFINITY	uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
 InconsistencyErr	src/err.h	/^void InconsistencyErr(const char *msg)$/;"	f
+IncrementConditional	src/parse.h	/^int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)$/;"	f
 IsCNF	src/prps.h	/^int IsCNF(PrpsTree **tree)$/;"	f
 IsLeftChild	src/prps.h	/^int IsLeftChild(PrpsTree **tree)$/;"	f
 IsLowerCase	src/parse.h	/^int IsLowerCase(char c)$/;"	f
-IsOprtr	src/parse.h	/^int IsOprtr(const char *symbol)$/;"	f
+IsOprtr	src/parse.h	/^int IsOprtr(char token)$/;"	f
 IsRightChild	src/prps.h	/^int IsRightChild(PrpsTree **tree)$/;"	f
 IsUpperCase	src/parse.h	/^int IsUpperCase(char c)$/;"	f
 KB_And	src/kb.h	/^int KB_And(int left_val, int right_val)$/;"	f
@@ -113,7 +131,10 @@ LEFT	src/ops.h	8;"	d
 LOWER_CASE_FIRST	src/ops.h	24;"	d
 LOWER_CASE_LAST	src/ops.h	25;"	d
 LeafNode	src/prps.h	/^int LeafNode(PrpsTree **tree)$/;"	f
-LearnKB	src/parse.h	/^void LearnKB(HashTable **hash, char **kb_string, int m, int h, int k)$/;"	f
+LearnKB	src/_read.h	/^void LearnKB(HashTable **hash, char **kb_string, int m, int h, int k)$/;"	f
+List	src/_list.h	/^char List(Tokens **tokens, int index)$/;"	f
+ListAddTree	src/_tree_synth.h	/^void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp)$/;"	f
+ListLen	src/_list.h	/^int ListLen(Args **args)$/;"	f
 MAX	uneeded/printing/asciinode.h	/^int MAX (int X, int Y)  $/;"	f
 MAX_HEIGHT	uneeded/printing/asciinode.h	172;"	d
 MIN	uneeded/printing/asciinode.h	/^int MIN (int X, int Y)  $/;"	f
@@ -141,21 +162,25 @@ OprtrList	src/parse.h	/^} OprtrList;$/;"	t	typeref:struct:OprtrList
 OprtrNode	src/prps.h	/^int OprtrNode(PrpsTree **tree)$/;"	f
 OprtrNodeType	src/prps.h	/^int OprtrNodeType(PrpsTree **node, int neg, int oprtr)$/;"	f
 OprtrWrap	src/prps.h	/^PrpsTree **OprtrWrap(int neg_a, PrpsTree **tree, int neg_b, const char *prps, const char *arg, int neg_oprtr, int oprtr)$/;"	f
-PL_Resolve	src/tester.h	/^int PL_Resolve(FindList **Pa, FindList **Pb, ClauseList **ptr_head)$/;"	f
+PL_Resolve	src/tester.h	/^int PL_Resolve(FindList **Pa, FindList **Pb, ClauseList ***ptr_head)$/;"	f
+PL_Resolve_2	src/tester.h	/^int PL_Resolve_2(FindList **Pa, FindList **Pb, $/;"	f
 PRPS	src/ops.h	7;"	d
 ParseErr	src/err.h	/^void ParseErr(const char *msg)$/;"	f
 PrpsNode	src/prps.h	/^int PrpsNode(PrpsTree **node)$/;"	f
-PrpsTokenizer	src/parse.h	/^Tokens *PrpsTokenizer(char *input, int *n)$/;"	f
+PrpsTokenizer	src/_tree_synth.h	/^Tokens *PrpsTokenizer(char *input, int *n)$/;"	f
 PrpsTree	src/prps.h	/^typedef struct PrpsTree$/;"	s
 PrpsTree	src/prps.h	/^} PrpsTree;$/;"	t	typeref:struct:PrpsTree
 PrpsTree	uneeded/printing/print.h	/^struct PrpsTree $/;"	s
+QuantifierToTree	src/_tree_synth.h	/^PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list, $/;"	f
 RIGHT	src/ops.h	9;"	d
-Read	src/parse.h	/^PrpsTree **Read(PrpsTree ***tree, HashTable **hash, int h, int k, int *hash_val)$/;"	f
-ReadKB	src/parse.h	/^char **ReadKB(int m, const char *filename)$/;"	f
-ReadPRPS	src/parse.h	/^char *ReadPRPS(const char *filename)$/;"	f
+Read	src/parse.h	/^PrpsTree **Read(PrpsTree ***tree, HashTable **hash, $/;"	f
+ReadArgs	src/parse.h	/^Tokens **ReadArgs(char *input, int n)$/;"	f
+ReadKB	src/_read.h	/^char **ReadKB(int m, const char *filename)$/;"	f
+ReadPRPS	src/_read.h	/^char *ReadPRPS(const char *filename)$/;"	f
 Resolution	src/tester.h	/^int Resolution(PrpsTree **tree)$/;"	f
 Resolve	src/tester.h	/^int Resolve(ClauseList **clause_list)$/;"	f
 SPACE	src/ops.h	23;"	d
+SetArg	src/_list.h	/^void SetArg(Tokens **arg_list, Tokens **e_args, Args **u_args, $/;"	f
 SetChild	src/prps.h	/^void SetChild(PrpsTree **parent, PrpsTree **child, int dir)$/;"	f
 SetLeftChild	src/prps.h	/^void SetLeftChild(PrpsTree **parent, PrpsTree **child)$/;"	f
 SetRightChild	src/prps.h	/^void SetRightChild(PrpsTree **parent, PrpsTree **child)$/;"	f
@@ -164,19 +189,23 @@ SyntaxErr	src/err.h	/^void SyntaxErr(const char *msg)$/;"	f
 TAU	src/ops.h	5;"	d
 TESTS	test/Makefile	/^TESTS = unit_fixtures$/;"	m
 TRUE	src/ops.h	12;"	d
+T_Contains	src/_list.h	/^int T_Contains(Tokens **args, char arg)$/;"	f
 TestErr	src/err.h	/^void TestErr(const char *msg)$/;"	f
 Tokens	src/parse.h	/^typedef struct Tokens$/;"	s
 Tokens	src/parse.h	/^} Tokens;$/;"	t	typeref:struct:Tokens
-TokensToTree	src/parse.h	/^PrpsTree **TokensToTree(Tokens **tokens, int global_negate)$/;"	f
+TokensToTree	src/_tree_synth.h	/^PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list, $/;"	f
 TraverseLeft	src/prps.h	/^PrpsTree **TraverseLeft(PrpsTree **tree)$/;"	f
 Tree	uneeded/printing/asciinode.h	/^struct Tree $/;"	s
 Tree	uneeded/printing/asciinode.h	/^typedef struct Tree Tree;$/;"	t	typeref:struct:Tree
 TreeConsistency	src/prps.h	/^void TreeConsistency(PrpsTree **tree)$/;"	f
 TreeList	src/parse.h	/^typedef struct TreeList$/;"	s
 TreeList	src/parse.h	/^} TreeList;$/;"	t	typeref:struct:TreeList
-TreeListToTree	src/parse.h	/^PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list)$/;"	f
+TreeListToTree	src/_tree_synth.h	/^PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list)$/;"	f
 UPPER_CASE_FIRST	src/ops.h	26;"	d
 UPPER_CASE_LAST	src/ops.h	27;"	d
+U_AddArg	src/_list.h	/^void U_AddArg(Tokens **arg_list, Args **u_args, char arg)$/;"	f
+U_E_QuantifierToTree	src/_tree_synth.h	/^PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list, $/;"	f
+U_GetIndex	src/_list.h	/^int U_GetIndex(Args **args, char arg)$/;"	f
 YES	src/ops.h	15;"	d
 addArg	src/_hash_alloc.h	/^void addArg(char prop[], char arg[], HashTable **hash, int m, int n)$/;"	f
 addArg	uneeded/hash_alloc.h	/^void addArg(char prps[], char arg[], HashTable **hash, int m, int n)$/;"	f
@@ -301,6 +330,7 @@ name	uneeded/hash_check.h	/^    MyString *name;\/\/ String corresponding to the 
 neg	src/prps.h	/^    int *neg;           \/\/ = 1 if negated, otherwise 0$/;"	m	struct:PrpsTree
 next	src/hash.h	/^    struct ArgNode *next;   \/\/ Next hash node.$/;"	m	struct:ArgNode	typeref:struct:ArgNode::ArgNode
 next	src/hash.h	/^    struct HashNode *next;$/;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
+next	src/parse.h	/^    struct Args *next;$/;"	m	struct:Args	typeref:struct:Args::Args
 next	src/parse.h	/^    struct OprtrList *next;$/;"	m	struct:OprtrList	typeref:struct:OprtrList::OprtrList
 next	src/parse.h	/^    struct Tokens *next;$/;"	m	struct:Tokens	typeref:struct:Tokens::Tokens
 next	src/parse.h	/^    struct TreeList *next;$/;"	m	struct:TreeList	typeref:struct:TreeList::TreeList
@@ -322,14 +352,15 @@ p	src/prps.h	/^    struct PrpsTree *p;         \/\/ parent node$/;"	m	struct:Prp
 parent_dir	uneeded/printing/asciinode.h	/^  int parent_dir;   $/;"	m	struct:asciinode_struct
 parent_dir	uneeded/printing/print.h	/^  int parent_dir;   $/;"	m	struct:asciinode_struct
 prev	src/tester.h	/^    struct ClauseList *prev, *next;$/;"	m	struct:ClauseList	typeref:struct:ClauseList::ClauseList
+print_args	src/_tree_synth.h	/^void print_args(Args *args)$/;"	f
 print_ascii_tree	uneeded/printing/asciinode.h	/^void print_ascii_tree(Tree * t) $/;"	f
 print_ascii_tree	uneeded/printing/print.h	/^void print_ascii_tree(PrpsTree * t) $/;"	f
-print_clause_list	src/tester.h	/^void print_clause_list(ClauseList **clause_list)$/;"	f
+print_clause_list	src/tester.h	/^void print_clause_list(ClauseList **clause_list, int a, int b)$/;"	f
 print_level	uneeded/printing/asciinode.h	/^void print_level(asciinode *node, int x, int level) $/;"	f
 print_level	uneeded/printing/print.h	/^void print_level(asciinode *node, int x, int level) $/;"	f
 print_next	uneeded/printing/asciinode.h	/^int print_next;    $/;"	v
 print_oprtr	src/_prps_err.h	/^void print_oprtr(int oprtr)$/;"	f
-print_tokens	src/parse.h	/^void print_tokens(Tokens *tokens)$/;"	f
+print_tokens	src/_tree_synth.h	/^void print_tokens(Tokens *tokens)$/;"	f
 prps	src/tester.h	/^    char *prps, *arg;$/;"	m	struct:FindList
 result	src/hash.h	/^    int *result;        \/\/ Result of passing argument arg to proposition$/;"	m	struct:ArgNode
 result	uneeded/hash_alloc.h	/^    int *result;        \/\/ Result of passing argument arg to prpsosition$/;"	m	struct:ArgNode
@@ -352,7 +383,9 @@ stc	uneeded/hash_alloc.h	/^    char *stc;$/;"	m	struct:MyString
 stc	uneeded/hash_check.h	/^    char *stc;$/;"	m	struct:MyString
 stmnt	src/prps.h	/^    MyString *stmnt, *argmnt;$/;"	m	struct:PrpsTree
 test_cnf	test_main.c	/^int test_cnf(PrpsTree **tree, int d)$/;"	f
+token	src/parse.h	/^    char token;$/;"	m	struct:Args
 token	src/parse.h	/^    char token;$/;"	m	struct:Tokens
+token_ptr	src/parse.h	/^    Tokens *token_ptr;$/;"	m	struct:Args
 tree	src/parse.h	/^    PrpsTree **tree;$/;"	m	struct:TreeList
 tree_print	src/_prps_err.h	/^void tree_print(PrpsTree **tree)$/;"	f
 unit_fixtures_SOURCES	test/Makefile	/^unit_fixtures_SOURCES = unit_fixtures.c $(top_buliddir)\/src\/main.c$/;"	m

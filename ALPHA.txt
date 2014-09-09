@@ -1,4 +1,5 @@
-P[a]
+B[a]
+P[a] -> R[a]
 (A[a] ^ C[c])
 (A[a] v B[b])
 ~P[a]

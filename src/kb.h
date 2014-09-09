@@ -8,7 +8,8 @@ int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)
     int return_val = -1;
     if (PrpsNode(node))
     {
-        return_val = GetValueForArg((*node) -> stmnt -> stc, (*node) -> argmnt -> stc, hash, m, n);
+        return_val = GetValueForArg((*node) -> stmnt -> stc, 
+            (*node) -> argmnt -> stc, hash, m, n);
         if (*((*node) -> neg) == 1)
             return_val = !return_val;
     }

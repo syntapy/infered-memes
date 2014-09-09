@@ -1,0 +1,4 @@
+Implement 2 args for prps symbols
+Implement universal / existential quantifiers
+    Implement text-based negation operations on those
+        using if constructs that make decisions at the syntax level

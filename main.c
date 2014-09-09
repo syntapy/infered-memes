@@ -64,7 +64,8 @@ int main()
     is_cnf = IsCNF(tree);
     if (is_cnf)
     {
-        printf("\nTree has been converted to conjunctive normal form:\n\t");
+        printf("\nTree has been converted"
+            " to conjunctive normal form:\n\t");
         tree_print(tree);
         fprintf(stdout, "\n\n");
     }
