@@ -17,7 +17,7 @@ char **ReadKB(int m, const char *filename)
     return kb_string;
 }
 
-void LearnKB(HashTable **hash, char **kb_string, int m, int h, int k)
+/*void LearnKB(HashTable **hash, char **kb_string, int m, int h, int k)
 {
     int i = 0, j;
     int n = strlen(kb_string[0]);
@@ -60,7 +60,7 @@ void LearnKB(HashTable **hash, char **kb_string, int m, int h, int k)
 
             SetValueForArg(prps[i-1], args[j-1], hash_val, hash, h, k);
         }
-}
+}*/
 
 char *ReadPRPS(const char *filename)
 {

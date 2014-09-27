@@ -1,0 +1,185 @@
+#include <string.h>
+// Requires string.h library !!! //
+
+
+//***********************************//
+//      S Y N T A X - R U L E S      //
+//***********************************//
+//
+//      Forall
+//      Exists
+//
+//      Arguments: 
+//          Any number of chars: a - z
+//              All Lower Case
+//          
+//
+//      Proposition functions:
+//          1st char: A - Z
+//              Upper Case
+//          Any number of lower case letters: a - z
+//          Left (
+//          One Argument                     .  
+//          Right)                                          
+//                           .                     ***********
+//      Operators:                                 ***********
+//          and             .   .                  ** **  * **
+//          or                 *                   **  *  * **
+//          implies                                *****  * **
+//          equivalent        .        .           *****  * **
+//                                                        * **
+//                                                        * **
+//                                                       ** **
+//*************************************************************
+//**************************************************************
+
+typedef struct Tokens
+{   // Used in parsing non-quantifier text
+    //    and existential quantifiers
+    char *token;
+    struct Tokens *next;
+} Tokens;
+
+typedef struct Args
+{   // Used in implementing universal quantifiers
+    char *token;
+    Tokens *token_ptr;
+    struct Args *next;
+} Args;
+
+typedef struct TreeList
+{
+    PrpsTree **tree;
+    struct TreeList *next;
+} TreeList;
+
+typedef struct OprtrList
+{
+    int oprtr;
+    struct OprtrList *next;
+} OprtrList;
+
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant);
+
+int IsLowerCase(char c)
+{   int return_val = FALSE;
+    if ((int) c <= LOWER_CASE_LAST && (int) c >= LOWER_CASE_FIRST && c != 'v')
+        return_val = TRUE;
+    return return_val;
+}
+
+int IsUpperCase(char c)
+{   int return_val = FALSE;
+    if ((int) c <= UPPER_CASE_LAST && (int) c >= UPPER_CASE_FIRST)
+        return_val = TRUE;
+    return return_val;
+}
+
+int GetOprtr(char symbol)
+{
+    if (symbol == '^')
+        return AND;
+    else if (symbol == 'v')
+        return OR;
+    else if (symbol == '=')
+        return TAU;
+    else if (symbol == '>')
+        return IMP;
+    else return -1;
+}
+
+int IsOprtr(char token)
+{
+    int oprtr;
+    int return_val = FALSE;
+
+    oprtr = GetOprtr(token);
+
+    if (oprtr == AND || oprtr == OR || oprtr == IMP || oprtr == TAU)
+        return_val = TRUE;   
+
+    return return_val;
+}
+
+/*char *ReadALPHA(const char *filename)
+{
+    char **alpha = NULL;
+    int m, n;
+
+    alpha = calloc(2, sizeof(char *));
+    if (alpha == NULL)
+        MallocErr("ReadALPHA 1");
+
+    FILE *f = fopen(filename, "r");
+
+    getline(&(alpha[0]), &m, f);
+    getline(&(alpha[1]), &n, f);
+
+    fclose(f);
+
+    return alpha;
+}*/
+
+#include "_read.h"
+
+#include "_list.h"
+
+#include "_tree_synth.h"
+
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)
+{
+    /*  returns 0 if (*u_args_ptr) -> token_ptr -> next == NULL
+     *  i.e. it is at end of linked list (Tokens **) arg_list 
+     */
+
+    int return_val = 1;
+
+    if (quant == '4')
+    {
+        if (arg_list == NULL || u_args_ptr == NULL ||
+            (*arg_list) == NULL || (*u_args_ptr) == NULL)
+            return_val = 0;
+
+#ifndef PARSE_H
+#define PARSE_H
+
+#include "prps.h"
+
+typedef struct Tokens
+{   // Used in parsing non-quantifier text
+    //    and existential quantifiers
+    char *token;
+    struct Tokens *next;
+} Tokens;
+
+typedef struct Args
+{   // Used in implementing universal quantifiers
+    char *token;
+    Tokens *token_ptr;
+    struct Args *next;
+} Args;
+
+typedef struct ArgNmbr
+{
+    int n;
+    struct ArgNmbr *next;
+} ArgNmbr;
+
+typedef struct TreeList
+{
+    PrpsTree **tree;
+    struct TreeList *next;
+} TreeList;
+
+typedef struct OprtrList
+{
+    int oprtr;
+    struct OprtrList *next;
+} OprtrList;
+
+void GetPrps(char **prps, char *input, int *i);
+void GetArg(char **arg, char *input, int *i, int *arg_n);
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant);
+
+#endif
+

@@ -1,5 +1,4 @@
 #include "tester.h"
-#include "parse.h"
 
 void FreeOprtrList(OprtrList **oprtr_list)
 {
@@ -33,13 +32,13 @@ void FreeTreeList(TreeList **tree_list)
 
 Tokens *PrpsTokenizer(char *input, int *n)
 {
-    /*  char *input: raw input
-        char **sentence[]: tokenized version of input; passed by reference
-        int *n: number of tokens in output; passed by reference
+   /*   char *input: raw input
+    *   char **sentence[]: tokenized version of input; passed by reference
+    *   int *n: number of tokens in output; passed by reference
     */
 
     int i, j, arg_n;
-    char *token = NULL, *prps = NULL, **arg = NULL;
+    char *token = NULL, *arg = NULL;
     *n = strlen(input);
 
     Tokens *tokens = NULL, *head = NULL;
@@ -64,7 +63,6 @@ Tokens *PrpsTokenizer(char *input, int *n)
 
             AddToken(&head, token);
             token = NULL;
-
             while (input[i] != '{')
             {
                 if (input[i] == ' ' || input[i] == ',')
@@ -72,8 +70,7 @@ Tokens *PrpsTokenizer(char *input, int *n)
                 else if (IsLowerCase(input[i]))
                 {
                     GetArg(&arg, input, &i, &arg_n);
-                    for (j = 0; j < arg_n; j++)
-                        AddToken(&head, arg[j]);
+                    AddToken(&head, arg);
                 }
             }
         }
@@ -83,35 +80,17 @@ Tokens *PrpsTokenizer(char *input, int *n)
         {
             if (IsUpperCase(input[i]))
             {
-                GetPrps(&prps, input, &i);
-                token = prps; prps = NULL;
-                AddToken(&head, token);
-                token = NULL;
+                
             }
 
-            else if (IsLowerCase(input[i]))
-            {
-                GetArg(&arg, input, &i, &arg_n);
-
-                for (j = 0; j < arg_n; j++)
-                {
-                    token = arg[j];
-                    AddToken(&head, token);
-                }
-
-                free(arg); arg = NULL; token = NULL;
-            }
-
-            else if (IsOprtr(input[i]))
-            {
-                token = NULL;
-                token = calloc(1, sizeof(char));
-                if (token == NULL)
-                    MallocErr("PrpsTokenizer 2");
-                AddToken(&head, token);
-                token = NULL; i++;
-            }
-
+            token = NULL;
+            token = calloc(2, sizeof(char));
+            if (token == NULL)
+                MallocErr("PrpsTokenizer 1");
+            token[0] = input[i++];
+            token[1] = '\0';
+            AddToken(&head, token);
+            token = NULL;
         }
         else if (input[i] == '\n')
             break;

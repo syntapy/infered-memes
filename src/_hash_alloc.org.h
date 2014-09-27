@@ -1,12 +1,3 @@
-void allocateNonEmptyString(MyString **arg_ptr_ptr, int s)
-{   (*arg_ptr_ptr) -> s = (int *) calloc(1, sizeof(int));
-    (*arg_ptr_ptr) -> stc = (char *) calloc(s + 1, sizeof(char));
-
-    checkStringNonEmpty(arg_ptr_ptr);
-
-    *((*arg_ptr_ptr) -> s) = s;
-}
-
 void allocateEmptyHashNode(HashNode **node_ptr_ptr)
 {   /* Sets all the pointers in HashNode, pointed to 
      * by pointer pointed to by node_ptr_ptr, to NULL
@@ -100,6 +91,15 @@ void allocateEmptyArgNode(ArgNode **arg_ptr_ptr)
     (*arg_ptr_ptr) -> next = NULL;
 }
 
+void allocateNonEmptyArgNode(ArgNode **arg_ptr_ptr, int s, int n)
+{   // s is the length of the MyString
+
+    if (!arg_ptr_ptr) DeathErr("");
+    allocateEmptyArgNode(arg_ptr_ptr);
+
+    checkArgNodeEmpty(arg_ptr_ptr);
+    (*arg_ptr_ptr) -> arg = (MyString *) calloc(1, sizeof(MyString));
+    (*arg_ptr_ptr) -> result = (int *) calloc(n, sizeof(int));
     checkArgNodeNonEmpty(arg_ptr_ptr);
 
     checkStringEmpty(&((*arg_ptr_ptr)-> arg));
@@ -256,12 +256,3 @@ void addArg(char prop[], char arg[], HashTable **hash, int m, int n)
         strcpy(arg_ptr -> arg -> stc, arg);
     //*(arg_ptr -> result) = -1;
 }
-void allocateEmptyHashNode(HashNode **node_ptr_ptr)
-{   /* Sets all the pointers in HashNode, pointed to 
-     * by pointer pointed to by node_ptr_ptr, to NULL
-     */
-
-    //node_ptr_ptr = (HashNode **) malloc(sizeof(HashNode *));
-    if ((*node_ptr_ptr) == NULL) 
-    {   *node_ptr_ptr = (HashNode *) malloc(sizeof(HashNode));
-        if ((*node_ptr_ptr) == NULL) 

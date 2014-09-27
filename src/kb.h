@@ -3,7 +3,7 @@
 //    
 //}
 
-int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)
+/*int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)
 {
     int return_val = -1;
     if (PrpsNode(node))
@@ -15,7 +15,7 @@ int GetNodeValue(PrpsTree **node, HashTable **hash, int m, int n)
     }
 
     return return_val;
-}
+}*/
 
 int KB_And(int left_val, int right_val)
 {
@@ -60,7 +60,7 @@ int KB_Not(int val)
     return return_val;
 }
 
-int GetTreeValue(PrpsTree **tree, HashTable **hash, int m, int n)
+/*int GetTreeValue(PrpsTree **tree, HashTable **hash, int m, int n)
 {   int return_val = -1;
     int left_val = -1, right_val = -1;
 
@@ -95,4 +95,4 @@ int GetTreeValue(PrpsTree **tree, HashTable **hash, int m, int n)
     }
 
     return return_val;
-}
+}*/

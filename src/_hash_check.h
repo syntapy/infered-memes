@@ -104,22 +104,3 @@ void checkArgNodeEmpty2(ArgNode **arg_ptr)
         NoMallocErr("void allocateEmptyArgNode(ArgNode **arg_ptr) 3 ");
 }
 
-void checkStringEmpty(MyString **arg_ptr_ptr)
-{   if (arg_ptr_ptr == NULL)
-        DeathErr("Something wrong with compiler");
-    if ((*arg_ptr_ptr) == NULL)
-        DeathErr("checkStringEmpty");
-    if ((*arg_ptr_ptr) -> stc != NULL)
-        DeathErr("checkStringEmpty");
-    if ((*arg_ptr_ptr) -> s != NULL)
-        DeathErr("checkStringEmpty");
-}
-
-void checkStringNonEmpty(MyString **arg_name)
-{   if ((*arg_name) == NULL)
-        NoMallocErr("checkStringEmpty");
-    if ((*arg_name) -> stc == NULL)
-        NoMallocErr("checkStringEmpty");
-    if ((*arg_name) -> s == NULL)
-        NoMallocErr("checkStringEmpty");
-}

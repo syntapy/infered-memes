@@ -1,7 +1,7 @@
-void AddToken(Tokens **head, char token)
+void AddToken(Tokens **head, char *token)
 {
     char buf[2];
-    sprintf(buf, "%c", token);
+    sprintf(buf, "%s", token);
 
     if (head == NULL || *head == NULL)
         NoMallocErr("AddToken 1");
@@ -15,13 +15,14 @@ void AddToken(Tokens **head, char token)
     *head = (*head) -> next;
 }
 
-int T_Contains(Tokens **args, char arg)
+int T_Contains(Tokens **args, char *arg)
 {
-    /*  Returns true if (Tokens **) args contains a noe
-        with character (char) arg
-
-        Otherwise returns false
+   /*   Returns true if (Tokens **) args contains a noe
+    *   with character (char) arg
+    *
+    *   Otherwise returns false
     */
+
     int return_val = 0;
     Tokens *args_ptr = NULL;
 
@@ -30,7 +31,7 @@ int T_Contains(Tokens **args, char arg)
         args_ptr = (*args);
         while (args_ptr != NULL)
         {
-            if (args_ptr -> token == arg)
+            if (strcmp((const char *) args_ptr -> token, arg) == 0)
             {
                 return_val = 1;
                 break;
@@ -43,7 +44,7 @@ int T_Contains(Tokens **args, char arg)
     return return_val;
 }
 
-Args *A_Contains(Args **args, char arg)
+Args *A_Contains(Args **args, char *arg)
 {
     /*  Returns true if (Tokens **) args contains a noe
         with character (char) arg
@@ -58,7 +59,7 @@ Args *A_Contains(Args **args, char arg)
         args_ptr = (*args);
         while (*args != NULL)
         {
-            if (args_ptr -> token == arg)
+            if (strcmp((const char *) args_ptr -> token, arg) == 0)
             {
                 return_val = args_ptr;
                 break;
@@ -71,14 +72,14 @@ Args *A_Contains(Args **args, char arg)
     return return_val;
 }
 
-char List(Tokens **tokens, int index)
+char *List(Tokens **tokens, int index)
 {
     /*  Returns the char at node (int) index of (Tokens **) tokens.
         (int) index is a zero-based index
     */
 
     int i;
-    char return_val = 0;
+    char *return_val = NULL;
     Tokens **head = NULL;
 
     head = calloc(1, sizeof(Tokens *));
@@ -96,9 +97,7 @@ char List(Tokens **tokens, int index)
         }
 
         if (i == index)
-        {
-            return_val = (*head) -> token;
-        }
+            strcpy(return_val, (*head) -> token);
     }
 
     return return_val;
@@ -117,7 +116,7 @@ int ListLen(Args **args)
     return return_val;
 }
 
-int E_GetIndex(Tokens **tokens, char token)
+int E_GetIndex(Tokens **tokens, char *token)
 {
     int return_val = -1, index = 0;
 
@@ -130,20 +129,20 @@ int E_GetIndex(Tokens **tokens, char token)
     if (tokens != NULL)
     {
         (*head) = (*tokens);
-        while ((*head) != NULL && token != (*head) -> token)
+        while ((*head) != NULL && strcmp(token, (*head) -> token) != 0)
         {
             (*head) = (*head) -> next;
             index++;
         }
 
-        if ((*head) != NULL && (*head) -> token == token)
+        if ((*head) != NULL && strcmp((*head) -> token, token) == 0)
             return_val = index;
     }
 
     return return_val;
 }
 
-int U_GetIndex(Args **args, char arg)
+int U_GetIndex(Args **args, char *arg)
 {
     int return_val = -1, index = 0;
 
@@ -156,29 +155,26 @@ int U_GetIndex(Args **args, char arg)
     if (args != NULL)
     {
         (*head) = (*args);
-        while ((*head) != NULL && arg != (*head) -> token)
+        while ((*head) != NULL && strcmp(arg, (*head) -> token) != 0)
         {
             (*head) = (*head) -> next;
             index++;
         }
 
-        if ((*head) != NULL && (*head) -> token == arg)
+        if ((*head) != NULL && strcmp((*head) -> token, arg) == 0)
             return_val = index;
     }
 
     return return_val;
 }
 
-Args *GetArg(Args **args, char arg)
-{
-    
-}
-
-void E_AddArg(Tokens **e_args, char arg)
+void E_AddArg(Tokens **e_args, char *arg)
 {
     /*  Adds (char) arg to (Tokens **) e_args, and sets
         (char *) token_ptr to the first element in
         (Tokens **) e_arg_list_tail
+
+        If (char *) arg is already in the list, nothing is done
     */
 
     Tokens **e_args_ptr = e_args;
@@ -188,7 +184,7 @@ void E_AddArg(Tokens **e_args, char arg)
 
     while ((*e_args_ptr) != NULL)
     {
-        if ((*e_args_ptr) -> token == arg)
+        if (strcmp((*e_args_ptr) -> token, arg) == 0)
             break;
         else
             e_args_ptr = &((*e_args_ptr) -> next);
@@ -200,11 +196,16 @@ void E_AddArg(Tokens **e_args, char arg)
         if ((*e_args_ptr) == NULL)
             MallocErr("E_AddArg 2");
 
-        (*e_args_ptr) -> token = arg;
+        
+        (**e_args_ptr).token = calloc(strlen(arg)+1, sizeof(char));
+        if ((**e_args_ptr).token == NULL)
+            MallocErr("E_AddArg 1");
+
+        strcpy((**e_args_ptr).token, (const char *) arg);
     }
 }
 
-void U_AddArg(Tokens **arg_list, Args **u_args, char arg)
+void U_AddArg(Tokens **arg_list, Args **u_args, char *arg)
 {
     /*  Adds (char) arg to (Args **) u_args, and sets
      *  (char *) token_ptr to the first element in
@@ -218,7 +219,7 @@ void U_AddArg(Tokens **arg_list, Args **u_args, char arg)
 
     while ((*u_args_ptr) != NULL)
     {
-        if ((*u_args_ptr) -> token == arg)
+        if (strcmp((*u_args_ptr) -> token, arg) == 0)
             break;
         else
             u_args_ptr = &((*u_args_ptr) -> next);
@@ -230,7 +231,7 @@ void U_AddArg(Tokens **arg_list, Args **u_args, char arg)
         if ((*u_args_ptr) == NULL)
             MallocErr("U_AddArg 2");
 
-        (*u_args_ptr) -> token = arg;
+        strcpy((*u_args_ptr) -> token, arg);
         (*u_args_ptr) -> token_ptr = (*arg_list);
     }
 }
@@ -258,7 +259,7 @@ void FreeArgs(Args **args)
 }
 
 void SetArg(Tokens **arg_list, Tokens **e_args, Args **u_args, 
-    char **arg, char token, int depth, char quant)
+    char **arg, char *token, int depth, char quant)
 {
     /*  (int) depth represents the levels of nested 
      *  universal / existential quantifiers this is in, so as
@@ -266,44 +267,90 @@ void SetArg(Tokens **arg_list, Tokens **e_args, Args **u_args,
      *  or as an existential / universal quantifer symbol
      */
 
+    int found, i, j, arg_size = 1;
     Args *arg_ptr = NULL;
     Tokens **arg_list_head = NULL;
     if (arg == NULL)
         InconsistencyErr("SetArg 1");
 
-    (*arg) = calloc(2, sizeof(char));
-    if ((*arg) == NULL)
-        MallocErr("SetArg 2");
+    //(*arg) = calloc(2, sizeof(char));
+    //if ((*arg) == NULL)
+    //    MallocErr("SetArg 2");
 
     //(*arg_list_head) = (*arg_list);
     arg_ptr = A_Contains(u_args, token);
     if (quant == '\0' ||
             ((e_args != NULL && !T_Contains(e_args, token)) && arg_ptr == NULL))
     {
-        //if (!T_Contains(arg_list, token))
-        //    InconsistencyErr("SetArg 2.1");
 
-        (*arg)[0] = token;
-        (*arg)[1] = '\0';
+        if (*arg != NULL)
+            InconsistencyErr("SetArg 2.25");
+        *arg = calloc(strlen(token)+1, sizeof(char));
+        if (*arg == NULL)
+            MallocErr("SetArg 2.375");
+        strcpy(*arg, token);
     }
 
     else if (e_args != NULL && quant == '3' && T_Contains(e_args, token))
     {
-        (*arg)[0] = LOWER_CASE_FIRST; (*arg)[1] = '\0';
-        
-        while (T_Contains(arg_list, (*arg)[0]) || (*arg)[0] == 'v')
-            (*arg)[0] += 1;
-        if ((*arg)[0] > LOWER_CASE_LAST)
-            InconsistencyErr("SetArg 3");
+
+        found = 0;
+        while (!found)
+        {
+            if (*arg != NULL)
+            {
+                free(*arg); (*arg) = NULL;
+                arg_size++;
+            }
+
+            *arg = calloc(arg_size + 1, sizeof(char));
+            if (*arg == NULL)
+                MallocErr("SetArg 2.5");
+
+            for (i = 0; i < arg_size; i++)
+                (*arg)[i] = LOWER_CASE_FIRST;
+            (*arg)[arg_size] = '\0';
+
+            j = -1; 
+            
+            while (!found)
+                if (T_Contains(arg_list, *arg) || strcmp(*arg, "v") == 0)
+                {
+                    if (j == 0)
+                        break;
+                    j = arg_size - 1;
+                    (*arg)[j] += 1;
+                    while ((*arg)[j] == LOWER_CASE_LAST + 1 && j > 0)
+                    {
+                        (*arg)[j] = LOWER_CASE_FIRST;
+                        j -= 1;
+                        (*arg)[j] += 1;
+                    }
+                }
+
+                else
+                    found = 1;
+        }
     }
 
     else if (u_args != NULL && quant == '4' && arg_ptr != NULL)
     {
+        if (*arg != NULL)
+            InconsistencyErr("SetArg 2.75");
+
         if (arg_ptr -> token_ptr != NULL)
-            (*arg)[0] = arg_ptr -> token_ptr -> token;
+        {
+            *arg = calloc(strlen(arg_ptr -> token_ptr -> token)+1, sizeof(char));
+            if (*arg == NULL)
+                MallocErr("SetArg 3");
+            strcpy(*arg, arg_ptr -> token_ptr -> token);
+        }
         else
-            (*arg)[0] = arg_ptr -> token;
-        (*arg)[1] = '\0';
+        {   *arg = calloc(strlen(arg_ptr -> token)+1, sizeof(char));
+            if (*arg == NULL)
+                MallocErr("SetArg 3.5");
+            strcpy(*arg, arg_ptr -> token);
+        }
     }
 
     else

@@ -15,20 +15,26 @@ void CheckOprtrNode(PrpsTree **tree)
 }
 
 void CheckPrpsTreeNode(PrpsTree **tree)
-{   if (tree == NULL || (*tree) == NULL)
+{   int i, n_args;
+
+    if (tree == NULL || (*tree) == NULL)
         InconsistencyErr("CheckPrpsTreeNode");
     //if ((*tree) -> type == NULL || *((*tree) -> type) != PRPS)
     //    InconsistencyErr("CheckPrpsTreeNode");
     if ((*tree) -> stmnt == NULL || (*tree) -> argmnt == NULL 
             || (*tree) -> stmnt -> stc == NULL
             || (*tree) -> stmnt -> s == NULL
-            || (*tree) -> argmnt -> stc == NULL
-            || (*tree) -> argmnt -> s == NULL)
+            || ((*tree) -> argmnt)[0] -> stc == NULL
+            || ((*tree) -> argmnt)[0] -> s == NULL)
         InconsistencyErr("CheckPrpsTreeNode");
     if (strlen((*tree) -> stmnt -> stc) != *((*tree) -> stmnt -> s))
         InconsistencyErr("CheckPrpsTreeNode");
-    if (strlen((*tree) -> argmnt -> stc) != *((*tree) -> argmnt -> s))
-        InconsistencyErr("CheckPrpsTreeNode");
+
+    n_args = (**tree).n_args;
+    for (i = 0; i < n_args; i++)
+        if (strlen(((*tree) -> argmnt)[i] -> stc) != (*((*tree) -> argmnt)[i] -> s))
+            InconsistencyErr("CheckPrpsTreeNode");
+
     if ((*tree) -> oprtr != NULL)
         InconsistencyErr("CheckPrpsTreeNode");
     if ((*tree) -> left != NULL)
@@ -90,7 +96,7 @@ void print_oprtr(int oprtr)
 
 void tree_print(PrpsTree **tree)
 {
-    //CheckConsistency(tree);
+    int i, n_args;//CheckConsistency(tree);
 
     if ((*tree) -> left != NULL && (*tree) -> right != NULL)
     {
@@ -108,11 +114,22 @@ void tree_print(PrpsTree **tree)
 
     else if ((*tree) -> left == NULL && (*tree) -> right == NULL)
     {
+        n_args = (**tree).n_args;
+
         if (*(*tree) -> neg == NOT)
             fprintf(stdout, "~");
-        fprintf(stdout, "%s[%s]", (*tree) -> stmnt -> stc, (*tree) -> argmnt -> stc);
+        fprintf(stdout, "%s[", (*tree) -> stmnt -> stc);
+
+        for (i = 0; i < n_args; i++)
+        {
+            if (i > 0)
+                fprintf(stdout, "%s", ", ");
+            fprintf(stdout, "%s", ((*tree) -> argmnt)[i] -> stc);
+        }
+
+        fprintf(stdout, "]");
     }
 
-    else 
+    else
         InconsistencyErr("tree_print 1");
 }
