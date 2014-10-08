@@ -85,10 +85,12 @@ FORALL	src/ops.h	18;"	d
 FindList	src/tester.h	?^typedef struct FindList$?;"	s
 FindList	src/tester.h	?^} FindList;$?;"	t	typeref:struct:FindList
 FreeArgs	src/_list.h	?^void FreeArgs(Args **args)$?;"	f
+FreeOprtrArgs	src/_list.h	?^void FreeOprtrArgs(OprtrArgs **args)$?;"	f
 FreeOprtrList	src/_tree_synth.h	?^void FreeOprtrList(OprtrList **oprtr_list)$?;"	f
 FreeOprtrList	src/_tree_synth.old.h	?^void FreeOprtrList(OprtrList **oprtr_list)$?;"	f
 FreeSymbolArray	src/tester.c	?^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$?;"	f
 FreeTokens	src/_list.h	?^void FreeTokens(Tokens **tokens)$?;"	f
+FreeTopOprtrArg	src/parse.c	?^void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs **oprtr_mid, OprtrArgs ***oprtr_head)$?;"	f
 FreeTreeList	src/_tree_synth.h	?^void FreeTreeList(TreeList **tree_list)$?;"	f
 FreeTreeList	src/_tree_synth.old.h	?^void FreeTreeList(TreeList **tree_list)$?;"	f
 GenArgs	src/tester.c	?^char **GenArgs(char *input, int *i)$?;"	f
@@ -167,6 +169,9 @@ OPRTR	src/ops.h	6;"	d
 OR	src/ops.h	2;"	d
 Oprtr	src/prps.c	?^PrpsTree **Oprtr(int neg_a, PrpsTree **tree_a, int neg_b, PrpsTree **tree_b, $?;"	f
 Oprtr2	src/prps.c	?^PrpsTree **Oprtr2(int neg_a, PrpsTree **tree, int neg_b, char *prps, char **arg, int n_args, int neg_oprtr, int oprtr)$?;"	f
+OprtrArgs	src/parse.h	?^typedef struct OprtrArgs$?;"	s
+OprtrArgs	src/parse.h	?^} OprtrArgs;$?;"	t	typeref:struct:OprtrArgs
+OprtrContains	src/_list.h	?^int OprtrContains(OprtrArgs **tail, char *arg)$?;"	f
 OprtrList	src/parse.h	?^typedef struct OprtrList$?;"	s
 OprtrList	src/parse.h	?^} OprtrList;$?;"	t	typeref:struct:OprtrList
 OprtrNode	src/prps.c	?^int OprtrNode(PrpsTree **tree)$?;"	f
@@ -188,7 +193,8 @@ QuantifierToTree	src/_tree_synth.h	?^PrpsTree **QuantifierToTree(Tokens **tokens
 QuantifierToTree	src/_tree_synth.old.h	?^PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list, $?;"	f
 RIGHT	src/ops.h	9;"	d
 Read	src/parse.c	?^PrpsTree **Read(PrpsTree ***tree, int h, int k, int *hash_val)$?;"	f
-ReadArgs	src/parse.c	?^Tokens **ReadArgs(char *input, int n)$?;"	f
+ReadArgs	src/parse.c	?^void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, int quantifier,$?;"	f
+ReadArgs_Quantifier	src/parse.c	?^void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *arg_n,$?;"	f
 ReadKB	src/_read.h	?^char **ReadKB(int m, const char *filename)$?;"	f
 ReadPRPS	src/_read.h	?^char *ReadPRPS(const char *filename)$?;"	f
 Resolution	src/tester.c	?^int Resolution(PrpsTree **tree)$?;"	f
@@ -256,6 +262,7 @@ arg_ptr	uneeded/hash_alloc.h	?^    ArgNode *arg_ptr;   // Pointer variable used 
 arg_ptr	uneeded/hash_check.h	?^    ArgNode *arg_ptr;   // Pointer variable used to set and retriev $?;"	m	struct:HashNode
 arg_ptr_ptr	src/_hash_alloc.h	?^    checkArgNodeNonEmpty(arg_ptr_ptr);$?;"	v
 argmnt	src/prps.h	?^    MyString *stmnt, **argmnt;$?;"	m	struct:PrpsTree
+args	src/parse.h	?^    Tokens *args;$?;"	m	struct:OprtrArgs
 array	src/hash.h	?^    ArgNode *array;     // Array holding values corresponding to the $?;"	m	struct:HashNode
 array	uneeded/hash_alloc.h	?^    ArgNode *array;     // Array holding values corresponding to the $?;"	m	struct:HashNode
 array	uneeded/hash_check.h	?^    ArgNode *array;     // Array holding values corresponding to the $?;"	m	struct:HashNode
@@ -357,6 +364,7 @@ next	src/hash.h	?^    struct ArgNode *next;   // Next hash node.$?;"	m	struct:Ar
 next	src/hash.h	?^    struct HashNode *next;$?;"	m	struct:HashNode	typeref:struct:HashNode::HashNode
 next	src/parse.h	?^    struct ArgNmbr *next;$?;"	m	struct:ArgNmbr	typeref:struct:ArgNmbr::ArgNmbr
 next	src/parse.h	?^    struct Args *next;$?;"	m	struct:Args	typeref:struct:Args::Args
+next	src/parse.h	?^    struct OprtrArgs *prev, *next;$?;"	m	struct:OprtrArgs	typeref:struct:OprtrArgs::
 next	src/parse.h	?^    struct OprtrList *next;$?;"	m	struct:OprtrList	typeref:struct:OprtrList::OprtrList
 next	src/parse.h	?^    struct Tokens *next;$?;"	m	struct:Tokens	typeref:struct:Tokens::Tokens
 next	src/parse.h	?^    struct TreeList *next;$?;"	m	struct:TreeList	typeref:struct:TreeList::TreeList
@@ -377,6 +385,7 @@ oprtr	src/prps.h	?^    int *oprtr;         // var indicating type of logic opera
 p	src/prps.h	?^    struct PrpsTree *p;         // parent node$?;"	m	struct:PrpsTree	typeref:struct:PrpsTree::PrpsTree
 parent_dir	uneeded/printing/asciinode.h	?^  int parent_dir;   $?;"	m	struct:asciinode_struct
 parent_dir	uneeded/printing/print.h	?^  int parent_dir;   $?;"	m	struct:asciinode_struct
+prev	src/parse.h	?^    struct OprtrArgs *prev, *next;$?;"	m	struct:OprtrArgs	typeref:struct:OprtrArgs::OprtrArgs
 prev	src/tester.h	?^    struct ClauseList *prev, *next;$?;"	m	struct:ClauseList	typeref:struct:ClauseList::ClauseList
 print_args	src/_tree_synth.h	?^void print_args(Args *args)$?;"	f
 print_args	src/_tree_synth.old.h	?^void print_args(Args *args)$?;"	f
@@ -390,6 +399,7 @@ print_oprtr	src/_prps_err.h	?^void print_oprtr(int oprtr)$?;"	f
 print_tokens	src/_tree_synth.h	?^void print_tokens(Tokens *tokens)$?;"	f
 print_tokens	src/_tree_synth.old.h	?^void print_tokens(Tokens *tokens)$?;"	f
 prps	src/tester.h	?^    char *prps, **arg;$?;"	m	struct:FindList
+quant	src/parse.h	?^    char quant;$?;"	m	struct:OprtrArgs
 result	src/hash.h	?^    int *result;        // Result of passing argument arg to proposition$?;"	m	struct:ArgNode
 result	uneeded/hash_alloc.h	?^    int *result;        // Result of passing argument arg to prpsosition$?;"	m	struct:ArgNode
 result	uneeded/hash_check.h	?^    int *result;        // Result of passing argument arg to prpsosition$?;"	m	struct:ArgNode

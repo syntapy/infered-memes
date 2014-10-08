@@ -72,6 +72,24 @@ Args *A_Contains(Args **args, char *arg)
     return return_val;
 }
 
+int OprtrContains(OprtrArgs *tail, char *arg)
+{
+    OprtrArgs **head = NULL;
+    int return_val = 0;
+    head = &tail
+
+    while (1)
+        if (!T_Contains(&((*head) -> args), arg))
+            head = &((*head) -> next);
+        else
+        {
+            return_val = 1;
+            break;
+        }
+
+    return return_val;
+}
+
 char *List(Tokens **tokens, int index)
 {
     /*  Returns the char at node (int) index of (Tokens **) tokens.
@@ -254,6 +272,17 @@ void FreeArgs(Args **args)
 
     if ((*args) != NULL)
         FreeArgs(&((*args) -> next));
+
+    free(*args); (*args) = NULL;
+}
+
+void FreeOprtrArgs(OprtrArgs **args)
+{
+    if (args == NULL)
+        InconsistencyErr("FreeArgs 1");
+
+    if ((*args) != NULL)
+        FreeOprtrArgs(&((*args) -> next));
 
     free(*args); (*args) = NULL;
 }

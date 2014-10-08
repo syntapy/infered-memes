@@ -35,6 +35,13 @@ typedef struct OprtrList
     struct OprtrList *next;
 } OprtrList;
 
+typedef struct OprtrArgs
+{
+    char quant;
+    Tokens *args;
+    struct OprtrArgs *prev, *next;
+} OprtrArgs;
+
 void GetPrps(char **prps, char *input, int *i);
 void GetArg(char ***arg, char *input, int *i, int *arg_n);
 int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant);

@@ -181,7 +181,7 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
     while (input[j] != ']' && input[j] != '{' && input[j] != '}')
     {
         k = 0;
-        while (input[j + k] != ',' && input[j + k] != ']')
+        while (input[j + k] != ',' && input[j + k] != ']' && input[j + k] != '{')
             k++;
 
         *arg_n += 1;
@@ -193,6 +193,7 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
 
         while (input[j + k] != ']' && input[j + k] != '{' && input[j + k] != '}' && 
             (input[j + k] == ',' || input[j + k] == ' '))
+
             k++;
 
         (**head).t = k - (**head).s;
@@ -217,90 +218,129 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
         for (k = 0; k < s; k++)
             (*arg)[j][k] = input[*i + j + k];
 
+        (*arg)[j][k] = '\0';
         for (k = s; k < s + t; k++);
 
         *i += k;
     }
-
-    (*arg)[j] = '\0';
-    *i += *arg_n;
 }
 
-Tokens **ReadArgs(char *input, int n)
+void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs **oprtr_mid, OprtrArgs ***oprtr_head)
 {
-    int i = 0, j = 0, arg_n = 0;
-    char **arg = NULL, quant = '\0';
-    Tokens **head = NULL, *tail = NULL;
+    if (oprtr_tail == NULL)
+        InconsistencyErr("FreeTopOprtrArg 1");
+
+    if (*oprtr_tail != NULL)
+    {
+        if (**oprtr_head == *oprtr_tail)
+        {
+            free(**oprtr_head);
+            **oprtr_head = NULL;
+            *oprtr_mid = NULL;
+            *oprtr_tail = NULL;
+        }
+        
+        else
+        {
+            free(**oprtr_head);
+            *oprtr_head = oprtr_mid;
+            oprtr_mid = &((*oprtr_mid) -> prev);
+        }
+    }
+}
+
+void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *arg_n,
+        OprtrArgs **oprtr_mid, OprtrArgs ***oprtr_head)
+{
+    //*quant_head = calloc(1, sizeof(QuantStack));
+    //if (*quant_head == NULL)
+    //    MallocErr("ReadArgs 1.5");
+
+    //(**quant_head).quant = input[i];
+    int quant = input[*i], j;
+    while (input[*i] != '{')
+    {
+        if (IsLowerCase(input[*i]))
+        {
+            (**oprtr_head) = calloc(1, sizeof(OprtrArgs));
+            if ((**oprtr_head) == NULL)
+                MallocErr("ReadArgs 1.5");
+
+            (**oprtr_head) -> prev = (*oprtr_mid);
+            (*oprtr_mid) = (**oprtr_head);
+            (***oprtr_head).quant = quant;
+            GetArg(arg, input, i, arg_n);
+            for (j = 0; j < *arg_n; j++)
+                E_AddArg(&((**oprtr_head) -> args), (*arg)[j]);
+
+            (*oprtr_head) = &((**oprtr_head) -> next);
+            for (j = 0; j < *arg_n; j++)
+                free(arg[j]);
+
+            free(arg); arg = NULL;
+        }
+
+        else
+            *i++;
+    }
+}
+
+void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, int quantifier,
+        OprtrArgs **oprtr_tail, OprtrArgs **oprtr_mid, OprtrArgs ***oprtr_head)
+{
+    int j = 0, arg_n = 0;
+    char quant = '\0';
+    Tokens *tail = NULL;
     Tokens **return_val = NULL;
-    int quantifier = 0, parentheses = 0, quant_parent = 0;
-    Tokens **oprtrs = NULL, **oprtrs_tail = NULL;
+    //Tokens **oprtrs = NULL, **oprtrs_tail = NULL;
 
     head = calloc(1, sizeof(Tokens *));
-    oprtrs = calloc(1, sizeof(Tokens *));
+    //oprtrs = calloc(1, sizeof(Tokens *));
     //tail = calloc(1, sizeof(Tokens));
-    if (head == NULL || oprtrs == NULL)
+    if (head == NULL)// || oprtrs == NULL)
         MallocErr("ReadArgs 1");
 
-    while (i < n)
+    while (*i < n)
     {
+        // Needs to be done in calling function
         head = &tail;
-        if (input[i] == '3' || input[i] == '4')
+        // insert quantifier function here
+        if (input[*i] == '3' || input[*i] == '4')
         {
-            quant = input[i++];
-            quantifier++;
-            while (1)
-            {
-                if (IsLowerCase(input[i]))
-                {
-                    GetArg(&arg, input, &i, &arg_n);
-
-                    for (j = 0; j < arg_n; j++)
-                        E_AddArg(oprtrs, arg[j]);
-
-                    free(arg); arg = NULL;
-                }
-
-                else if (input[i] == '{')
-                {
-                    i++;
-                    break;
-                }
-
-                else
-                    i++;
-            }
+            ReadArgs_Quantifier(head, arg, input, i, &arg_n, oprtr_mid, oprtr_head);
+            ReadArgs(head, arg, input, i, n, quantifier+1, oprtr_tail, oprtr_mid, oprtr_head);
+            FreeTopOprtrArg(oprtr_tail, oprtr_mid, oprtr_head);
         }
 
-        if (input[i] == '}')
+        if (input[*i] == '}')
         {
-            quantifier--;
-            i++;
+            *i++;
+            break;
         }
 
-        if (IsUpperCase(input[i]))
-            while (input[++i] != '[');
+        if (IsUpperCase(input[*i]))
+            while (input[++*i] != '[');
 
-        if (IsLowerCase(input[i]))
+        if (IsLowerCase(input[*i]))
         {
-            GetArg(&arg, input, &i, &arg_n);
+            //if (!T_Contains(tail, (*arg)[j]))
+            GetArg(arg, input, i, &arg_n);
             if (quantifier > 0)
-            {
                 for (j = 0; j < arg_n; j++)
-                    if (!T_Contains(oprtrs, arg[j]))
-                        E_AddArg(head, arg[j]);
-            }
+                    if (!OprtrContains(*oprtr_tail, (*arg)[j]))
+                        E_AddArg(head, (*arg)[j]);
 
             else if (quantifier == 0)
                 for (j = 0; j < arg_n; j++)
-                    E_AddArg(head, arg[j]);
-            i++;
+                    E_AddArg(head, (*arg)[j]);
+            *i++;
         }
 
-        else if (input[i] == '\n')
+        else if (input[*i] == '\n')
             break;
 
         else
-            i++;
+            *i++;
     }
 
     return_val = calloc(1, sizeof(Tokens *));
@@ -325,6 +365,9 @@ PrpsTree **Read(PrpsTree ***tree, int h, int k, int *hash_val)
     const char *filename_kb = "KB.txt";
     const char *filename_prps = "PRPS.txt";
     const char *filename_alpha = "ALPHA.txt";
+
+    OprtrArgs *oprtr_tail = NULL, *oprtr_mid = NULL;
+    OprtrArgs **oprtr_head = &oprtr_tail;
 
     PrpsTree **return_val = NULL;
 
