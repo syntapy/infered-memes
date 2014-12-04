@@ -1,16 +1,21 @@
 void AddToken(Tokens **head, char *token)
 {
     char buf[2];
+    int n;
     sprintf(buf, "%s", token);
 
     if (head == NULL || *head == NULL)
         NoMallocErr("AddToken 1");
 
-    (*head) -> token = token;
+    n = strlen(token) + 1;
+    (*head) -> token = calloc(n, sizeof(char));
+    if ((*head) -> token == NULL)
+        MallocErr("AddToken 2");
+    strcpy((*head) -> token, token);
     (*head) -> next = calloc(1, sizeof(Tokens));
 
     if ((*head) -> next == NULL)
-        MallocErr("AddTokens 2");
+        MallocErr("AddTokens 3");
 
     *head = (*head) -> next;
 }
@@ -57,7 +62,7 @@ Args *A_Contains(Args **args, char *arg)
     if (args != NULL)
     {
         args_ptr = (*args);
-        while (*args != NULL)
+        while (args_ptr != NULL)
         {
             if (strcmp((const char *) args_ptr -> token, arg) == 0)
             {
@@ -76,9 +81,9 @@ int OprtrContains(OprtrArgs *tail, char *arg)
 {
     OprtrArgs **head = NULL;
     int return_val = 0;
-    head = &tail
+    head = &tail;
 
-    while (1)
+    while (head != NULL && (*head) != NULL)
         if (!T_Contains(&((*head) -> args), arg))
             head = &((*head) -> next);
         else
@@ -249,6 +254,9 @@ void U_AddArg(Tokens **arg_list, Args **u_args, char *arg)
         if ((*u_args_ptr) == NULL)
             MallocErr("U_AddArg 2");
 
+        (*u_args_ptr) -> token = calloc(strlen(arg)+1, sizeof(char));
+        if ((*u_args_ptr) -> token == NULL)
+            MallocErr("U_AddArg 3");
         strcpy((*u_args_ptr) -> token, arg);
         (*u_args_ptr) -> token_ptr = (*arg_list);
     }
@@ -302,16 +310,9 @@ void SetArg(Tokens **arg_list, Tokens **e_args, Args **u_args,
     if (arg == NULL)
         InconsistencyErr("SetArg 1");
 
-    //(*arg) = calloc(2, sizeof(char));
-    //if ((*arg) == NULL)
-    //    MallocErr("SetArg 2");
-
-    //(*arg_list_head) = (*arg_list);
     arg_ptr = A_Contains(u_args, token);
-    if (quant == '\0' ||
-            ((e_args != NULL && !T_Contains(e_args, token)) && arg_ptr == NULL))
+    if ((e_args == NULL && u_args == NULL) || (!arg_ptr && !T_Contains(e_args, token)))
     {
-
         if (*arg != NULL)
             InconsistencyErr("SetArg 2.25");
         *arg = calloc(strlen(token)+1, sizeof(char));
@@ -320,7 +321,7 @@ void SetArg(Tokens **arg_list, Tokens **e_args, Args **u_args,
         strcpy(*arg, token);
     }
 
-    else if (e_args != NULL && quant == '3' && T_Contains(e_args, token))
+    else if (T_Contains(e_args, token))
     {
 
         found = 0;
@@ -362,7 +363,7 @@ void SetArg(Tokens **arg_list, Tokens **e_args, Args **u_args,
         }
     }
 
-    else if (u_args != NULL && quant == '4' && arg_ptr != NULL)
+    else if (arg_ptr != NULL)
     {
         if (*arg != NULL)
             InconsistencyErr("SetArg 2.75");

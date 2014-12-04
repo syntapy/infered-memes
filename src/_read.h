@@ -64,13 +64,21 @@ char **ReadKB(int m, const char *filename)
 
 char *ReadPRPS(const char *filename)
 {
-    char *prps = NULL;
-    int n;
+    char *prps = NULL, *return_val = NULL;
+    int n = 0, size;
 
     FILE *f = fopen(filename, "r");
 
-    getline(&prps, &n, f);
+    size = getline(&prps, &n, f);
+
+    return_val = calloc(size, sizeof(char));
+    if (return_val == NULL)
+        MallocErr("ReadPRPS 1");
+
+    memcpy(return_val, prps, (size-1)*sizeof(char));
+    return_val[size-1] = '\0';
+    free(prps); prps = NULL;
     fclose(f);
 
-    return prps;
+    return return_val;
 }

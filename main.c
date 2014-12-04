@@ -1,4 +1,4 @@
-#include <check.h>
+//#include <check.h>
 #include "include.h"
 //#include "test/unit_fixtures.h"
 
@@ -30,7 +30,8 @@ int main()
     int is_cnf, tree_val = -1;
 
     //hash = GenerateAllocatedHashTable(n, l);
-    alpha = Read(&tree, n, l, &hash_val);
+    Read(&tree, n, l, &hash_val);
+    return 0;
     TreeConsistency(tree);
 
     //KB = CopySubTree(&((*tree) -> left));

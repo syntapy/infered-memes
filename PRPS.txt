@@ -1,4 +1,24 @@
-A[a] ^ 3 z{A[z]}
+4 x { 4 y{ Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 4 x {3 z {Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}} ^ 4 x {Animal[x] -> Loves[jack, x]} ^ Kills[jack, tuna] v Kills[curiosity, tuna] ^ Cat[tuna] ^ 4 x {Cat[x] -> Animal[x]}
+
+
+
+
+
+
+4 x { 4 y{ Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 
+
+4 x {3 z {Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}}
+
+4 x {Animal[x] -> Loves[jack, x]}
+
+Kills[jack, tuna] v Kills[curiosity, tuna]
+
+Cat[tuna]
+
+4 x {Cat[x] -> Animal[x]}
+
+
+Loves[human, baby] ^ 4 person, hombre{Loves[person, hombre]}
 A[a] ^ A[b] ^ 4 x{ P[x] -> Q[x]} ^ 4 y{Q[y] -> R[y]} ^ 3 z{A[z]}
 
 

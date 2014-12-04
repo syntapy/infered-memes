@@ -399,6 +399,7 @@ void AddStmnt(FindList **list, char *prps, char **arg,
      */
 
     FindList **head = NULL, **tail = NULL;
+    int prps_len = 0;
 
     if ((is == 1 || is_not == 1) && (is == 0 || is_not == 0))
     {
@@ -447,16 +448,16 @@ void AddStmnt(FindList **list, char *prps, char **arg,
             (*head) -> is = is;
             (*head) -> is_not = is_not;
 
-            (*head) -> prps = calloc(2, sizeof(char));
-            (*head) -> arg = calloc(2, sizeof(char));
+            prps_len = strlen(prps) + 1;
+
+            (*head) -> prps = calloc(prps_len, sizeof(char));
+            (*head) -> arg = calloc(n_args, sizeof(char *));
             if ((*head) -> prps == NULL || (*head) -> arg == NULL)
                 MallocErr("AddSmnt 2");
 
-            ((*head) -> prps)[0] = prps[0];
-            ((*head) -> prps)[1] = '\0';
+            strcpy(((*head) -> prps), prps);
             (*head) -> arg = arg;
             (*head) -> n_args = n_args;
-            //((*head) -> arg)[1] = '\0';
         }
     }
 }

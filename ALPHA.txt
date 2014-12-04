@@ -1,4 +1,7 @@
-B[a]
+!Kills[curiosity, tuna]
+
+
+Loves[baby, human]
 P[a] -> R[a]
 (A[a] ^ C[c])
 (A[a] v B[b])

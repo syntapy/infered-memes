@@ -1,4 +1,3 @@
-break /home/sami/Dropbox/AI/extract/v.1/main.c:33
-break /home/sami/Dropbox/AI/extract/v.1/src/parse.c:386
-break /home/sami/Dropbox/AI/extract/v.1/src/parse.c:263
-break parse.c:268
+break main.c:53
+break tester.c:612
+break tester.c:487

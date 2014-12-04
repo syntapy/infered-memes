@@ -90,7 +90,7 @@ FreeOprtrList	src/_tree_synth.h	?^void FreeOprtrList(OprtrList **oprtr_list)$?;"
 FreeOprtrList	src/_tree_synth.old.h	?^void FreeOprtrList(OprtrList **oprtr_list)$?;"	f
 FreeSymbolArray	src/tester.c	?^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$?;"	f
 FreeTokens	src/_list.h	?^void FreeTokens(Tokens **tokens)$?;"	f
-FreeTopOprtrArg	src/parse.c	?^void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs **oprtr_mid, OprtrArgs ***oprtr_head)$?;"	f
+FreeTopOprtrArg	src/parse.c	?^void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_mid, OprtrArgs ***oprtr_head)$?;"	f
 FreeTreeList	src/_tree_synth.h	?^void FreeTreeList(TreeList **tree_list)$?;"	f
 FreeTreeList	src/_tree_synth.old.h	?^void FreeTreeList(TreeList **tree_list)$?;"	f
 GenArgs	src/tester.c	?^char **GenArgs(char *input, int *i)$?;"	f
@@ -171,7 +171,7 @@ Oprtr	src/prps.c	?^PrpsTree **Oprtr(int neg_a, PrpsTree **tree_a, int neg_b, Prp
 Oprtr2	src/prps.c	?^PrpsTree **Oprtr2(int neg_a, PrpsTree **tree, int neg_b, char *prps, char **arg, int n_args, int neg_oprtr, int oprtr)$?;"	f
 OprtrArgs	src/parse.h	?^typedef struct OprtrArgs$?;"	s
 OprtrArgs	src/parse.h	?^} OprtrArgs;$?;"	t	typeref:struct:OprtrArgs
-OprtrContains	src/_list.h	?^int OprtrContains(OprtrArgs **tail, char *arg)$?;"	f
+OprtrContains	src/_list.h	?^int OprtrContains(OprtrArgs *tail, char *arg)$?;"	f
 OprtrList	src/parse.h	?^typedef struct OprtrList$?;"	s
 OprtrList	src/parse.h	?^} OprtrList;$?;"	t	typeref:struct:OprtrList
 OprtrNode	src/prps.c	?^int OprtrNode(PrpsTree **tree)$?;"	f
@@ -192,8 +192,8 @@ PrpsTree	uneeded/printing/print.h	?^struct PrpsTree $?;"	s
 QuantifierToTree	src/_tree_synth.h	?^PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list, $?;"	f
 QuantifierToTree	src/_tree_synth.old.h	?^PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list, $?;"	f
 RIGHT	src/ops.h	9;"	d
-Read	src/parse.c	?^PrpsTree **Read(PrpsTree ***tree, int h, int k, int *hash_val)$?;"	f
-ReadArgs	src/parse.c	?^void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, int quantifier,$?;"	f
+Read	src/parse.c	?^void Read(PrpsTree ***tree, int h, int k, int *hash_val)$?;"	f
+ReadArgs	src/parse.c	?^void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quantifier,$?;"	f
 ReadArgs_Quantifier	src/parse.c	?^void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *arg_n,$?;"	f
 ReadKB	src/_read.h	?^char **ReadKB(int m, const char *filename)$?;"	f
 ReadPRPS	src/_read.h	?^char *ReadPRPS(const char *filename)$?;"	f

@@ -76,6 +76,8 @@ Tokens *PrpsTokenizer(char *input, int *n)
                         AddToken(&head, arg[j]);
                 }
             }
+
+            AddToken(&head, "{"); i++;
         }
 
         if (input[i] != ',' && input[i] != ' ' &&
@@ -105,16 +107,42 @@ Tokens *PrpsTokenizer(char *input, int *n)
             else if (IsOprtr(input[i]))
             {
                 token = NULL;
-                token = calloc(1, sizeof(char));
+                token = calloc(2, sizeof(char));
                 if (token == NULL)
                     MallocErr("PrpsTokenizer 2");
+
+                token[0] = input[i];
+                token[1] = '\0';
                 AddToken(&head, token);
                 token = NULL; i++;
             }
 
+            else if (input[i] == '3' || input[i] == '4')
+                continue;
+
         }
+
+        if (input[i] == '{')
+        {
+            AddToken(&head, "{");
+            i++;
+        }
+
+        else if (input[i] == '}')
+        {
+            AddToken(&head, "}");
+            i++;
+        }
+
+        else if (input[i] == '!')
+        {
+            AddToken(&head, "!");
+            i++;
+        }
+
         else if (input[i] == '\n')
             break;
+
         else
             i++;
     }
@@ -183,12 +211,12 @@ void print_tokens(Tokens *tokens)
 {
     Tokens *head = tokens;
 
-    while (head != NULL && (*head).token != NULL)
+    while (head != NULL && head -> next != NULL && head -> next -> next != NULL)
     {
-        fprintf(stdout, "%s", head -> token);
+        fprintf(stdout, "%s * ", head -> token);
         head = head -> next;
     } 
-
+    fprintf(stdout, "%s", head -> token);
     fprintf(stdout, "\n");
 }
 
@@ -340,6 +368,9 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
                 AddTree(head, arg_list, &tree_list_head_tmp, 
                         &tree_list_tmp, e_args, u_args, 
                         depth + 1, quant, subtree_negate);
+
+                if (*head == NULL)
+                    break;
                 token = (*head) -> token;
 
                 //GeneratePrpsNode(tokens, arg_list, q_arg_list, 
@@ -603,8 +634,7 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
         }
     }
 
-    return_val = U_E_QuantifierToTree(tokens, arg_list, 
-                    e_args, u_args, depth, quant, global_negate);
+    return_val = U_E_QuantifierToTree(tokens, arg_list, e_args, u_args, depth, quant, global_negate);
 
     return return_val;
 }
@@ -680,7 +710,7 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
         (*tokens_ptr_tmp) = (*tokens_ptr);
         token = (*tokens_ptr) -> token;
 
-        while (IsLowerCase(token[0]))
+        while (token != NULL && IsLowerCase(token[0]))
         {
             (*tokens_ptr_tmp) = (*tokens_ptr_tmp) -> next;
             token = (*tokens_ptr_tmp) -> token;
@@ -702,8 +732,9 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
         free(prps); free(arg);
         prps = NULL; arg = NULL;
 
-        (*tokens_ptr) = (*tokens_ptr) -> next;
-        token = (*tokens_ptr) -> token;
+        //(*tokens_ptr) = (*tokens_ptr) -> next;
+        if ((*tokens_ptr) != NULL)
+            token = (*tokens_ptr) -> token;
     }
 
     else InconsistencyErr("AddTree 4");
@@ -757,7 +788,7 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
         MallocErr("TokensToTree 1");
 
     (*tree_list_head) = tree_list; (*oprtr_list_head) = oprtr_list;
-    while ((*tokens) -> next != NULL) // && (*tokens) -> token != ')')
+    while (*tokens != NULL && (*tokens) -> next != NULL) // && (*tokens) -> token != ')')
     {
         token = (*tokens) -> token;
         if (token != NULL && strcmp(token, "{") == 0 || strcmp(token, "-") == 0)
@@ -779,6 +810,8 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
             tree_tmp = TokensToTree(tokens, arg_list, subtree_negate);
             ListAddTree(&tree_list_head, tree_tmp);
             tree_tmp = NULL;
+            if (*tokens == NULL)
+                break;
         }
 
         else if (token != NULL && strcmp(token, ")") == 0 || strcmp(token, "}") == 0)
@@ -791,7 +824,7 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
             AddTree(tokens, arg_list, &tree_list_head, &tree_list, 
                 e_args, u_args, 0, quant, subtree_negate);
 
-        else if (token != NULL && strcmp(token, "4") == 0 || strcmp(token, "3") == 0)
+        else if (token != NULL && (strcmp(token, "4") == 0 || strcmp(token, "3") == 0))
         {
             quant = token[0];
             if (u_args == NULL)
@@ -811,8 +844,8 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
             //AddToken(u_args, token)
             if (quant == '4')
                 depth++;
-            tree_tmp = QuantifierToTree(tokens, arg_list,
-                e_args, u_args, 1, global_negate);
+            tree_tmp = QuantifierToTree(tokens, arg_list, e_args, u_args, 1, global_negate);
+            //tree_print(tree_tmp);
             ListAddTree(&tree_list_head, tree_tmp);
 
             FreeArgs(u_args); FreeTokens(e_args);
