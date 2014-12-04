@@ -101,7 +101,7 @@ int IsOprtr(char token)
 
 #include "_tree_synth.h"
 
-int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth)
 {
     /*
         contributes return value of 1 as long as (*u_args_ptr) -> token_ptr != NULL AFTER making any modifications to it
@@ -111,17 +111,19 @@ int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)
 
     if ((*u_args_ptr) != NULL && (*u_args_ptr) -> token_ptr != NULL)
     {
-        (*u_args_ptr) -> token_ptr = (*u_args_ptr) -> token_ptr -> next;
+        if ((**u_args_ptr).depth < depth)
+            return_val = 0;
+        else
+            (*u_args_ptr) -> token_ptr = (*u_args_ptr) -> token_ptr -> next;
 
         if ((*u_args_ptr) -> token_ptr == NULL)
         {
-
             (*u_args_ptr) -> token_ptr = (*arg_list);
             return_val = 0;
-            next = IncrementConditional(arg_list, &((*u_args_ptr) -> next), quant);
+            if ((*u_args_ptr) -> next != NULL)
+                next = IncrementConditional(arg_list, &((*u_args_ptr) -> next), depth);
             return_val = return_val || next;
         }
-
     }
 
     else
@@ -253,55 +255,47 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
     }
 }
 
-void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_mid, OprtrArgs ***oprtr_head)
+void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_head)
 {
-    if (oprtr_tail == NULL)
+    OprtrArgs **oprtr_tmp = NULL;
+
+    if (*oprtr_head == NULL)
         InconsistencyErr("FreeTopOprtrArg 1");
 
-    if (*oprtr_tail != NULL)
+    if (**oprtr_head != NULL)
     {
-        if (**oprtr_head == *oprtr_tail)
-        {
-            if ((**oprtr_head) != NULL)
-            {
-                FreeTokens(&((**oprtr_head) -> args));
-                *oprtr_tail = NULL;
-                (**oprtr_head) -> args = NULL;
-                (**oprtr_head) -> quant = '\0';
-                free(**oprtr_head);
-                **oprtr_head = NULL;
-                **oprtr_mid = NULL;
-                *oprtr_head = NULL;
-                //free(**oprtr_head);
-                //**oprtr_head = NULL;
-            }
-        }
+        FreeTokens(&((**oprtr_head) -> args));
+        (**oprtr_head) -> args = NULL;
+        (**oprtr_head) -> quant = '\0';
 
-        else if ((**oprtr_head) == NULL)
+        if ((**oprtr_head) -> prev != NULL)
         {
-            *oprtr_head = *oprtr_mid;
-            if (((**oprtr_mid) -> prev) != NULL)
-                *oprtr_mid = &((**oprtr_mid) -> prev);
-            FreeTokens(&((**oprtr_head) -> args));
-            if ((**oprtr_head) -> next != NULL)
-                free((**oprtr_head) -> next);
+            oprtr_tmp = calloc(1, sizeof(OprtrArgs *));
+            if (oprtr_tmp == NULL)
+                MallocErr("FreeTopOprtrArgs 1");
+
+            (*oprtr_tmp) = (**oprtr_head) -> prev;
             free(**oprtr_head);
             **oprtr_head = NULL;
-            //(***oprtr_head).prev = NULL;
-            //(***oprtr_head).next = NULL;
-            //(***oprtr_head).args = NULL;
-            //(***oprtr_head).quant = '\0';
-            //free(**oprtr_head);
-            //**oprtr_head = NULL;
+            free(*oprtr_head);
+            *oprtr_head = NULL;
+            (*oprtr_head) = oprtr_tmp;
+            (**oprtr_head) -> next = NULL;
         }
 
         else
-            DeathErr("FreeTopOprtrArg 2");
+        {
+            free(**oprtr_head);
+            **oprtr_head = NULL;
+        }
     }
+
+    //else
+    //    DeathErr("FreeTopOprtrArg 2");
 }
 
 void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *arg_n,
-        OprtrArgs ***oprtr_mid, OprtrArgs ***oprtr_head)
+        OprtrArgs ***oprtr_head)
 {
     //*quant_head = calloc(1, sizeof(QuantStack));
     //if (*quant_head == NULL)
@@ -309,29 +303,41 @@ void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *a
 
     //(**quant_head).quant = input[i];
     int quant = input[*i], j;
+    OprtrArgs **oprtr_tmp = NULL;
     while (input[*i] != '{')
     {
         if (IsLowerCase(input[*i]))
         {
-            (**oprtr_head) = calloc(1, sizeof(OprtrArgs));
-            if ((**oprtr_head) == NULL)
-                MallocErr("ReadArgs 1.5");
+            if (**oprtr_head == NULL)
+            {
+                (**oprtr_head) = calloc(1, sizeof(OprtrArgs));
+                if ((**oprtr_head) == NULL)
+                    MallocErr("ReadArgsQuantifier 1.5");
+                //(***oprtr_head).next = calloc(1, sizeof(OprtrArgs));
+            }
 
-            if ((**oprtr_mid) != (**oprtr_head))
-                (***oprtr_head).prev = (**oprtr_mid);
+            else
+            {
+                (***oprtr_head).next = calloc(1, sizeof(OprtrArgs));
+                if ((***oprtr_head).next == NULL)
+                    MallocErr("ReadArgsQuantifier 1.6");
 
-            //(*oprtr_mid) = (*oprtr_head);
+                (*((***oprtr_head).next)).prev = (**oprtr_head);
+                oprtr_tmp = calloc(1, sizeof(OprtrArgs *));
+                if (oprtr_tmp == NULL)
+                    MallocErr("ReadArgsQuantifier 1.7");
+
+                (*oprtr_tmp) = (**oprtr_head) -> next;
+                (*oprtr_head) = oprtr_tmp;
+            }
+
             (***oprtr_head).quant = quant;
             GetArg(arg, input, i, arg_n);
             for (j = 0; j < *arg_n; j++)
             {
-                E_AddArg(&((**oprtr_head) -> args), (*arg)[j]);
+                E_AddArg(&((**oprtr_head) -> args), (*arg)[j], -1);
                 free((*arg)[j]); (*arg)[j] = NULL;
             }
-
-            (*oprtr_mid) = (*oprtr_head);
-            (*oprtr_head) = &((**oprtr_head) -> next);
-            //(***oprtr_mid).next = &(***oprtr_head);
         }
 
         else
@@ -340,7 +346,7 @@ void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *a
 }
 
 void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quantifier,
-        OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_mid, OprtrArgs ***oprtr_head)
+        OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_head)
 {
     int j = 0, arg_n = 0;
     char quant = '\0';
@@ -358,9 +364,9 @@ void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quant
     {
         if (input[*i] == '3' || input[*i] == '4')
         {
-            ReadArgs_Quantifier(head, arg, input, i, &arg_n, oprtr_mid, oprtr_head);
-            ReadArgs(head, arg, input, i, n, quantifier+1, oprtr_tail, oprtr_mid, oprtr_head);
-            FreeTopOprtrArg(oprtr_tail, oprtr_mid, oprtr_head);
+            ReadArgs_Quantifier(head, arg, input, i, &arg_n, oprtr_head);
+            ReadArgs(head, arg, input, i, n, quantifier+1, oprtr_tail, oprtr_head);
+            FreeTopOprtrArg(oprtr_tail, oprtr_head);
         }
 
         if (input[*i] == '}')
@@ -381,7 +387,7 @@ void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quant
                 for (j = 0; j < arg_n; j++)
                     if (!OprtrContains(*oprtr_tail, (*arg)[j]))
                     {
-                        E_AddArg(head, (*arg)[j]);
+                        E_AddArg(head, (*arg)[j], -1);
                         free((*arg)[j]); (*arg)[j] = NULL;
                     }
             }
@@ -389,7 +395,7 @@ void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quant
             else if (quantifier == 0)
                 for (j = 0; j < arg_n; j++)
                 {
-                    E_AddArg(head, (*arg)[j]);
+                    E_AddArg(head, (*arg)[j], -1);
                     free((*arg)[j]); (*arg)[j] = NULL;
                 }
 
@@ -490,7 +496,7 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
     //mid = NULL; prps = NULL;
 
     n = strlen((const char *) prps_alpha);
-    ReadArgs(arg_list, &arg, prps_alpha, &i, n, quantifier, &oprtr_tail, &oprtr_mid, &oprtr_head);
+    ReadArgs(arg_list, &arg, prps_alpha, &i, n, quantifier, &oprtr_tail, &oprtr_head);
 
     exist_arg_list = calloc(1, sizeof(Tokens *));
     if (exist_arg_list == NULL)

@@ -7,6 +7,7 @@ typedef struct Tokens
 {   // Used in parsing non-quantifier text
     //    and existential quantifiers
     char *token;
+    int depth;
     struct Tokens *next;
 } Tokens;
 
@@ -14,6 +15,7 @@ typedef struct Args
 {   // Used in implementing universal quantifiers
     char *token;
     Tokens *token_ptr;
+    int depth;
     struct Args *next;
 } Args;
 
@@ -44,6 +46,6 @@ typedef struct OprtrArgs
 
 void GetPrps(char **prps, char *input, int *i);
 void GetArg(char ***arg, char *input, int *i, int *arg_n);
-int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant);
+int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth);
 
 #endif

@@ -191,7 +191,7 @@ int U_GetIndex(Args **args, char *arg)
     return return_val;
 }
 
-void E_AddArg(Tokens **e_args, char *arg)
+void E_AddArg(Tokens **e_args, char *arg, int depth)
 {
     /*  Adds (char) arg to (Tokens **) e_args, and sets
         (char *) token_ptr to the first element in
@@ -225,10 +225,124 @@ void E_AddArg(Tokens **e_args, char *arg)
             MallocErr("E_AddArg 1");
 
         strcpy((**e_args_ptr).token, (const char *) arg);
+        (**e_args_ptr).depth = depth;
     }
 }
 
-void U_AddArg(Tokens **arg_list, Args **u_args, char *arg)
+Tokens **E_CopyTokens(Tokens **e_args)
+{
+    Tokens **return_val = NULL, **arg_ptr = NULL, **return_ptr = NULL;
+    int s = 0;
+
+    if (e_args != NULL)
+    {
+        return_val = calloc(1, sizeof(Tokens *));
+        if (return_val == NULL)
+            MallocErr("CopyUTokens 1");
+
+        arg_ptr = e_args;
+        return_ptr = return_val;
+
+        while (*arg_ptr != NULL)
+        {
+            (*return_ptr) = calloc(1, sizeof(Tokens));
+            if ((*return_ptr) == NULL)
+                MallocErr("CopyUTokens 2");
+
+            if ((**arg_ptr).token != NULL)
+            {
+                s = strlen((**arg_ptr).token);
+                (**return_ptr).token = calloc(s, sizeof(char));
+                if ((**return_ptr).token == NULL)
+                    MallocErr("CopyUTokens 3");
+                strcpy((**return_ptr).token, (**arg_ptr).token);
+            }
+
+            (**return_ptr).depth = (**arg_ptr).depth;
+            arg_ptr = &((*arg_ptr) -> next);
+            return_ptr = &((*return_ptr) -> next);
+        }
+    }
+
+    return return_val;
+}
+
+Args **U_CopyArgs(Args **u_args, Tokens **arg_list)
+{
+    Args **return_val = NULL, **arg_ptr = NULL, **return_ptr = NULL;
+    int s = 0;
+
+    if (u_args != NULL)
+    {
+        return_val = calloc(1, sizeof(Args *));
+        if (return_val == NULL)
+            MallocErr("CopyUArgs 1");
+
+        arg_ptr = u_args;
+        return_ptr = return_val;
+
+        while (*arg_ptr != NULL)
+        {
+            (*return_ptr) = calloc(1, sizeof(Args));
+            if ((*return_ptr) == NULL)
+                MallocErr("CopyUArgs 2");
+
+            if ((**arg_ptr).token != NULL)
+            {
+                s = strlen((**arg_ptr).token);
+                (**return_ptr).token = calloc(s, sizeof(char));
+                if ((**return_ptr).token == NULL)
+                    MallocErr("CopyUArgs 3");
+                strcpy((**return_ptr).token, (**arg_ptr).token);
+            }
+
+            if ((**arg_ptr).token_ptr != NULL)
+                (**return_ptr).token_ptr = (*arg_list);
+            
+            (**return_ptr).depth = (**arg_ptr).depth;
+            arg_ptr = &((*arg_ptr) -> next);
+            return_ptr = &((*return_ptr) -> next);
+        }
+    }
+
+    return return_val;
+}
+
+void U_FreeTop(Args **u_args)
+{
+    Args **arg_ptr = u_args;
+
+    if (u_args != NULL)
+    {
+        if (*u_args != NULL)
+        {
+            while ((*arg_ptr) -> next != NULL)
+                arg_ptr = &((*arg_ptr) -> next);
+            free((**arg_ptr).token);
+            (**arg_ptr).token_ptr = NULL;
+            free(*arg_ptr); *arg_ptr = NULL;
+        }
+    }
+}
+
+void E_FreeTop(Tokens **e_args)
+{
+    Tokens **token_ptr = e_args;
+
+    if (e_args != NULL)
+    {
+        if (*e_args != NULL)
+        {
+            while ((*token_ptr) -> next != NULL)
+                token_ptr = &((*token_ptr) -> next);
+            free((**token_ptr).token);
+            free(*token_ptr); *token_ptr = NULL;
+        }
+    }
+
+}
+
+void U_AddArg(Tokens **arg_list, Args **u_args, char *arg, int depth)
 {
     /*  Adds (char) arg to (Args **) u_args, and sets
      *  (char *) token_ptr to the first element in
@@ -259,6 +373,7 @@ void U_AddArg(Tokens **arg_list, Args **u_args, char *arg)
             MallocErr("U_AddArg 3");
         strcpy((*u_args_ptr) -> token, arg);
         (*u_args_ptr) -> token_ptr = (*arg_list);
+        (**u_args_ptr).depth = depth;
     }
 }
 

@@ -74,7 +74,9 @@ DetatchParentRight	src/prps.c	?^PrpsTree **DetatchParentRight(PrpsTree **tree)$?
 DistributeOrs	src/prps.c	?^void DistributeOrs(PrpsTree **tree, PrpsTree **tree_insert)$?;"	f
 DistributeOrs_Caller	src/prps.c	?^void DistributeOrs_Caller(PrpsTree **tree)$?;"	f
 EXISTS	src/ops.h	17;"	d
-E_AddArg	src/_list.h	?^void E_AddArg(Tokens **e_args, char *arg)$?;"	f
+E_AddArg	src/_list.h	?^void E_AddArg(Tokens **e_args, char *arg, int depth)$?;"	f
+E_CopyTokens	src/_list.h	?^Tokens **E_CopyTokens(Tokens **e_args)$?;"	f
+E_FreeTop	src/_list.h	?^void E_FreeTop(Tokens **e_args)$?;"	f
 E_GetIndex	src/_list.h	?^int E_GetIndex(Tokens **tokens, char *token)$?;"	f
 ElliminateClause	src/tester.c	?^void ElliminateClause(FindList **clause)$?;"	f
 ElliminateDefaultTrues	src/tester.c	?^int ElliminateDefaultTrues(ClauseList **clause_list)$?;"	f
@@ -90,7 +92,7 @@ FreeOprtrList	src/_tree_synth.h	?^void FreeOprtrList(OprtrList **oprtr_list)$?;"
 FreeOprtrList	src/_tree_synth.old.h	?^void FreeOprtrList(OprtrList **oprtr_list)$?;"	f
 FreeSymbolArray	src/tester.c	?^void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)$?;"	f
 FreeTokens	src/_list.h	?^void FreeTokens(Tokens **tokens)$?;"	f
-FreeTopOprtrArg	src/parse.c	?^void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_mid, OprtrArgs ***oprtr_head)$?;"	f
+FreeTopOprtrArg	src/parse.c	?^void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_head)$?;"	f
 FreeTreeList	src/_tree_synth.h	?^void FreeTreeList(TreeList **tree_list)$?;"	f
 FreeTreeList	src/_tree_synth.old.h	?^void FreeTreeList(TreeList **tree_list)$?;"	f
 GenArgs	src/tester.c	?^char **GenArgs(char *input, int *i)$?;"	f
@@ -128,7 +130,7 @@ IMP	src/ops.h	4;"	d
 INFINITY	uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
 InconsistencyErr	src/err.h	?^void InconsistencyErr(const char *msg)$?;"	f
-IncrementConditional	src/parse.c	?^int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)$?;"	f
+IncrementConditional	src/parse.c	?^int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth)$?;"	f
 IsCNF	src/prps.c	?^int IsCNF(PrpsTree **tree)$?;"	f
 IsLeftChild	src/prps.c	?^int IsLeftChild(PrpsTree **tree)$?;"	f
 IsLowerCase	src/parse.c	?^int IsLowerCase(char c)$?;"	f
@@ -226,9 +228,11 @@ TreeListToTree	src/_tree_synth.h	?^PrpsTree **TreeListToTree(TreeList *tree_list
 TreeListToTree	src/_tree_synth.old.h	?^PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list)$?;"	f
 UPPER_CASE_FIRST	src/ops.h	26;"	d
 UPPER_CASE_LAST	src/ops.h	27;"	d
-U_AddArg	src/_list.h	?^void U_AddArg(Tokens **arg_list, Args **u_args, char *arg)$?;"	f
+U_AddArg	src/_list.h	?^void U_AddArg(Tokens **arg_list, Args **u_args, char *arg, int depth)$?;"	f
+U_CopyArgs	src/_list.h	?^Args **U_CopyArgs(Args **u_args, Tokens **arg_list)$?;"	f
 U_E_QuantifierToTree	src/_tree_synth.h	?^PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list, $?;"	f
 U_E_QuantifierToTree	src/_tree_synth.old.h	?^PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list, $?;"	f
+U_FreeTop	src/_list.h	?^void U_FreeTop(Args **u_args)$?;"	f
 U_GetIndex	src/_list.h	?^int U_GetIndex(Args **args, char *arg)$?;"	f
 YES	src/ops.h	15;"	d
 addArg	src/_hash_alloc.org.h	?^void addArg(char prop[], char arg[], HashTable **hash, int m, int n)$?;"	f
@@ -311,6 +315,8 @@ compute_lprofile	uneeded/printing/asciinode.h	?^void compute_lprofile(asciinode 
 compute_lprofile	uneeded/printing/print.h	?^void compute_lprofile(asciinode *node, int x, int y) $?;"	f
 compute_rprofile	uneeded/printing/asciinode.h	?^void compute_rprofile(asciinode *node, int x, int y) $?;"	f
 compute_rprofile	uneeded/printing/print.h	?^void compute_rprofile(asciinode *node, int x, int y) $?;"	f
+depth	src/parse.h	?^    int depth;$?;"	m	struct:Args
+depth	src/parse.h	?^    int depth;$?;"	m	struct:Tokens
 edge_length	uneeded/printing/asciinode.h	?^  int edge_length; $?;"	m	struct:asciinode_struct
 edge_length	uneeded/printing/print.h	?^  int edge_length; $?;"	m	struct:asciinode_struct
 element	uneeded/printing/asciinode.h	?^  int element;$?;"	m	struct:Tree
