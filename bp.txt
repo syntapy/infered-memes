@@ -1,2 +1,3 @@
-break _tree_synth.h:887
-break _tree_synth.h:806
+break /home/michilo/Dropbox/AI/extract/v.1/main.c:33
+break parse.c:520
+break _tree_synth.h:862

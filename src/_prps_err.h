@@ -98,38 +98,58 @@ void tree_print(PrpsTree **tree)
 {
     int i, n_args;//CheckConsistency(tree);
 
-    if ((*tree) -> left != NULL && (*tree) -> right != NULL)
+    if (tree != NULL && (*tree) != NULL)
     {
-        if (*((*tree) -> neg) == NOT)
-            fprintf(stdout, "~");
-        fprintf(stdout, "(");
-        tree_print(&((*tree) -> left));
-
-        print_oprtr(*((*tree) -> oprtr));
-
-        tree_print(&((*tree) -> right));
-
-        fprintf(stdout, ")");
-    }
-
-    else if ((*tree) -> left == NULL && (*tree) -> right == NULL)
-    {
-        n_args = (**tree).n_args;
-
-        if (*(*tree) -> neg == NOT)
-            fprintf(stdout, "~");
-        fprintf(stdout, "%s[", (*tree) -> stmnt -> stc);
-
-        for (i = 0; i < n_args; i++)
+        if ((*tree) -> left != NULL && (*tree) -> right != NULL)
         {
-            if (i > 0)
-                fprintf(stdout, "%s", ", ");
-            fprintf(stdout, "%s", ((*tree) -> argmnt)[i] -> stc);
+            if (*((*tree) -> neg) == NOT)
+                fprintf(stdout, "~");
+            fprintf(stdout, "(");
+            tree_print(&((*tree) -> left));
+
+            print_oprtr(*((*tree) -> oprtr));
+
+            tree_print(&((*tree) -> right));
+
+            fprintf(stdout, ")");
         }
 
-        fprintf(stdout, "]");
-    }
+        else if ((*tree) -> left == NULL && (*tree) -> right == NULL)
+        {
+            n_args = (**tree).n_args;
 
-    else
-        InconsistencyErr("tree_print 1");
+            if (*(*tree) -> neg == NOT)
+                fprintf(stdout, "~");
+            fprintf(stdout, "%s[", (*tree) -> stmnt -> stc);
+
+            for (i = 0; i < n_args; i++)
+            {
+                if (i > 0)
+                    fprintf(stdout, "%s", ", ");
+                fprintf(stdout, "%s", ((*tree) -> argmnt)[i] -> stc);
+            }
+
+            fprintf(stdout, "]");
+        }
+
+        else
+            InconsistencyErr("tree_print 1");
+    }
+}
+
+void tp(PrpsTree **tree)
+{
+    tree_print(tree);
+    printf("\n");
+}
+
+void p_tl(TreeList *list)
+{
+    TreeList *ptr = list;
+
+    while (ptr != NULL && (*ptr).tree != NULL)
+    {
+        tp((*ptr).tree);
+        ptr = (*ptr).next;
+    }
 }

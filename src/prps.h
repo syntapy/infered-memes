@@ -26,7 +26,7 @@ typedef struct PrpsTree
 
 #include "tester.h"
 
-void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp);
+void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp, int depth);
 
 void AddOprtr(OprtrList ***oprtr_list_head, int oprtr);
 

@@ -146,7 +146,7 @@ LOWER_CASE_FIRST	src/ops.h	24;"	d
 LOWER_CASE_LAST	src/ops.h	25;"	d
 LeafNode	src/prps.c	?^int LeafNode(PrpsTree **tree)$?;"	f
 List	src/_list.h	?^char *List(Tokens **tokens, int index)$?;"	f
-ListAddTree	src/_tree_synth.h	?^void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp)$?;"	f
+ListAddTree	src/_tree_synth.h	?^void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp, int depth)$?;"	f
 ListAddTree	src/_tree_synth.old.h	?^void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp)$?;"	f
 ListLen	src/_list.h	?^int ListLen(Args **args)$?;"	f
 MAX	uneeded/printing/asciinode.h	?^int MAX (int X, int Y)  $?;"	f
@@ -224,7 +224,7 @@ Tree	uneeded/printing/asciinode.h	?^typedef struct Tree Tree;$?;"	t	typeref:stru
 TreeConsistency	src/prps.c	?^void TreeConsistency(PrpsTree **tree)$?;"	f
 TreeList	src/parse.h	?^typedef struct TreeList$?;"	s
 TreeList	src/parse.h	?^} TreeList;$?;"	t	typeref:struct:TreeList
-TreeListToTree	src/_tree_synth.h	?^PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list)$?;"	f
+TreeListToTree	src/_tree_synth.h	?^PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list, int depth)$?;"	f
 TreeListToTree	src/_tree_synth.old.h	?^PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list)$?;"	f
 UPPER_CASE_FIRST	src/ops.h	26;"	d
 UPPER_CASE_LAST	src/ops.h	27;"	d
@@ -389,6 +389,7 @@ nodes	uneeded/hash_check.h	?^    HashNode *nodes;    // Array of HashNode struct
 oprtr	src/parse.h	?^    int oprtr;$?;"	m	struct:OprtrList
 oprtr	src/prps.h	?^    int *oprtr;         // var indicating type of logic operator$?;"	m	struct:PrpsTree
 p	src/prps.h	?^    struct PrpsTree *p;         // parent node$?;"	m	struct:PrpsTree	typeref:struct:PrpsTree::PrpsTree
+p_tl	src/_prps_err.h	?^void p_tl(TreeList *list)$?;"	f
 parent_dir	uneeded/printing/asciinode.h	?^  int parent_dir;   $?;"	m	struct:asciinode_struct
 parent_dir	uneeded/printing/print.h	?^  int parent_dir;   $?;"	m	struct:asciinode_struct
 prev	src/parse.h	?^    struct OprtrArgs *prev, *next;$?;"	m	struct:OprtrArgs	typeref:struct:OprtrArgs::OprtrArgs
@@ -432,6 +433,7 @@ test_cnf	test_main.c	?^int test_cnf(PrpsTree **tree, int d)$?;"	f
 token	src/parse.h	?^    char *token;$?;"	m	struct:Args
 token	src/parse.h	?^    char *token;$?;"	m	struct:Tokens
 token_ptr	src/parse.h	?^    Tokens *token_ptr;$?;"	m	struct:Args
+tp	src/_prps_err.h	?^void tp(PrpsTree **tree)$?;"	f
 tree	src/parse.h	?^    PrpsTree **tree;$?;"	m	struct:TreeList
 tree_print	src/_prps_err.h	?^void tree_print(PrpsTree **tree)$?;"	f
 unit_fixtures_SOURCES	test/Makefile	?^unit_fixtures_SOURCES = unit_fixtures.c $(top_buliddir)/src/main.c$?;"	m

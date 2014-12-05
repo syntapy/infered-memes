@@ -112,17 +112,25 @@ int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth)
     if ((*u_args_ptr) != NULL && (*u_args_ptr) -> token_ptr != NULL)
     {
         if ((**u_args_ptr).depth < depth)
+        {
             return_val = 0;
+            next = IncrementConditional(arg_list, &((*u_args_ptr) -> next), depth);
+
+            return_val = return_val || next;
+        }
+
         else
+        {
             (*u_args_ptr) -> token_ptr = (*u_args_ptr) -> token_ptr -> next;
 
-        if ((*u_args_ptr) -> token_ptr == NULL)
-        {
-            (*u_args_ptr) -> token_ptr = (*arg_list);
-            return_val = 0;
-            if ((*u_args_ptr) -> next != NULL)
-                next = IncrementConditional(arg_list, &((*u_args_ptr) -> next), depth);
-            return_val = return_val || next;
+            if ((*u_args_ptr) -> token_ptr == NULL)
+            {
+                (*u_args_ptr) -> token_ptr = (*arg_list);
+                return_val = 0;
+                if ((*u_args_ptr) -> next != NULL)
+                    next = IncrementConditional(arg_list, &((*u_args_ptr) -> next), depth);
+                return_val = return_val || next;
+            }
         }
     }
 
@@ -503,6 +511,7 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
         MallocErr("Read 2");
 
     (*tokens_prps_alpha) = PrpsTokenizer(prps_alpha, &nn);
+    //print_tokens(*tokens_prps_alpha);
     //(*tokens_alpha) = PrpsTokenizer(alpha, &mm);
 
     //print_tokens((*tokens_prps_alpha));
@@ -512,21 +521,4 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
     printf("Initial Tree: ");
     tree_print(*tree);
     printf("\n\n");
-
-    //alpha_tree = TokensToTree(tokens_alpha, arg_list, 0);
-    //return_val = CopySubTree(alpha_tree);
-    //return_val[1][0] = ((*alpha_tree) -> argmnt -> stc)[0];
-    //return_val[0][1] = '\0'; return_val[1][1] = '\0';
-
-    //(*tree) = Oprtr(IS, tree_tmp, NOT, alpha_tree, IS, AND);
-    //free(tree_tmp); free(alpha_tree);
-    //tree_tmp = NULL; alpha_tree = NULL;
-
-    //Negate((*tree));
-
-    //print_tokens((*tokens));
-    //tree_print(return_tree);
-    //printf("\n");
-
-    //return return_val;
 }

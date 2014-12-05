@@ -1,4 +1,4 @@
-!Kills[curiosity, tuna]
+Kills[curiosity, tuna]
 
 
 Loves[baby, human]

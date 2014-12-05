@@ -31,7 +31,7 @@ int main()
 
     //hash = GenerateAllocatedHashTable(n, l);
     Read(&tree, n, l, &hash_val);
-    return 0;
+    //return 0;
     TreeConsistency(tree);
 
     //KB = CopySubTree(&((*tree) -> left));
