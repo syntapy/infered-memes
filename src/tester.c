@@ -335,6 +335,13 @@ char **GenArgs(char *input, int *i)
 
 int CompareArgs(char **args_a, char **args_b, int n_args_a, int n_args_b)
 {
+    /*
+        returns 1 if (char **) args_a and (char **) args_b 
+        have the same arguments in the same order
+
+        otherwise returns 0
+    */
+
     int return_val = 1, i;
 
     if (n_args_a != n_args_b)
@@ -359,25 +366,28 @@ int CompareArgs(char **args_a, char **args_b, int n_args_a, int n_args_b)
 int HasComplimentary(FindList **clause, FindList **literal)
 {
     FindList **clause_ptr = clause;
-    char c_prps, **c_arg = NULL, l_prps, **l_arg = NULL;
+    char *c_prps = NULL, **c_arg = NULL, *l_prps, **l_arg = NULL;
+    int c_len = 0, l_len = 0;
     int c_is, c_is_not, l_is, l_is_not;
     int c_n_args = 0, l_n_args = 0;
     int return_val = 0;
 
-    l_prps = ((*literal) -> prps)[0];
+    l_prps = (**literal).prps;
     l_arg = (**literal).arg;
     l_is = (*literal) -> is;
     l_is_not = (*literal) -> is_not;
+    l_n_args = (*clause) -> n_args;
 
     while (clause_ptr != NULL && (*clause_ptr) != NULL)
     {
-        c_prps = ((*clause) -> prps)[0];
+        c_prps = (**clause).prps;
         c_arg = (**clause).arg;
         c_is = (*clause) -> is;
         c_is_not = (*clause) -> is_not;
         c_n_args = (*clause) -> n_args;
 
-        if (c_prps == l_prps)
+        // Check: equal prps && equal args, oposite negations
+        if (strcmp(c_prps, l_prps) == 0)
             if (CompareArgs(c_arg, l_arg, c_n_args, l_n_args))
                 if (c_is == !l_is && c_is_not == !l_is_not)
                 {
@@ -455,7 +465,7 @@ void AddStmnt(FindList **list, char *prps, char **arg,
             if ((*head) -> prps == NULL || (*head) -> arg == NULL)
                 MallocErr("AddSmnt 2");
 
-            strcpy(((*head) -> prps), prps);
+            strcpy(((**head).prps), prps);
             (*head) -> arg = arg;
             (*head) -> n_args = n_args;
         }
@@ -682,7 +692,7 @@ void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail,
     }
 }*/
 
-int ContainsLiteral(FindList **Pa, FindList **Pb)
+int ContainsLiteral(FindList **Pa, FindList **Pb, int exactness)
 {
     int return_val = 0;
     FindList **Pa_ptr = Pa;
@@ -705,7 +715,16 @@ int ContainsLiteral(FindList **Pa, FindList **Pb)
         a_n_args = (**Pa).n_args;
         if (b_prps == a_prps)
             if (CompareArgs(a_arg, b_arg, a_n_args, b_n_args))
-                if (b_is == a_is && b_is_not == a_is_not)
+                if (exactness)
+                {
+                    if (b_is == a_is && b_is_not == a_is_not)
+                    {
+                        return_val = 1;
+                        break;
+                    }
+                }
+
+                else
                 {
                     return_val = 1;
                     break;
@@ -717,7 +736,7 @@ int ContainsLiteral(FindList **Pa, FindList **Pb)
     return return_val;
 }
 
-int EqualClauses(FindList **Pa, FindList **Pb)
+int EqualClauses(FindList **Pa, FindList **Pb, int exactness)
 {
     int return_val = 1;
 
@@ -733,16 +752,16 @@ int EqualClauses(FindList **Pa, FindList **Pb)
     return return_val;
 }
 
-int ContainsClause(ClauseList **clause, FindList **P_new)
+int ContainsClause(FindList **P_nmp, FindList **P_new)
 {
     int return_val = 0;
-    ClauseList **clause_ptr = clause;
-    while (clause_ptr != NULL && (*clause_ptr) != NULL)
+    FindList **P_nmp_ptr = P_nmp;
+    while (P_nmp_ptr != NULL && (*P_nmp_ptr) != NULL)
     {
-        return_val = EqualClauses((*clause_ptr) -> clause, P_new);
+        return_val = EqualClauses(P_nmp_ptr, P_new);
         if (return_val)
             break;
-        clause_ptr = &((*clause_ptr) -> next);
+        P_nmp_ptr = &((*P_nmp_ptr) -> next);
     }
 
     return return_val;
@@ -804,60 +823,82 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb,
     int return_val, passes = 0, contains_clause;
     int has_complimentary, complimentary_clause = 0;
     int is, is_not;
+    int contained;
     char **args = NULL;
     FindList **Pa_head = NULL, **Pb_head = NULL;
-    FindList **P_new = NULL;
+    FindList **C_cmp = NULL, **C_new = NULL;
 
-    P_new = calloc(1, sizeof(FindList *));
+    C_cmp = calloc(1, sizeof(FindList *));
     Pa_head = Pa; Pb_head = Pb;
 
     while ((*Pa_head) != NULL)
     {
-        has_complimentary = HasComplimentary(Pb_head, Pa_head);
-        if (has_complimentary)
-            complimentary_clause = 1;
-        if (!has_complimentary)
+        Pb_head = Pb;
+        while ((*Pb_head) != NULL)
         {
-            is = (*Pa_head) -> is; is_not = (*Pa_head) -> is_not;
-            AddStmnt(P_new, (*Pa_head) -> prps, (*Pa_head) -> arg, 
-                (*Pa_head) -> n_args, is, is_not);
-            passes++;
+            has_complimentary = HasComplimentary(Pb_head, Pa_head);
+            if (has_complimentary)
+            {
+                complimentary_clause = 1;
+                is = (*Pa_head) -> is; is_not = (*Pa_head) -> is_not;
+                AddStmnt(C_cmp, (*Pa_head) -> prps, (*Pa_head) -> arg, 
+                    (*Pa_head) -> n_args, is, is_not);
+                passes++;
+            }
+
+            Pb_head = &((*Pb_head) -> next);
         }
 
         Pa_head = &((*Pa_head) -> next);
     }
 
-    Pa_head = Pa;
-    while ((*Pb_head) != NULL)
-    {
-        has_complimentary = HasComplimentary(Pa_head, Pb_head);
-        if (has_complimentary)
-            complimentary_clause = 1;
-        if (!has_complimentary)
-        {
-            is = (*Pb_head) -> is; is_not = (*Pb_head) -> is_not;
-            AddStmnt(P_new, (*Pb_head) -> prps, (*Pb_head) -> arg, 
-                (*Pb_head) -> n_args, is, is_not);
-            passes++;
-        }
-
-        Pb_head = &((*Pb_head) -> next);
-    }
-
-    if (passes == 0)
+    if (complimentary_clause == 0)
         return_val = 1;
+
     else
     {
-        //contains_clause = ContainsClause(ptr_tail, P_new);
-        if (complimentary_clause)
-        {
-            (**ptr_head) = calloc(1, sizeof(ClauseList));
-            if (!(**ptr_head))
-                MallocErr("PL_Resolve_2 1");
+        Pa_head = Pa;
+        C_new = calloc(1, sizeof(FindList *));
+        if (C_new == NULL)
+            MallocErr("PL_Resolve_2 3");
 
-            (**ptr_head) -> clause = P_new;
-            (*ptr_head) = &((**ptr_head) -> next);
+        while ((*Pa_head) != NULL)
+        {
+            contained = ContainsClause(Pa_head, C_cmp);
+            if (!contained)
+            {
+                complimentary_clause = 1;
+                is = (*Pa_head) -> is; is_not = (*Pa_head) -> is_not;
+                AddStmnt(C_new, (*Pa_head) -> prps, (*Pa_head) -> arg, 
+                    (*Pa_head) -> n_args, is, is_not);
+                passes++;
+            }
+
+            Pa_head = &((*Pa_head) -> next);
         }
+
+        Pb_head = Pb;
+        while ((*Pb_head) != NULL)
+        {
+            contained = ContainsClause(Pb_head, C_cmp);
+            if (!contained)
+            {
+                complimentary_clause = 1;
+                is = (*Pb_head) -> is; is_not = (*Pb_head) -> is_not;
+                AddStmnt(C_new, (*Pb_head) -> prps, (*Pb_head) -> arg, 
+                    (*Pb_head) -> n_args, is, is_not);
+                passes++;
+            }
+
+            Pb_head = &((*Pb_head) -> next);
+        }
+
+        (**ptr_head) = calloc(1, sizeof(ClauseList));
+        if (!(**ptr_head))
+            MallocErr("PL_Resolve_2 1");
+
+        (**ptr_head) -> clause = C_new;
+        (*ptr_head) = &((**ptr_head) -> next);
 
         return_val = 0;
     }

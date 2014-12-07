@@ -50,7 +50,7 @@ ClauseList	src/tester.h	?^typedef struct ClauseList$?;"	s
 ClauseList	src/tester.h	?^} ClauseList;$?;"	t	typeref:struct:ClauseList
 CompareArgs	src/tester.c	?^int CompareArgs(char **args_a, char **args_b, int n_args_a, int n_args_b)$?;"	f
 ContainsAnd	src/prps.c	?^int ContainsAnd(PrpsTree **tree)$?;"	f
-ContainsClause	src/tester.c	?^int ContainsClause(ClauseList **clause, FindList **P_new)$?;"	f
+ContainsClause	src/tester.c	?^int ContainsClause(FindList **P_nmp, FindList **P_new)$?;"	f
 ContainsLiteral	src/tester.c	?^int ContainsLiteral(FindList **Pa, FindList **Pb)$?;"	f
 ContainsOnlyPositiveORs	src/prps.c	?^int ContainsOnlyPositiveORs(PrpsTree **tree)$?;"	f
 ConvertIMP	src/prps.c	?^void ConvertIMP(PrpsTree **tree)$?;"	f
