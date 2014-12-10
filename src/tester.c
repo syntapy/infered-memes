@@ -731,57 +731,58 @@ int IdenticalLiterals(int exactness, FindList **Pa, FindList **Pb)
     return return_val;
 }
 
-int FindIdenticalLiteral(int exactness, FindList **Pa, FindList **Pb)
+int FindIdenticalLiteral(int exactness, FindList **C_new, FindList **clause_ptr)
 {
-    FindList **Pa_ptr = Pa;
+    FindList **C_ptr = C_new;
     int return_val = 0;
 
-    while (Pa_ptr != NULL && (*Pa_ptr) != NULL)
+    while (C_ptr != NULL && (*C_ptr) != NULL)
     {
-        return_val = IdenticalLiterals(exactness, Pa_ptr, Pb);
+        return_val = IdenticalLiterals(exactness, C_ptr, clause_ptr);
         if (return_val == 1)
             break;
 
-        Pa_ptr = &((*Pa_ptr) -> next);
+        C_ptr = &((*C_ptr) -> next);
     }
 
     return return_val;
 }
 
-int EqualClauses(int exactness, FindList **Pa, FindList **Pb)
+int EqualClauses(int exactness, FindList **C_new, FindList **clause)
 {
     int return_val = 1;
 
-    FindList **Pa_ptr = Pa;
-    //Pa_ptr != NULL && (*Pa_ptr) != NULL &&
-    FindList **Pb_ptr = Pb;
-    while ( Pb_ptr != NULL && (*Pb_ptr) != NULL)
+    FindList **C_new_ptr = C_new;
+    FindList **clause_ptr = clause;
+    while (clause_ptr != NULL && (*clause_ptr) != NULL)
     {
-        return_val = IdenticalLiterals(exactness, Pa, Pb_ptr);
+        return_val = FindIdenticalLiteral(exactness, C_new, clause_ptr);
         if (!return_val)
             break;
 
-        //Pa_ptr = &((*Pa_ptr) -> next);
-        Pb_ptr = &((*Pb_ptr) -> next);
+        //C_new_ptr = &((*C_new_ptr) -> next);
+        clause_ptr = &((*clause_ptr) -> next);
     }
 
+    C_new_ptr = C_new;
+    clause_ptr = clause;
     if (return_val)
     {
-        while (Pa_ptr != NULL && (*Pa_ptr) != NULL)
+        while (C_new_ptr != NULL && (*C_new_ptr) != NULL)
         {
-            return_val = IdenticalLiterals(exactness, Pb, Pa_ptr);
+            return_val = FindIdenticalLiteral(exactness, clause, C_new_ptr);
             if (!return_val)
                 break;
 
-            Pa_ptr = &((*Pa_ptr) -> next);
+            C_new_ptr = &((*C_new_ptr) -> next);
         }
     }
 
-    /*if (Pa_ptr != NULL || Pb_ptr != NULL)
+    /*if (C_new_ptr != NULL || clause_ptr != NULL)
     {
-        if (Pa_ptr != NULL && Pb_ptr != NULL)
+        if (C_new_ptr != NULL && clause_ptr != NULL)
         {
-            if ((*Pa_ptr) != NULL || (*Pb_ptr) != NULL)
+            if ((*C_new_ptr) != NULL || (*clause_ptr) != NULL)
                 return_val = 0;
         }
 
@@ -931,7 +932,7 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseLis
     FindList **Pa_head = NULL, **Pb_head = NULL;
     FindList **C_cmp = NULL, **C_new = NULL;
     FindList **C_cmp_ptr = NULL;
-    ClauseList **Q_cmp = NULL;
+    ClauseList **clause_ptr = NULL;
 
     *added = 0;
 
@@ -1001,7 +1002,17 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseLis
             Pb_head = &((*Pb_head) -> next);
         }
 
-        contained = ContainsClause('c', 1, C_new, clause_list);
+        clause_ptr = clause_list;
+
+        while (clause_ptr != NULL && (*clause_ptr) != NULL && (*clause_ptr) -> clause != NULL)
+        {
+            contained = EqualClauses(1, C_new, (*clause_ptr) -> clause);
+            if (contained)
+                break;
+
+            clause_ptr = &((*clause_ptr) -> next);
+        }
+        //ContainsClause('c', 1, C_new, clause_list);
 
         if (!contained)
         {

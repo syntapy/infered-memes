@@ -1,1 +1,5 @@
-break tester.c:974
+break /home/michilo/Dropbox/AI/extract/v.1/main.c:33
+break parse.c:490
+break parse.c:520
+break _tree_synth.h:874
+break _tree_synth.h:414

@@ -81,10 +81,10 @@ E_GetIndex	src/_list.h	?^int E_GetIndex(Tokens **tokens, char *token)$?;"	f
 ElliminateClause	src/tester.c	?^void ElliminateClause(FindList **clause)$?;"	f
 ElliminateDefaultTrues	src/tester.c	?^int ElliminateDefaultTrues(ClauseList **clause_list)$?;"	f
 ElliminateInnerOrs	src/prps.c	?^void ElliminateInnerOrs(PrpsTree **tree)$?;"	f
-EqualClauses	src/tester.c	?^int EqualClauses(int exactness, FindList **Pa, FindList **Pb)$?;"	f
+EqualClauses	src/tester.c	?^int EqualClauses(int exactness, FindList **C_new, FindList **clause)$?;"	f
 FALSE	src/ops.h	13;"	d
 FORALL	src/ops.h	18;"	d
-FindIdenticalLiteral	src/tester.c	?^int FindIdenticalLiteral(int exactness, FindList **Pa, FindList **Pb)$?;"	f
+FindIdenticalLiteral	src/tester.c	?^int FindIdenticalLiteral(int exactness, FindList **C_new, FindList **clause_ptr)$?;"	f
 FindList	src/tester.h	?^typedef struct FindList$?;"	s
 FindList	src/tester.h	?^} FindList;$?;"	t	typeref:struct:FindList
 FreeArgs	src/_list.h	?^void FreeArgs(Args **args)$?;"	f

@@ -1,8 +1,9 @@
-Kills[curiosity, tuna]
-B[a]
-Kills[curiosity, tuna]
+Criminal[west]
 
-(D[d] -> A[a])
+Kills[curiosity, tuna]
+(A[a] -> E[e])
+B[a]
+
 
 
 
