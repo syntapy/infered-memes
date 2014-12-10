@@ -1,9 +1,18 @@
+4 x{ 4 y{Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 4 x{3 z{Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}} ^ 4 x{Animal[x] -> Loves[jack, x]} ^ Kills[jack, tuna] v Kills[curiosity, tuna] ^ Cat[tuna] ^ 4 x{Cat[x] -> Animal[x]}
+
+
+
+A[a] ^ 4 x{A[x] -> B[x]}
+
+(A[a] -> B[b]) ^ (B[b] -> C[c])
+
+
+
+
 4 x{4 y{4 z{(American[x] ^ Weapon[y] ^ Sells[x, y, z] ^ Hostile[z]) -> Criminal[x]}}} ^ Owns[nono, ma] ^ Missile[ma] ^ 4 x{Missile[x] ^ Owns[nono, x] -> Sells[west, x, nono]} ^ 4 x{Missile[x] -> Weapon[x]} ^ 4 x{Enemy[x, usa] -> Hostile[x]} ^ American[west] ^ Enemy[nono, usa]
 
 
-4 x{ 4 y{Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 4 x{3 z{Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}} ^ 4 x{Animal[x] -> Loves[jack, x]} ^ Kills[jack, tuna] v Kills[curiosity, tuna] ^ Cat[tuna] ^ 4 x{Cat[x] -> Animal[x]}
 (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) ^ (D[d] -> E[e])
-A[a] ^ 4 x{A[x] -> B[x]}
 
 
 
@@ -41,7 +50,6 @@ A[a] ^ A[b] ^ 4 x{ P[x] -> Q[x]} ^ 4 y{Q[y] -> R[y]} ^ 3 z{A[z]}
 3, 1:   e
 
 
-(A[a] -> B[b]) ^ (B[b] -> C[c])
 ^ (C[c] -> D[d]) ^ (D[d] -> E[e])
 (A[a] ^ B[b])
 (B[a] = (P[a] v P[b])) ^ ~B[a]
