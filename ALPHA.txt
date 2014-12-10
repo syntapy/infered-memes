@@ -1,5 +1,9 @@
-!B[a]
 Kills[curiosity, tuna]
+B[a]
+Kills[curiosity, tuna]
+
+(D[d] -> A[a])
+
 
 
 Loves[baby, human]

@@ -53,9 +53,9 @@ int main()
 
     is_true = Resolution(tree);
     if (is_true)
-        printf("\nInference takes place\n");
+        fprintf(stderr, "\nInference takes place\n");
     else
-        printf("Inference does not take place\n");
+        fprintf(stderr, "Inference does not take place\n");
 
     return 0;
 }

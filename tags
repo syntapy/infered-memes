@@ -49,9 +49,9 @@ CheckPrpsTreeNode	src/_prps_err.h	?^void CheckPrpsTreeNode(PrpsTree **tree)$?;"	
 ClauseList	src/tester.h	?^typedef struct ClauseList$?;"	s
 ClauseList	src/tester.h	?^} ClauseList;$?;"	t	typeref:struct:ClauseList
 CompareArgs	src/tester.c	?^int CompareArgs(char **args_a, char **args_b, int n_args_a, int n_args_b)$?;"	f
+Complimentary	src/tester.c	?^int Complimentary(FindList **clause, FindList **literal)$?;"	f
 ContainsAnd	src/prps.c	?^int ContainsAnd(PrpsTree **tree)$?;"	f
-ContainsClause	src/tester.c	?^int ContainsClause(FindList **P_nmp, FindList **P_new)$?;"	f
-ContainsLiteral	src/tester.c	?^int ContainsLiteral(FindList **Pa, FindList **Pb)$?;"	f
+ContainsClause	src/tester.c	?^int ContainsClause(char type, int exactness, ...)//FindList **P_nmp, FindList **P_new)$?;"	f
 ContainsOnlyPositiveORs	src/prps.c	?^int ContainsOnlyPositiveORs(PrpsTree **tree)$?;"	f
 ConvertIMP	src/prps.c	?^void ConvertIMP(PrpsTree **tree)$?;"	f
 ConvertIsOR	src/prps.c	?^void ConvertIsOR(PrpsTree **tree)$?;"	f
@@ -81,9 +81,10 @@ E_GetIndex	src/_list.h	?^int E_GetIndex(Tokens **tokens, char *token)$?;"	f
 ElliminateClause	src/tester.c	?^void ElliminateClause(FindList **clause)$?;"	f
 ElliminateDefaultTrues	src/tester.c	?^int ElliminateDefaultTrues(ClauseList **clause_list)$?;"	f
 ElliminateInnerOrs	src/prps.c	?^void ElliminateInnerOrs(PrpsTree **tree)$?;"	f
-EqualClauses	src/tester.c	?^int EqualClauses(FindList **Pa, FindList **Pb)$?;"	f
+EqualClauses	src/tester.c	?^int EqualClauses(int exactness, FindList **Pa, FindList **Pb)$?;"	f
 FALSE	src/ops.h	13;"	d
 FORALL	src/ops.h	18;"	d
+FindIdenticalLiteral	src/tester.c	?^int FindIdenticalLiteral(int exactness, FindList **Pa, FindList **Pb)$?;"	f
 FindList	src/tester.h	?^typedef struct FindList$?;"	s
 FindList	src/tester.h	?^} FindList;$?;"	t	typeref:struct:FindList
 FreeArgs	src/_list.h	?^void FreeArgs(Args **args)$?;"	f
@@ -113,7 +114,6 @@ GetPrps	src/parse.c	?^void GetPrps(char **prps, char *input, int *i)$?;"	f
 GetType	src/prps.c	?^int GetType(PrpsTree **node)$?;"	f
 GetValueForArg	src/hash.c	?^int GetValueForArg(char prop[], char arg[], HashTable **hash, int m, int n)$?;"	f
 HASH_H	src/hash.h	2;"	d
-HasComplimentary	src/tester.c	?^int HasComplimentary(FindList **clause, FindList **literal)$?;"	f
 HashNode	src/hash.h	?^typedef struct HashNode$?;"	s
 HashNode	src/hash.h	?^} HashNode;$?;"	t	typeref:struct:HashNode
 HashNode	uneeded/hash_alloc.h	?^typedef struct HashNode$?;"	s
@@ -129,6 +129,7 @@ HashTable	uneeded/hash_check.h	?^} HashTable;$?;"	t	typeref:struct:HashTable
 IMP	src/ops.h	4;"	d
 INFINITY	uneeded/printing/asciinode.h	175;"	d
 IS	src/ops.h	20;"	d
+IdenticalLiterals	src/tester.c	?^int IdenticalLiterals(int exactness, FindList **Pa, FindList **Pb)$?;"	f
 InconsistencyErr	src/err.h	?^void InconsistencyErr(const char *msg)$?;"	f
 IncrementConditional	src/parse.c	?^int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth)$?;"	f
 IsCNF	src/prps.c	?^int IsCNF(PrpsTree **tree)$?;"	f
@@ -181,7 +182,7 @@ OprtrNodeType	src/prps.c	?^int OprtrNodeType(PrpsTree **node, int neg, int oprtr
 OprtrWrap	src/prps.c	?^PrpsTree **OprtrWrap(int neg_a, PrpsTree **tree, int neg_b, char *prps, char **arg, $?;"	f
 PARSE_H	src/parse.h	2;"	d
 PL_Resolve	src/tester.c	?^int PL_Resolve(FindList **Pa, FindList **Pb, ClauseList ***ptr_head)$?;"	f
-PL_Resolve_2	src/tester.c	?^int PL_Resolve_2(FindList **Pa, FindList **Pb, $?;"	f
+PL_Resolve_2	src/tester.c	?^int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseList **clause_list, int a, int b, int *added)$?;"	f
 PRPS	src/ops.h	7;"	d
 PRPS_H	src/prps.h	2;"	d
 ParseErr	src/err.h	?^void ParseErr(const char *msg)$?;"	f

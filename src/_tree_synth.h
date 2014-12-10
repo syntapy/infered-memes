@@ -128,9 +128,21 @@ Tokens *PrpsTokenizer(char *input, int *n)
             i++;
         }
 
+        else if (input[i] == '(')
+        {
+            AddToken(&head, "(");
+            i++;
+        }
+
         else if (input[i] == '}')
         {
             AddToken(&head, "}");
+            i++;
+        }
+
+        else if (input[i] == ')')
+        {
+            AddToken(&head, ")");
             i++;
         }
 
@@ -756,8 +768,8 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
 
     else InconsistencyErr("AddTree 4");
 
-    if (token != NULL && strcmp(token, ")") == 0)
-        (*tokens_ptr) = (*tokens_ptr) -> next;
+    //if (token != NULL && strcmp(token, ")") == 0)
+    //    (*tokens_ptr) = (*tokens_ptr) -> next;
     //if (quant != '\0')
     (*tokens) = (*tokens_ptr);
 }
@@ -835,7 +847,7 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
         else if (token != NULL && strcmp(token, ")") == 0 || strcmp(token, "}") == 0)
         {
             (*tokens) = (*tokens) -> next;
-            //break;
+            break;
         }
 
         else if (IsUpperCase(token[0]))
@@ -886,6 +898,9 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
     }
 
     return_tree = TreeListToTree(tree_list, oprtr_list, depth);
+
+    if (global_negate)
+        Negate(return_tree);
     return return_tree;
 }
 
