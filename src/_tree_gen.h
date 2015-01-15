@@ -100,7 +100,7 @@ void AllocateAsPrps(PrpsTree **node, char *prps, char **arg, int n_args)
             (*node) -> neg == NULL) 
         MallocErr("void AllocateAsPrps(PrpsTree **node, char prps[]");
 
-    checkStringEmpty(&((*node) -> stmnt), n_args);
+    checkStringEmpty(&((*node) -> stmnt), 1);
     allocateNonEmptyString(&((*node) -> stmnt), s);
     checkStringNonEmpty(&((*node) -> stmnt));
 

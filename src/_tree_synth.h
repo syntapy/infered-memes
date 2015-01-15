@@ -387,13 +387,20 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
                 token = (*head) -> token;
             }
 
+            else if (strcmp(token, "(") == 0)
+            {
+                (*head) = (*head) -> next;
+                tree = U_E_QuantifierToTree(head, arg_list, e_args, u_args, depth, quant, global_negate);
+                ListAddTree(&tree_list_head_tmp, tree, depth);
+            }
+
             else if (IsUpperCase(token[0]))
             {
                 AddTree(head, arg_list, &tree_list_head_tmp, 
                         &tree_list_tmp, e_args, u_args, 
                         depth, quant, subtree_negate);
 
-                if (*head == NULL)
+                if (*head == NULL || (*head) -> token == NULL)
                     break;
                 token = (*head) -> token;
             }

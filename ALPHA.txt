@@ -6,6 +6,15 @@ B[a]
 
 Criminal[west]
 
+=======
+C[c]
+(A[a] -> E[e])
+
+B[a]
+Criminal[west]
+
+Kills[curiosity, tuna]
+>>>>>>> Stashed changes
 
 
 
