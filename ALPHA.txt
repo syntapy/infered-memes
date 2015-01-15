@@ -1,6 +1,8 @@
+A[a]
+
+!(A[a] -> D[d])
+
 Kills[curiosity, tuna]
-B[a]
-(A[a] -> C[c])
 
 
 
@@ -14,7 +16,6 @@ B[a]
 Criminal[west]
 
 Kills[curiosity, tuna]
->>>>>>> Stashed changes
 
 
 
