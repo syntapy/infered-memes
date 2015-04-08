@@ -13,7 +13,7 @@ dbg:
 	cgdb ./resolve -c ./core
 
 run:
-	/resolve
+	./resolve
 
 memcheck:
 	valgrind --tool=memcheck --leak-check=full --read-var-info=yes --vgdb=yes --vgdb-error=0 ./resolve

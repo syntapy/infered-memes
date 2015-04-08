@@ -265,26 +265,16 @@ PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list, int depth)
     OprtrList *oprtr_list_head = NULL;
     int oprtr = -1, i;
     char *prps = NULL;
-    //tree = calloc(1, sizeof(PrpsTree *));
-    //if (tree == NULL)
-    //    MallocErr("TreeListToTree 1");
-    //(*tree) = Generate
     tree = tree_list -> tree;
     tree_list_head = tree_list -> next;
     oprtr_list_head = oprtr_list;
 
     while (tree_list_head != NULL && tree_list_head -> tree != NULL)
     {
-        //for (i = 0; i < depth; i++)
-        //    printf("\t");
-
-        //printf("TreeListToTree print:");
-        //tree_print(tree); printf("\n");
-
         oprtr = oprtr_list_head -> oprtr;
         tree_tmp = tree_list_head -> tree;
         tree_new = Oprtr(IS, tree, IS, tree_tmp, IS, oprtr);
-        /*free(tree);*/ tree = tree_new; tree_new = NULL;
+        tree = tree_new; tree_new = NULL;
         tree_list_head = tree_list_head -> next;
         oprtr_list_head = oprtr_list_head -> next;
     }
@@ -304,7 +294,6 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
     TreeList *tree_list_tmp = NULL, **tree_list_head_tmp = NULL;
     OprtrList *oprtr_list = NULL, **oprtr_list_head = NULL;
     OprtrList *oprtr_list_tmp = NULL, **oprtr_list_head_tmp = NULL;
-    //PrpsTree **tree = NULL, **tree_tmp = NULL;
     int i, index, subtree_negate = 0, will_continue = 1;
     char *token, prps, arg, node_arg;
     int oprtr;
@@ -318,14 +307,10 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 
     Tokens **head = NULL, **tail = NULL;
 
-    //arg_array = calloc(depth, sizeof(Tokens *));
     head = calloc(1, sizeof(Tokens *));
     tail = calloc(1, sizeof(Tokens *));
     if (!head || !tail)
         MallocErr("U_E_QuantifierToTree 2");
-
-    //for (i = 0; i < depth; i++)
-    //    arg_array[i] = (*arg_list);
 
     tree_list = calloc(1, sizeof(TreeList));
     oprtr_list = calloc(1, sizeof(OprtrList));
@@ -415,18 +400,10 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 
             else if (strcmp(token, "4") == 0 || strcmp(token, "3") == 0)
             {
-                //u_args_cpy = U_CopyArgs(u_args, arg_list);
-                //e_args_cpy = E_CopyTokens(e_args);
-
                 tree = QuantifierToTree(head, arg_list, e_args, u_args, 
                     depth+1, global_negate);
 
                 ListAddTree(&tree_list_head_tmp, tree, depth);
-
-                //FreeArgs(u_args_cpy);
-                //FreeTokens(e_args_cpy);
-                //free(u_args_cpy); free(e_args_cpy);
-                //u_args_cpy = NULL; e_args_cpy = NULL;
 
                 token = (*head) -> token;
             }
@@ -438,9 +415,7 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
         }
 
         tree = TreeListToTree(tree_list_tmp, oprtr_list_tmp, depth);
-        //printf("TOP LEVEL, depth %d: ", depth);
         ListAddTree(&tree_list_head, tree, depth);
-        //printf("\n\n");
 
         if (will_continue)
             AddOprtr(&oprtr_list_head, AND);
@@ -451,16 +426,11 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
         tree_list_head_tmp = NULL;
     }
 
-    //  Will need to clear (Tokens **) e_args and (Args **) u_args
-    //      after finished with this function
     (*tokens) = (*head);
 
     return_val = TreeListToTree(tree_list, oprtr_list, depth);
-    //printf("YEAH!!! DEPTH = %d !! \n", depth);
-    //printf("\tbefore: "); tree_print(return_val); printf("\n");
     FreeTreeList(&tree_list);
     FreeOprtrList(&oprtr_list);
-    //printf("\tafter: "); tree_print(return_val); printf("\n");
     tree_list = NULL; oprtr_list = NULL;
     tree_list_head = NULL; oprtr_list_head = NULL;
 
@@ -469,111 +439,6 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 
     return return_val;
 }
-
-//PrpsTree **E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
-//    Tokens **e_args, Args **u_args, int global_negate)
-//{
-//    TreeList *tree_list = NULL, **tree_list_head = NULL; 
-//    TreeList *tree_list_tmp = NULL, **tree_list_head_tmp = NULL;
-//    OprtrList *oprtr_list = NULL, **oprtr_list_head = NULL;
-//    OprtrList *oprtr_list_tmp = NULL, **oprtr_list_head_tmp = NULL;
-//    //PrpsTree **tree = NULL, **tree_tmp = NULL;
-//    int i, index, negate = 0, will_continue = 1;
-//    char token, prps, arg, node_arg;
-//    int oprtr;
-//    PrpsTree **tree = NULL, **return_val = NULL;
-//
-//    if (tokens == NULL || arg_list == NULL || u_args == NULL)
-//        NoMallocErr("E_QuantifierToTree 1");
-//
-//    //tree = calloc(1, sizeof(PrpsTree *));
-//    //**arg_array = NULL,  
-//    Tokens **head = NULL, **tail = NULL;
-//
-//    //arg_array = calloc(depth, sizeof(Tokens *));
-//    head = calloc(1, sizeof(Tokens *));
-//    tail = calloc(1, sizeof(Tokens *));
-//    if (!head || !tail)
-//        MallocErr("E_QuantifierToTree 2");
-//
-//    //for (i = 0; i < depth; i++)
-//    //    arg_array[i] = (*arg_list);
-//
-//    tree_list = calloc(1, sizeof(TreeList));
-//    oprtr_list = calloc(1, sizeof(OprtrList));
-//    if (tree_list == NULL || oprtr_list == NULL)
-//        MallocErr("E_QuantifierToTree 3");
-//
-//    tree_list_head = &tree_list;
-//    oprtr_list_head = &oprtr_list;
-//
-//    //while (will_continue)
-//    {
-//        (*tail) = (*tokens); (*head) = (*tail);
-//        token = (*head) -> token;
-//
-//        tree_list_tmp = calloc(1, sizeof(TreeList));
-//        oprtr_list_tmp = calloc(1, sizeof(OprtrList));
-//        if (tree_list_tmp == NULL || oprtr_list_tmp == NULL)
-//            MallocErr("E_QuantifierToTree 3");
-//
-//        tree_list_head_tmp = &tree_list_tmp;
-//        oprtr_list_head_tmp = &oprtr_list_tmp;
-//        while (token != '}')
-//        {
-//            if ((*head) == NULL)
-//                InconsistencyErr("E_QuantifierToTree 4");
-//
-//            else if (IsUpperCase(token))
-//            {
-//                //  This function needs modification so as to reference
-//                //      variables from the arg_list instead
-//                AddTree(head, arg_list, &tree_list_head_tmp, tree_list,
-//                    e_args, u_args, depth + 1, subtree_negate);
-//
-//                //GeneratePrpsNode(tokens, arg_list, q_arg_list, depth, global_negate);
-//            }
-//
-//            else if (IsOprtr(token))
-//            {
-//                oprtr = GetOprtr(token);
-//                AddOprtr(oprtr_list_head, oprtr);
-//            }
-//
-//            else if (token == '4' || token == '3')
-//                QuantifierToTree(head, arg_list, e_args, u_args, global_negate);
-//                //E_QuantifierToTree(tokens, arg_list, e_args, u_args);
-//        }
-//
-//        if ((*u_args_ptr) != NULL)
-//            will_continue = IncrementConditional(arg_list, u_args_ptr);
-//        else
-//            will_continue = 0;
-//
-//        tree = TreeListToTree(tree_list_tmp, oprtr_list_tmp);
-//        AddTree(tree_list_head, tree);
-//
-//        if (will_continue)
-//            AddOprtr(oprtr_list_head, AND);
-//
-//        FreeOprtrList(&oprtr_list_tmp);
-//        FreeTreeList(&tree_list_tmp);
-//        oprtr_list_head_tmp = NULL;
-//        tree_list_head_tmp = NULL;
-//    }
-//
-//    //  Will need to clear (Tokens **) e_args and (Args **) u_args
-//    //      after finished with this function
-//    return_val = TreeListToTree(tree_list, oprtr_list);
-//    FreeTreeList(&tree_list);
-//    FreeOprtrList(&oprtr_list);
-//    tree_list = NULL; oprtr_list = NULL;
-//    tree_list_head = NULL; oprtr_list_head = NULL;
-//
-//    return return_val;
-//
-//
-//}
 
 PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list, 
     Tokens **e_args, Args **u_args, int depth, int global_negate)
@@ -669,11 +534,6 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
     return return_val;
 }
 
-
-//void AttachTree(TreeList ***tree_list_head, PrpsTree **tree_tmp)
-//{
-//}
-
 void AddTreeNode(TreeList ***tree_list_head, 
     char *prps, char **arg, int subtree_negate, int arg_n, int depth)
 {
@@ -687,7 +547,6 @@ void AddTreeNode(TreeList ***tree_list_head,
     (**tree_list_head) -> tree = tree_tmp;
     if (subtree_negate)
         Negate((**tree_list_head) -> tree);
-    //printf("\t\tnode, depth = %d: ", depth); tree_print((**tree_list_head) -> tree); printf("\n");
     (*tree_list_head) = &((***tree_list_head).next);
     (**tree_list_head) = calloc(1, sizeof(TreeList)); 
     if ((*tree_list_head) == NULL)
@@ -716,8 +575,7 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
     Args **u_args_ptr = NULL;
     Tokens **tokens_ptr = NULL, **tokens_ptr_tmp = NULL;
 
-    if (tokens == NULL || (*tokens) == NULL/* ||
-        e_args == NULL || u_args == NULL*/)
+    if (tokens == NULL || (*tokens) == NULL)
         InconsistencyErr("AddTree 1");
 
     tokens_ptr = calloc(1, sizeof(Tokens *));
@@ -768,16 +626,12 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
         free(prps);
         prps = NULL;
 
-        //(*tokens_ptr) = (*tokens_ptr) -> next;
         if ((*tokens_ptr) != NULL)
             token = (*tokens_ptr) -> token;
     }
 
     else InconsistencyErr("AddTree 4");
 
-    //if (token != NULL && strcmp(token, ")") == 0)
-    //    (*tokens_ptr) = (*tokens_ptr) -> next;
-    //if (quant != '\0')
     (*tokens) = (*tokens_ptr);
 }
 
@@ -794,7 +648,6 @@ void AddOprtr(OprtrList ***oprtr_list_head, int oprtr)
 void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp, int depth)
 {
     (**tree_list_head) -> tree = tree_tmp;
-    //printf("\tTREE, DEPTH %d: ", depth); tree_print((**tree_list_head) -> tree); printf("\n");
     (*tree_list_head) = &((**tree_list_head) -> next);
     (**tree_list_head) = calloc(1, sizeof(TreeList));
     if ((**tree_list_head) == NULL)
@@ -806,17 +659,17 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
 {
     int subtree_negate = 0, oprtr = -1, depth = 0;
     char *prps = NULL, *arg = NULL;
-    char *token, quant = '\0';      // stores currently passed char
+    char *token, quant = '\0';
 
     PrpsTree **tree_tmp = NULL, **return_tree = NULL;
     TreeList *tree_list = NULL, **tree_list_head = NULL;
     OprtrList *oprtr_list = NULL, **oprtr_list_head = NULL;
 
     tree_list = calloc(1, sizeof(TreeList));
-    tree_list_head = &tree_list; //calloc(1, sizeof(TreeList *));
+    tree_list_head = &tree_list;
 
     oprtr_list = calloc(1, sizeof(OprtrList));
-    oprtr_list_head = &oprtr_list; //calloc(1, sizeof(OprtrList *));
+    oprtr_list_head = &oprtr_list;
 
     Args **u_args = NULL;
     Tokens **e_args = NULL;
@@ -825,7 +678,7 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
         MallocErr("TokensToTree 1");
 
     (*tree_list_head) = tree_list; (*oprtr_list_head) = oprtr_list;
-    while (*tokens != NULL && (*tokens) -> next != NULL) // && (*tokens) -> token != ')')
+    while (*tokens != NULL && (*tokens) -> next != NULL)
     {
         token = (*tokens) -> token;
         if (token != NULL && strcmp(token, "{") == 0 || strcmp(token, "-") == 0)
@@ -910,133 +763,3 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
         Negate(return_tree);
     return return_tree;
 }
-
-
-// Goes under the Add Tree line
-
-            /*
-            if (prps == NULL)
-            {
-                prps = calloc(2, sizeof(char));
-                if (prps == NULL)
-                    MallocErr("TokensToTree 2");
-                prps[0] = token; prps[1] = '\0';
-            }
-            else InconsistencyErr("TokensToTree 3");
-
-            (*tokens) = (*tokens) -> next;
-            token = (*tokens) -> token;
-
-            if (IsLowerCase(token))
-            {
-                if (arg == NULL)
-                {
-                    arg = calloc(2, sizeof(char));
-                    if (arg == NULL)
-                        MallocErr("TokensToTree 4");
-
-                    arg[0] = token; arg[1] = '\0';
-                    (*tokens) = (*tokens) -> next;
-                }
-                else InconsistencyErr("TokensToTree 5");
-
-                if (tree_tmp == NULL)
-                {
-                    tree_tmp = calloc(1, sizeof(PrpsTree *));
-                    if (tree_tmp == NULL)
-                        MallocErr("TokensToTree 6");
-                    (*tree_tmp) = GenerateEmpty();
-                    AllocateAsPrps(tree_tmp, prps, arg);
-                    prps = NULL; arg = NULL;
-
-                    (*tree_list_head) -> tree = tree_tmp;
-                    if (subtree_negate)
-                        Negate(tree_tmp);
-                    tree_list_head = &((*tree_list_head) -> next);
-                    (*tree_list_head) = calloc(1, sizeof(TreeList)); 
-                    if ((*tree_list_head) == NULL)
-                        MallocErr("TokensToTree 7");
-
-                    tree_tmp = NULL;
-                }
-
-                else InconsistencyErr("TokensToTree 8");
-            }
-            else InconsistencyErr("TokensToTree 9");
-
-            token = (*tokens) -> token;
-            if (token == ')')
-            {
-                (*tokens) = (*tokens) -> next;
-                break;
-            }
-            */
-
-
-
-
-
-/*PrpsTree **GeneratePrpsNode(Tokens **tokens, Tokens **arg_list, 
-        Tokens **e_args, Args **u_args,
-        int depth, int global_negate)
-{*/
-    /*  Not sure if this function is needed. Its supposed to
-     *  take a statement, such as P[x], and turn it into a
-     *  (PrpsTree **) type node.
-     *
-     *  I think another function is purported to be doing 
-     *  the same thing.
-     */
-
-/*    int index = 0;
-    char token, *prps, *arg, *node_arg;
-    PrpsTree **return_val = NULL;
-    Tokens **head = NULL;
-
-    if (tokens == NULL || (*tokens) == NULL)
-        InconsistencyErr("GeneratePrpsNode 1");
-
-    head = calloc(1, sizeof(Tokens *));
-    if (head == NULL)
-        MallocErr("GeneratePrpsNode 2");
-
-    prps = calloc(2, sizeof(char));
-    arg = calloc(2, sizeof(char));
-    node_arg = calloc(2, sizeof(char));
-    if (!prps || !arg || !node_arg)
-        MallocErr("GeneratePrpsNode 2");
-
-    prps[1] = '\0'; arg[1] = '\0'; node_arg[1] = '\0';
-    token = (*tokens) -> token;
-    if (IsUpperCase(token))
-    {
-        prps[0] = token;
-        (*head) = (*head) -> next;
-        token = (*head) -> token;
-
-        if (IsLowerCase(token) && token != 'v')
-        {
-            SetArg(arg_list, e_args, u_args, &arg, token, depth);
-            (*head) = (*head) -> next;
-
-            if (Contains(u_args, arg))
-            {
-                index = U_GetIndex(u_args, arg[0]);
-                node_arg[0] = arg_array[index] -> token;
-
-                if (return_val == NULL)
-                {
-                    return_val = calloc(1, sizeof(PrpsTree *));
-                    if (return_val == NULL)
-                        MallocErr("U_E_QuantifierToTree 3");
-
-                    if ((*return_val) == NULL)
-                        (*return_val) = GenerateEmpty();
-                    AllocateAsPrps(return_val, prps, node_arg);
-                }
-            }
-        }
-    }
-
-    return return_val;
-}*/

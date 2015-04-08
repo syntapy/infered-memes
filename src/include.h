@@ -4,10 +4,7 @@
 #include <math.h>
 #include "err.h"
 #include "ops.h"
-//#include "_hash_prps.h"
-//#include "hash.c"
 #include "prps.c"
 #include "parse.c"
 #include "tester.c"
 #include "kb.h"
-//#include "test/unit_fixtures.h"

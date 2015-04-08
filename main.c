@@ -24,24 +24,17 @@ int main()
     PrpsTree **left = NULL;
     PrpsTree **KB, **alpha_cpy;
 
-    //HashTable **hash = NULL;
-
     int *array = NULL, *array_ptr = NULL;
     int is_cnf, tree_val = -1;
 
-    //hash = GenerateAllocatedHashTable(n, l);
     Read(&tree, n, l, &hash_val);
-    //return 0;
     TreeConsistency(tree);
-
-    //KB = CopySubTree(&((*tree) -> left));
 
     printf("Original Formula:\n\t"); tree_print(tree); printf("\n");
     d = 5;
 
     CNF(tree, d);
 
-    // Checks if tree is in conjunctive normal form
     is_cnf = IsCNF(tree);
     if (is_cnf)
     {

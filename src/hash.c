@@ -20,11 +20,6 @@ HashTable **generateEmptyHashTable()
     if ((*hash_ptr) == NULL)
         MallocErr("HashTable *generateEmptyHashTable() 1 ");
 
-    //hash_ptr = NULL;
-    //hash_ptr = (HashTable *) malloc(sizeof(HashTable));
-    //if ((*hash_ptr) == NULL) 
-    //    MallocErr("HashTable *generateEmptyHashTable() 2 ");
-
     (*hash_ptr) -> m = NULL;
     (*hash_ptr) -> n = NULL;
     (*hash_ptr) -> node_ptr = NULL;
@@ -73,9 +68,6 @@ int GetPropIndex(char prop[], int m)
 
     N = strlen(prop);
 
-    //if (N > MAXCHARS)
-    //    MaxCharsExceededWarn(prop);
-
     srand(677);
 
     for (i = 0; i < N; i++)
@@ -97,9 +89,6 @@ int GetArgIndex(char arg[], int n)
 
     N = strlen(arg);
 
-    //if (N > MAXCHARS)
-    //    MaxCharsExceededWarn(arg);
-
     srand(967);
 
     for (i = 0; i < N; i++)
@@ -117,7 +106,6 @@ void SetValueForArg(char prop[], char arg[], int value, HashTable **hash, int m,
      */
 
     ArgNode *arg_ptr;
-    //setPointerToArg(arg, hash, m, n);
     addArg(prop, arg, hash, m, n);
     arg_ptr = (*hash) -> node_ptr -> arg_ptr;
 
@@ -139,9 +127,7 @@ int GetValueForArg(char prop[], char arg[], HashTable **hash, int m, int n)
 
     int return_val;
     int prp, rgu;
-    //ArgNode *arg_ptr = NULL;
     checkHashTableNonEmpty(hash);
-    //checkHashNodeNonEmpty(&((*hash) -> node_ptr));
 
     prp = setPointerToProp(prop, hash, m, n);
 
@@ -162,12 +148,4 @@ int GetValueForArg(char prop[], char arg[], HashTable **hash, int m, int n)
     else return_val = -1;
 
     return return_val;
-
-    //allocatePropNode(prop, &((*hash) -> node_ptr), prp, strlen(prop), n);
-    //rgu = setPointerToArg(arg, hash, m, n);
-    //allocateArgNode(arg, &((*hash) -> node_ptr -> arg_ptr), rgu, strlen(arg), n);
-
-    //arg_ptr = (*hash) -> node_ptr -> arg_ptr;
-
-    //return *(arg_ptr -> result);
 }

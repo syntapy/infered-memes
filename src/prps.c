@@ -8,7 +8,7 @@
 
 /* T R E E - O P E R A T I O N - F U N C T I O N S */
 void SetLeftChild(PrpsTree **parent, PrpsTree **child)
-{   /* Sets (*parent) -> left to point to (*child) */
+{
     if (parent == NULL || *parent == NULL || child == NULL || 
             (*child) == NULL/* || (*child) -> p == NULL*/) 
         MallocErr("void SetLeftChild(PrpsTree **child, PrpsTree **parent");
@@ -17,21 +17,16 @@ void SetLeftChild(PrpsTree **parent, PrpsTree **child)
         if ((*child) -> p == NULL)
             (*child) -> p = *parent;
         else InconsistencyErr("SetLeftChild");
-        //free(child);
-        //child = NULL;
     }
 
     else InconsistencyErr("void SetLeftChild(PrpsTree **child, PrpsTree **parent");
-
-    //printf("&(**child) == (*parent) -> left: %d\n", &(**child) == (*parent) -> left);
-    //while (1);
 }
 
 void SetRightChild(PrpsTree **parent, PrpsTree **child)
-{   /* Sets (*parent) -> right to point to (*child) */
+{
 
     if (parent == NULL || *parent == NULL || child == NULL || 
-            *child == NULL/* || (*child) -> p == NULL*/) 
+            *child == NULL) 
         MallocErr("void SetRightChild(PrpsTree **child, PrpsTree **parent");
 
     if ((*parent) -> right == NULL)
@@ -51,16 +46,12 @@ void SetChild(PrpsTree **parent, PrpsTree **child, int dir)
     {   if (dir == LEFT)
     	{
             SetLeftChild(parent, child);
-            //child = NULL;
     	}
 
         else if (dir == RIGHT)
         {
             SetRightChild(parent, child);
-            //child = NULL;
         }
-        //else if (dir != NONE)
-        //    InconsistencyErr("SetChild 1");
     }
 }
 
@@ -133,15 +124,10 @@ int LeafNode(PrpsTree **tree)
      */
 
     int return_val = TRUE;
-    //else if (/*(*tree) -> type == NULL ||*/ *((*tree) -> type) != PRPS)
-    //    return_val = FALSE;
-    if ((*tree) -> stmnt == NULL)// || (*tree) -> stmnt -> stc == NULL
-            //|| (*tree) -> stmnt -> s == NULL)
+    if ((*tree) -> stmnt == NULL)
         return_val = FALSE;
     else if ((*tree) -> argmnt == NULL)
         return_val = FALSE;
-    //else if (strlen((*tree) -> stmnt -> stc) != *((*tree) -> stmnt -> s))
-    //    InconsistencyErr("LeafNode 1");
     else if ((*tree) -> oprtr != NULL)
         return_val = FALSE;
 
@@ -149,12 +135,8 @@ int LeafNode(PrpsTree **tree)
 }
 
 int OprtrNode(PrpsTree **tree)
-{   //CheckConsistency(tree);
+{
     int return_val = TRUE;
-    //if (*((*tree) -> type) == PRPS)
-    //    return_val = FALSE;
-    //if (LeafNode(tree) == TRUE)
-    //    return_val = FALSE;
     if ((*tree) -> stmnt != NULL)
         return_val = FALSE;
     else if ((*tree) -> argmnt != NULL)
@@ -180,11 +162,8 @@ int OprtrNodeType(PrpsTree **node, int neg, int oprtr)
 
 int PrpsNode(PrpsTree **node)
 {   int return_val = TRUE;
-    //CheckConsistency(node);
     if ((*node) -> oprtr != NULL)
         return_val = FALSE;
-    //if (*((*node) -> type) == OPRTR)
-    //    return_val = FALSE;
     return return_val;
 }
 
@@ -206,9 +185,7 @@ int DeepestOprtr(PrpsTree **node)
     }
 
     else if (oprtr == TRUE)
-    {   //CheckConsistency(&((*node) -> left));
-        //CheckConsistency(&((*node) -> right));
-
+    {
         // DOUBLE CHECK THIS LINE
         if (!(PrpsNode(&((*node) -> left)) && PrpsNode(&((*node) -> right))))
             return_val = FALSE;
@@ -618,14 +595,8 @@ void ElliminateInnerOrs(PrpsTree **tree)
 
         if (OprtrNodeType(&((*tree) -> left), IS, AND) || OprtrNodeType(&((*tree) -> right), IS, AND))
         {
-            //printf("full:\t"); tree_print(tree); printf("\n");
-
             left = DetatchChild(tree, LEFT);
             right = DetatchChild(tree, RIGHT);
-
-            //printf("root:\t"); printf("%d", *((*tree) -> oprtr)); printf("\n");
-            //printf("left:\t"); tree_print(left); printf("\n");
-            //printf("right:\t"); tree_print(right); printf("\n");
 
             if (!OprtrNodeType(left, IS, AND))
             {
@@ -635,13 +606,6 @@ void ElliminateInnerOrs(PrpsTree **tree)
 
                 if (!OprtrNodeType(right, IS, AND))
                     DeathErr("ElliminateInnerOrs 4");
-                //if (!PrpsNode(left))
-                //    DeathErr("ElliminateInnerOrs 6");
-
-                //tree_p = calloc(sizeof(PrpsTree *));
-                //if (tree_p == NULL)
-                //    MallocErr("ElliminateInnerOrs 6");
-
                 a_1 = CopySubTree(left);
                 a_2 = left;
 
@@ -657,7 +621,7 @@ void ElliminateInnerOrs(PrpsTree **tree)
                 c_1 = DetatchChild(right, LEFT);
                 d_1 = DetatchChild(right, RIGHT);
 
-                SetLeftChild(left, a_1); // = Oprtr(IS, a_1, IS, c_1, IS, OR);
+                SetLeftChild(left, a_1);
                 SetRightChild(left, c_1);
                 SetLeftChild(right, a_2);
                 SetRightChild(right, d_1);
@@ -677,8 +641,6 @@ void ElliminateInnerOrs(PrpsTree **tree)
 
                 if (!OprtrNodeType(left, IS, AND))
                     DeathErr("ElliminateInnerOrs 7");
-                //if (!PrpsNode(right))
-                //    DeathErr("ElliminateInnerOrs 8");
 
                 c_1 = CopySubTree(right);
                 c_2 = right;
@@ -768,7 +730,6 @@ void ElliminateInnerOrs(PrpsTree **tree)
             CheckConsistency(tree);
             CheckConsistency(&((*tree) -> left));
             CheckConsistency(&((*tree) -> right));
-            //printf("post:\t"); tree_print(tree); printf("\n");
         }
     }
 }
@@ -833,10 +794,6 @@ void DistributeOrs_Caller(PrpsTree **tree)
                 if (!PrpsNode(left))
                     DeathErr("ElliminateInnerOrs 6");
 
-                //tree_p = calloc(sizeof(PrpsTree *));
-                //if (tree_p == NULL)
-                //    MallocErr("ElliminateInnerOrs 6");
-
                 a_1 = CopySubTree(left);
                 a_2 = CopySubTree(a_1);
 
@@ -848,12 +805,11 @@ void DistributeOrs_Caller(PrpsTree **tree)
                     MallocErr("ElliminateInnerOrs 9");
 
                 *((*left) -> oprtr) = OR;
-                //AllocateAsOprtr(left, OR);
 
                 c_1 = DetatchChild(right, LEFT);
                 d_1 = DetatchChild(right, RIGHT);
 
-                SetLeftChild(left, a_1); // = Oprtr(IS, a_1, IS, c_1, IS, OR);
+                SetLeftChild(left, a_1);
                 SetRightChild(left, c_1);
                 SetLeftChild(right, a_2);
                 SetRightChild(right, d_1);
@@ -970,10 +926,8 @@ void ConvertIMP(PrpsTree **tree)
      */
 
     CheckConsistency(tree);
-    //CheckChildrenOprtr(tree, IMP);
-    //CheckOprtrNode(tree);
     if (OprtrNodeType(tree, IS, IMP) || OprtrNodeType(tree, NOT, IMP))
-    {   //Negate(tree);
+    {
         Negate(&((*tree) -> left));
         *((*tree) -> oprtr) = OR;
     }
@@ -1053,7 +1007,6 @@ void MergeOrs(PrpsTree **tree)
                 left_b = CopyNode(left_a); right_b = CopyNode(right_a);
                 left = CopyNode(left_a);
                 *((*left) -> oprtr) = AND;
-                //mid = CopyNode(left);
                 right = CopyNode(left);
 
                 SetLeftChild(left_a, a_1); SetRightChild(left_a, c_1);
@@ -1129,22 +1082,18 @@ void CNF(PrpsTree **tree, int d)
         // = (!a || b) && (!b || a)
         pfi = &ConvertTAU;
         CNF_Step(tree, &pfi);
-        //printf("1.%d:\t", i); tree_print(tree); printf("\n");
 
         // (a -> b ) -> (!a || b)
         pfi = &ConvertIMP;
         CNF_Step(tree, &pfi);
-        //printf("2.%d:\t", i); tree_print(tree); printf("\n");
 
         // !(a || b) -> (!a && !b)
         pfi = &ConvertNotOr;
         CNF_Step(tree, &pfi);
-        //printf("3.%d:\t", i); tree_print(tree); printf("\n");
 
         // !(a && b) = (!a || !b)
         pfi = &ConvertNotAnd;
         CNF_Step(tree, &pfi);
-        //printf("4.%d:\t", i); tree_print(tree); printf("\n");
 
 
         //  (a && b) || (c && d)
@@ -1159,7 +1108,6 @@ void CNF(PrpsTree **tree, int d)
         //      here c could be a subtree also
         pfi = &ElliminateInnerOrs;
         CNF_Step(tree, &pfi);
-        //printf("5.%d:\t", i); tree_print(tree); printf("\n");
     }
 }
 
@@ -1209,8 +1157,6 @@ int IsCNF(PrpsTree **tree)
 
     if (OprtrNodeType(tree, IS, OR))
     {
-        //a = ContainsAnd(&((*tree) -> left));
-        //b = ContainsAnd(&((*tree) -> right));
         a = ContainsOnlyPositiveORs(&((*tree) -> left));
         b = ContainsOnlyPositiveORs(&((*tree) -> right));
 

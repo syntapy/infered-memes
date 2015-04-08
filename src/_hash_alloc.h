@@ -12,7 +12,6 @@ void allocateEmptyHashNode(HashNode **node_ptr_ptr)
      * by pointer pointed to by node_ptr_ptr, to NULL
      */
 
-    //node_ptr_ptr = (HashNode **) malloc(sizeof(HashNode *));
     if ((*node_ptr_ptr) == NULL) 
     {   *node_ptr_ptr = (HashNode *) malloc(sizeof(HashNode));
         if ((*node_ptr_ptr) == NULL) 
@@ -38,29 +37,18 @@ void allocateNonEmptyHashNode(HashNode **node_ptr_ptr, int s, int n)
      * s is the length of the MyString
      */
 
-    // Sets all pointers in the HashNode to NULL
     if (node_ptr_ptr == NULL)
         InconsistencyErr("void allocateNonEmptyHashNode(HashNode **node_ptr_ptr, int n) 1 ");
     if ((*node_ptr_ptr) == NULL)
         allocateEmptyHashNode(node_ptr_ptr);
     if (*node_ptr_ptr == NULL) 
         NoMallocErr("void allocateNonEmptyHashNode(HashNode **node_ptr_ptr, int n) 2 ");
-    //else checkHashNodeNonEmpty(node_ptr_ptr);
-
-    //printf("outside function: node_ptr_ptr = %p\n", node_ptr_ptr);
-    //printf("outsiie function: (*node_ptr_ptr) = %p\n", *node_ptr_ptr);
-
-    // Check if not yet allocated
-    //if (node_ptr_ptr == NULL) 
-    //    NoMallocErr("void allocateNonEmptyHashNode(HashNode **node_ptr_ptr, int n) 1 ");
 
     checkHashNodeEmpty(node_ptr_ptr);
 
-    // Allocates memory for pointers in (HashNode **)
     (*node_ptr_ptr) -> array = (ArgNode *) calloc(n, sizeof(ArgNode));
     (*node_ptr_ptr) -> name = (MyString *) calloc(1, sizeof(MyString));
     (*node_ptr_ptr) -> n = (int *) calloc(1, sizeof(int));
-    //(*node_ptr_ptr) -> next = (HashNode *) calloc
 
     checkHashNodeNonEmpty(node_ptr_ptr);
 
@@ -79,15 +67,7 @@ void allocateEmptyArgNode(ArgNode **arg_ptr_ptr)
      * value
      */
 
-    //ArgNode **arg_ptr;
-
-    //arg_ptr = (ArgNode **) malloc(sizeof(ArgNode *));
     if (!arg_ptr_ptr) DeathErr("...wait, what?");
-
-    //checkHashNodeNonEmpty2(arg_ptr_ptr);
-    //checkHashNodeNonEmpty(arg_ptr_ptr -> node_pt
-
-    //(*arg_ptr) = (*arg_ptr_ptr) -> node_ptr -> arg_ptr;
 
     if ((*arg_ptr_ptr) == NULL)
     {   (*arg_ptr_ptr) = (ArgNode *) malloc(sizeof(ArgNode));
@@ -115,12 +95,6 @@ void allocatePropNode(char prop[], HashNode **node_ptr_ptr, int prp, int s, int 
         allocateEmptyHashNode(&((*node_ptr_ptr) -> next));
     } 
     
-    //else if (prp == 1)
-    //{   allocateNonEmptyHashNode(node_ptr_ptr, s, n);
-    //    allocateEmptyHashNode(&((*node_ptr_ptr) -> next));
-    //} 
-    //else if (prp == 0)
-    //    InconsistencyErr("void allocatePropNode(args...)");
     if ((*node_ptr_ptr) -> name -> stc == NULL)
         DeathErr("void setPointerToProp(char prop[], HashTable **hash, int m, int n)");
 }
@@ -134,8 +108,6 @@ void allocateArgNode(char arg[], ArgNode **arg_ptr_ptr, int rgu, int s, int n)
         allocateEmptyArgNode(&((*arg_ptr_ptr) -> next));
     } 
     
-    //else if (rgu == 0)
-     //   InconsistencyErr("void allocatePropNode(args...)");
     if ((*arg_ptr_ptr) -> arg == NULL)
         DeathErr("void setPointerToProp(char prop[], HashTable **hash, int m, int n)");
 }
@@ -157,7 +129,6 @@ int setPointerToProp(char prop[], HashTable **hash, int m, int n)
     int index = GetPropIndex(prop, m);
     HashNode *tail_ptr;
 
-    //(*hash) -> node_ptr = (*hash) -> nodes + index * sizeof(HashNode);
     (*hash) -> node_ptr = &(((*hash) -> nodes)[index]);
 
     while (1)
@@ -182,8 +153,6 @@ int setPointerToArg(char arg[], HashTable **hash, int m, int n)
     checkHashTableNonEmpty(hash);
     checkHashNodeNonEmpty(&((*hash) -> node_ptr));
 
-    // This function requires that hash -> node_ptr has already been appropriately set
-    //(*hash) -> node_ptr -> arg_ptr = (*hash) -> node_ptr -> array + index * sizeof(ArgNode);
     (*hash) -> node_ptr -> arg_ptr = &(((*hash) -> node_ptr -> array)[index]);
     arg_ptr = (*hash) -> node_ptr -> arg_ptr;
 
@@ -231,9 +200,6 @@ void addSymbol(char prop[], HashTable **hash, int m, int n)
     prp = setPointerToProp(prop, hash, m, n);
     allocatePropNode(prop, &((*hash) -> node_ptr), prp, strlen(prop), n);
 
-    //if (*((*hash) -> node_ptr -> name -> s) != strlen(prop))
-    //    InconsistencyErr("void addSymbol(char prop[], HashTable **hash, int m, int n)");
-
     if (strcmp((*hash) -> node_ptr -> name -> stc, prop) != 0)
         strcpy((*hash) -> node_ptr -> name -> stc, prop);
 }
@@ -241,10 +207,8 @@ void addSymbol(char prop[], HashTable **hash, int m, int n)
 void addArg(char prop[], char arg[], HashTable **hash, int m, int n)
 {   int rgu;
     ArgNode *arg_ptr = NULL;
-    //checkHashTableNonEmpty(hash);
     addSymbol(prop, hash, m, n);
     checkHashNodeNonEmpty(&((*hash) -> node_ptr));
-    //setPointerToProp(prop, hash, m, n);
     rgu = setPointerToArg(arg, hash, m, n);
     allocateArgNode(arg, &((*hash) -> node_ptr -> arg_ptr), rgu, strlen(arg), n);
 
@@ -254,14 +218,12 @@ void addArg(char prop[], char arg[], HashTable **hash, int m, int n)
         InconsistencyErr("void addArg(char prop[], char arg[], HashTable **hash, int m, int n)");
     if (strcmp(arg_ptr -> arg -> stc, arg) != 0)
         strcpy(arg_ptr -> arg -> stc, arg);
-    //*(arg_ptr -> result) = -1;
 }
 void allocateEmptyHashNode(HashNode **node_ptr_ptr)
 {   /* Sets all the pointers in HashNode, pointed to 
      * by pointer pointed to by node_ptr_ptr, to NULL
      */
 
-    //node_ptr_ptr = (HashNode **) malloc(sizeof(HashNode *));
     if ((*node_ptr_ptr) == NULL) 
     {   *node_ptr_ptr = (HashNode *) malloc(sizeof(HashNode));
         if ((*node_ptr_ptr) == NULL) 

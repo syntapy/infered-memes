@@ -2,8 +2,6 @@
 void CheckOprtrNode(PrpsTree **tree)
 {   if (tree == NULL || (*tree) == NULL)
         InconsistencyErr("CheckLeafNode");
-    //if ((*tree) -> type == NULL || *((*tree) -> type) != OPRTR)
-    //    InconsistencyErr("CheckLeafNode 1");
     if ((*tree) -> stmnt != NULL || (*tree) -> argmnt != NULL)
         InconsistencyErr("CheckLeafNode 2");
     if ((*tree) -> oprtr == NULL)
@@ -19,8 +17,6 @@ void CheckPrpsTreeNode(PrpsTree **tree)
 
     if (tree == NULL || (*tree) == NULL)
         InconsistencyErr("CheckPrpsTreeNode");
-    //if ((*tree) -> type == NULL || *((*tree) -> type) != PRPS)
-    //    InconsistencyErr("CheckPrpsTreeNode");
     if ((*tree) -> stmnt == NULL || (*tree) -> argmnt == NULL 
             || (*tree) -> stmnt -> stc == NULL
             || (*tree) -> stmnt -> s == NULL
@@ -70,8 +66,6 @@ void CheckConsistency(PrpsTree **tree)
 void CheckChildrenOprtr(PrpsTree **tree, int oprtr)
 {   if (tree == NULL || (*tree) == NULL)
         DeathErr("ConvertIMP");
-    //if ((*tree) -> type == NULL)
-    //    InconsistencyErr("ConvertIMP");
     if (*((*tree) -> oprtr) != oprtr)
         InconsistencyErr("ConvertIMP");
     if ((*tree) -> right == NULL ||
@@ -96,7 +90,7 @@ void print_oprtr(int oprtr)
 
 void tree_print(PrpsTree **tree)
 {
-    int i, n_args;//CheckConsistency(tree);
+    int i, n_args;
 
     if (tree != NULL && (*tree) != NULL)
     {

@@ -12,7 +12,7 @@ typedef struct FindList
 } FindList;
 
 typedef struct ClauseList
-{   //PrpsTree **clause;
+{
     FindList **clause;
     struct ClauseList *prev, *next;
 } ClauseList;

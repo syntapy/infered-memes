@@ -88,25 +88,17 @@ void GenSymbolArray(char ***symbols, unsigned long int n, unsigned int m)
 
     symbolStore = calloc((m + 1) * n, sizeof(char));
     (*symbols) = calloc(n, sizeof(char *));
-    //buffer = calloc(n, sizeof(char));
 
     if ((*symbols) == NULL)
         MallocErr("GenSymbolArray 2");
     if (symbolStore == NULL)
         MallocErr("GenSymbolArray 3");
-    //if (buffer == NULL)
-    //    MallocErr("GenSymbolArray 4");
 
     for (i = 0; i < n; i++)
     {   (*symbols)[i] = &(symbolStore[i * (m + 1)]);
         GenSequentialSymbol(&((*symbols)[i]), i+1, m);
     }
 }
-
-//void GenArgArray(char ***args, unsigned long int n, unsigned long int M)
-//{
-//
-//}
 
 void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)
 {
@@ -121,128 +113,6 @@ void FreeSymbolArray(char ***symbols, unsigned long int n, unsigned int m)
         *symbols = NULL;
     }
 }
-
-/*void GenSkewedTree(const char **symbols, const char **args, 
-        int m, int n, PrpsTree **tree, int d)
-{
-
-    int i, j, index;
-    const char *ptr = NULL, *arg = NULL;
-    long double nmbr;
-    PrpsTree **left = NULL, **right = NULL;
-    //if (tree == NULL)
-
-    if ((*tree) == NULL)
-    {   (*tree) = GenerateEmpty();
-        index = rand() % 4;
-        ptr = symbols[index];
-
-        if (d > 0)
-        {
-            index = rand() % 4;
-        	AllocateAsOprtr(tree, index);
-
-            left = calloc(1, sizeof(PrpsTree *));
-            right = calloc(1, sizeof(PrpsTree *));
-
-            if (!left || !right)
-                MallocErr("GenSkewedTree 1");
-
-            nmbr = (long double) rand();
-            nmbr = (d - 1) * 
-                ((int) rintl(logl(nmbr) / logl((long double) RAND_MAX)));
-
-            GenSkewedTree(symbols, args, m, n, left, d - 1);
-            GenSkewedTree(symbols, args, m, n, right, d - 1 - nmbr);
-
-            SetLeftChild(tree, left);
-            SetRightChild(tree, right);
-
-            free(left);
-            free(right);
-
-            left = NULL;
-            right = NULL;
-        }
-
-        else
-        {   
-            j = rand() % m;
-            ptr = symbols[j];
-            j = rand() % n;
-            arg = args[j];
-
-            AllocateAsPrps(tree, ptr, arg);
-
-            //for (i = 0; i < d; i++)
-            //{   
-            //    tree = Oprtr2
-            //           (rand() % 3, tree,
-            //            rand() % 3, ptr,
-            //            rand() % 3, rand() % 4);
-            //}
-        }
-
-        if (rand() > RAND_MAX / 2)
-            Negate(tree);
-    }
-}*/
-
-/*void GenAlphaTree(const char **symbols, const char **args, 
-        PrpsTree ***alpha, int m, int n, int d)
-{
-    int i, j;
-    const char *symbol_tmp = NULL, *arg_tmp;
-    //PrpsTree **alpha = NULL;
-
-    if (alpha == NULL)
-        NoMallocErr("GenAlphaTree 1");
-
-    if ((*alpha) != NULL)
-        InconsistencyErr("GenAlphaTree 2");
-
-    (*alpha) = calloc(1, sizeof(PrpsTree *));
-    if ((*alpha) == NULL)
-        MallocErr("GenAlphaTree 3");
-    (**alpha) = GenerateEmpty();
-
-    i = rand() % m;
-    symbol_tmp = symbols[i];
-
-    i = rand() % n;
-    arg_tmp = args[i];
-
-    AllocateAsPrps(*alpha, symbol_tmp, arg_tmp);
-}*/
-
-/*void FillHashTable(HashTable **hash, char **symbols, char **args, 
-        int m, int n, int seed)
-{
-    int i, j, value, value_retrieved;
-    int a, b;
-    int iterations;
-
-    srand(seed);
-
-    for (i = 0; i < m*50; i++)
-    {
-        iterations = 50 * n; //rand() % n;
-
-        for (j = 0; j < iterations; j++)
-        {
-            value = rand() % 2; 
-            a = rand() % m;
-            b = rand() % n;
-
-            SetValueForArg(symbols[a], args[b], value, hash, m, n);
-
-            value_retrieved = GetValueForArg(symbols[a], args[b], hash, m, n);
-
-            if (value_retrieved != value)
-                InconsistencyErr("FillHashTable 1: Unit Test! ");
-        }
-    }
-}*/
 
 char **CopyArgs(PrpsTree **node, int *n_args)
 {
@@ -391,13 +261,7 @@ int Complimentary(FindList **clause, FindList **literal)
     if (strcmp(c_prps, l_prps) == 0)
         if (CompareArgs(c_arg, l_arg, c_n_args, l_n_args))
             if (c_is == !l_is && c_is_not == !l_is_not)
-            //{
                 return_val = 1;
-                //break;
-            //}
-
-        //clause_ptr = &((*clause_ptr) -> next);
-    //}
 
     return return_val;
 }
@@ -412,8 +276,6 @@ void AddStmnt(FindList **list, char *prps, char **arg,
     FindList **head = NULL, **tail = NULL;
     int prps_len = 0;
 
-    //if ((is == 1 || is_not == 1) && (is == 0 || is_not == 0))
-    //{
     head = list;
     if (head != NULL)
         while ((*head) != NULL)
@@ -470,7 +332,6 @@ void AddStmnt(FindList **list, char *prps, char **arg,
         (*head) -> arg = arg;
         (*head) -> n_args = n_args;
     }
-    //}
 }
 
 void DepthFirstTraversal(PrpsTree **clause, FindList **list)
@@ -523,85 +384,6 @@ int DefaultsToTrue(FindList **list)
     return return_val;
 }
 
-/*FindList ***GetLiterals(PrpsTree **tree, FindList ***clause_array, int *k)
-{
-    FindList **list = NULL, **head = NULL;
-    int left, right;
-    FindList **return_val;
-
-    if (OprtrNodeType(tree, IS, AND))
-    {
-        GetLiterals(&((*tree) -> left), clause_array, k);
-        GetLiterals(&((*tree) -> right), clause_array, k);
-    }
-
-    if (OprtrNodeType(tree, IS, OR))
-    {
-        list = calloc(1, sizeof(FindList *));
-        if (list == NULL)
-            MallocErr("GetLiterals 0");
-
-        DepthFirstTraversal(tree, list);
-        return_val = DefaultsToTrue(list);
-    }
-
-    else
-        InconsistencyErr("GetLiterals 1");
-
-    return list;
-}*/
-
-/*int CountLiterals(PrpsTree **tree)
-{
-    int return_val = 0;
-
-    if (OprtrNode(tree))
-    {
-        return_val += CountLiterals(&((*tree) -> left));
-        return_val += CountLiterals(&((*tree) -> right));
-    }
-    else if (PrpsNode(tree))
-        return_val = 1;
-
-    return return_val;
-}*/
-
-//void AddLiterals(PrpsTree **sub_tree, ClauseList **head, int *index)
-//{
-    /*  Adds all the symbols of all literals in the clause which 
-     *  PrpsTree **sub_tree is a subtree of, to the clause_array 
-     *  array of head
-     */
-
-/*    char neg = ' ';
-    if (OprtrNodeType(sub_tree, IS, OR))
-    {
-        AddLiterals(&((*sub_tree) -> left), head, index);
-        AddLiterals(&((*sub_tree) -> right), head, index);
-    }
-
-    else if (PrpsNode(sub_tree))
-    {
-        ((*head) -> clause_array)[*index] = calloc(3, sizeof(char *));
-
-        if (((*head) -> clause_array)[*index] == NULL)
-            MallocErr("AddLiterals 1");
-
-        if (*((*sub_tree) -> neg) == 1)
-            neg = '~';
-
-        ((*head) -> clause_array)[*index][0] = calloc(2, sizeof(char));
-        if (((*head) -> clause_array)[*index][0] == NULL)
-            MallocErr("AddLiterals 2");
-
-        ((*head) -> clause_array)[*index][0][0] = neg;
-        ((*head) -> clause_array)[*index][0][1] = '\0';
-        ((*head) -> clause_array)[*index][1] = (*sub_tree) -> stmnt -> stc;
-        ((*head) -> clause_array)[*index][2] = (*sub_tree) -> argmnt -> stc;
-        *index += 1;
-    }
-}*/
-
 void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail, 
         int *index, int num_literals)
 {
@@ -651,48 +433,6 @@ void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail,
     }
 }
 
-
-/*void GetClauses(PrpsTree **tree, ClauseList **head, ClauseList **tail, int *index, int num_literals)
-{
-
-    int inc_array = 0;
-    ClauseList **tmp = NULL;
-    if (OprtrNode(tree) || PrpsNode(tree))
-    {
-        if (OprtrNodeType(tree, IS, AND))
-        {   GetClauses(&((*tree) -> left), head, tail, index, num_literals);
-            GetClauses(&((*tree) -> right), head, tail, index, num_literals);
-        }
-
-        else if (OprtrNodeType(tree, IS, OR) || PrpsNode(tree))
-        {   
-            if ((*head) == NULL)
-            {   
-                (*head) = calloc(1, sizeof(ClauseList));
-                if ((*head) == NULL)
-                    MallocErr("GetClauses 2");
-                (*tail) = (*head);
-            }
-
-            else
-            {
-                (*head) -> next = calloc(1, sizeof(ClauseList));
-                if ((*head) -> next == NULL)
-                    MallocErr("GetClauses 3");
-                (*head) = (*head) -> next;
-            }
-
-            num_literals = CountLiterals(tree);
-            ((*head) -> clause_array) = calloc(num_literals, sizeof(char **));
-            (*head) -> array_len = num_literals;
-            AddLiterals(tree, head, index);
-            *index = 0;
-        }
-        else
-            InconsistencyErr("GetClauses 3");
-    }
-}*/
-
 int IdenticalLiterals(int exactness, FindList **Pa, FindList **Pb)
 {
     int return_val = 0;
@@ -723,10 +463,6 @@ int IdenticalLiterals(int exactness, FindList **Pa, FindList **Pb)
             else
                 return_val = 1;
         }
-
-    //free(a_prps); free(b_prps);
-    //a_prps = NULL; b_prps = NULL;
-    //Pa_ptr = &((*Pa_ptr) -> next);
 
     return return_val;
 }
@@ -760,7 +496,6 @@ int EqualClauses(int exactness, FindList **C_new, FindList **clause)
         if (!return_val)
             break;
 
-        //C_new_ptr = &((*C_new_ptr) -> next);
         clause_ptr = &((*clause_ptr) -> next);
     }
 
@@ -778,22 +513,10 @@ int EqualClauses(int exactness, FindList **C_new, FindList **clause)
         }
     }
 
-    /*if (C_new_ptr != NULL || clause_ptr != NULL)
-    {
-        if (C_new_ptr != NULL && clause_ptr != NULL)
-        {
-            if ((*C_new_ptr) != NULL || (*clause_ptr) != NULL)
-                return_val = 0;
-        }
-
-        else
-            return_val = 0;
-    }*/
-
     return return_val;
 }
 
-int ContainsClause(char type, int exactness, ...)//FindList **P_nmp, FindList **P_new)
+int ContainsClause(char type, int exactness, ...)
 {
     /*  Arguments are as follows:
      *      first argument is (char) type
@@ -977,11 +700,9 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseLis
             contained = ContainsClause('l', 0, Pa_head, C_cmp);
             if (!contained)
             {
-                //complimentary_clause = 1;
                 is = (*Pa_head) -> is; is_not = (*Pa_head) -> is_not;
                 AddStmnt(C_new, (*Pa_head) -> prps, (*Pa_head) -> arg, 
                     (*Pa_head) -> n_args, is, is_not);
-                //passes++;
             }
 
             Pa_head = &((*Pa_head) -> next);
@@ -992,11 +713,9 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseLis
             contained = ContainsClause('l', 0, Pb_head, C_cmp);
             if (!contained)
             {
-                //complimentary_clause = 1;
                 is = (*Pb_head) -> is; is_not = (*Pb_head) -> is_not;
                 AddStmnt(C_new, (*Pb_head) -> prps, (*Pb_head) -> arg, 
                     (*Pb_head) -> n_args, is, is_not);
-                //passes++;
             }
 
             Pb_head = &((*Pb_head) -> next);
@@ -1012,7 +731,6 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseLis
 
             clause_ptr = &((*clause_ptr) -> next);
         }
-        //ContainsClause('c', 1, C_new, clause_list);
 
         if (!contained)
         {
@@ -1031,29 +749,6 @@ int PL_Resolve_2(FindList **Pa, FindList **Pb, ClauseList ***ptr_head, ClauseLis
     return return_val;
 }
 
-//      while ((*Pb_head) != NULL)
-//      {
-//          contained = ContainsClause('c', 0, ptr_tail, C_cmp);
-//          if (!contained)
-//          {
-//              complimentary_clause = 1;
-//              is = (*Pb_head) -> is; is_not = (*Pb_head) -> is_not;
-//              AddStmnt(C_new, (*Pb_head) -> prps, (*Pb_head) -> arg, 
-//                  (*Pb_head) -> n_args, is, is_not);
-//              passes++;
-//          }
-
-//          Pb_head = &((*Pb_head) -> next);
-//      }
-
-//      (**ptr_head) = calloc(1, sizeof(ClauseList));
-//      if (!(**ptr_head))
-//          MallocErr("PL_Resolve_2 1");
-
-//      (**ptr_head) -> clause = C_new;
-//      (*ptr_head) = &((**ptr_head) -> next);
-
-
 int PL_Resolve(FindList **Pa, FindList **Pb, ClauseList ***ptr_head)
     /*  Returns the resolution of clauses Pa and Pb
      *  If the result is an empty clause, return_val
@@ -1067,15 +762,9 @@ int PL_Resolve(FindList **Pa, FindList **Pb, ClauseList ***ptr_head)
     int return_val = 0, done = 0;
     int is = 0, is_not = 0;
 
-    //Pa_head = calloc(1, sizeof(FindList *));
-    //Pb_head = calloc(1, sizeof(FindList *));
     P_new = calloc(1, sizeof(FindList *));
-    if (/*!Pa_head || !Pb_head ||*/ !P_new)
+    if (!P_new)
         MallocErr("PL_Resolve 1");
-
-    //return_val = calloc(1, sizeof(FindList));
-    //if (return_val == NULL)
-    //    MallocErr("PL_Resolve 2");
 
     num_passes = 0;
     Pa_head = Pa; Pb_head = Pb;
@@ -1114,18 +803,8 @@ int PL_Resolve(FindList **Pa, FindList **Pb, ClauseList ***ptr_head)
                 different_literals = 
 
                     (((*Pb_head) -> prps)[0] != ((*Pa_head) -> prps)[0]     || 
-                    ((*Pb_head) -> arg)[0] != ((*Pa_head) -> arg)[0]);/*       ||
-
-                    (((*Pb_head) -> prps)[0] == ((*Pa_head) -> prps)[0]     ||
-                    ((*Pb_head) -> arg)[0] == ((*Pa_head) -> arg)[0]);*/
+                    ((*Pb_head) -> arg)[0] != ((*Pa_head) -> arg)[0]);
             }
-
-            /*if (equal_literals && complimentary)
-            {
-                return_val = 1;
-                done = 1;
-                break;
-            }*/
 
             if ((equal_literals && complimentary))
             {
@@ -1251,9 +930,6 @@ int Resolve(ClauseList **clause_list)
                         break;
                     }
 
-                    //else if ((*ptr_head) != NULL && (*ptr_head) -> next != NULL)
-                    //    ptr_head = &((*ptr_head) -> next);
-
                     ptr_mid = &((*ptr_mid) -> next);
                     b++;
 
@@ -1265,8 +941,6 @@ int Resolve(ClauseList **clause_list)
                 }
 
                 ptr_tail = &((*ptr_tail) -> next);
-                //if ((*ptr_tail) == NULL)
-                //    break;
                 ptr_mid = &((*ptr_tail) -> next);
                 a++; b = a+1;
             }
@@ -1338,10 +1012,6 @@ int ElliminateDefaultTrues(ClauseList **clause_list)
 
 int Resolution(PrpsTree **tree)
 {
-    /*
-
-     */
-
     int return_val = 0, index = 0, num_literals = -1;
     ClauseList **clause_list_ptr = NULL;
     ClauseList **tail_ptr = NULL;

@@ -41,6 +41,4 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
     Tokens **e_args, Args **u_args, 
     int depth, char quant, int subtree_negate);
 
-//void GetArg(char **arg, char *input, int *i, int *arg_n);
-
 #endif

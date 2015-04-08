@@ -48,17 +48,6 @@ PrpsTree *GenerateEmpty()
     if (tree == NULL) 
         MallocErr("PrpsTree *GenerateEmpty()");
 
-    //*tree = (PrpsTree *) calloc(1, sizeof(PrpsTree));
-    //if ((*tree) == NULL)
-    //    MallocErr("PrpsTree *GenerateEmpty()");
-
-    //(*tree) -> type = NULL;
-    //(*tree) -> op = NULL;
-    //(*tree) -> stmnt = NULL;
-    //(*tree) -> p = NULL;
-    //(*tree) -> left = NULL;
-    //(*tree) -> right = NULL;
-
     return tree;
 }
 
@@ -93,7 +82,6 @@ void AllocateAsPrps(PrpsTree **node, char *prps, char **arg, int n_args)
     (*node) -> stmnt = (MyString *) calloc(1, sizeof(MyString));
     (*node) -> argmnt = (MyString **) calloc(n_args, sizeof(MyString *));
 
-    //(*node) -> type = (int *) calloc(1, sizeof(int));
     (*node) -> neg = (int *) calloc(1, sizeof(int));
 
     if ((*node) -> argmnt == NULL || (*node) -> stmnt == NULL ||
@@ -104,7 +92,6 @@ void AllocateAsPrps(PrpsTree **node, char *prps, char **arg, int n_args)
     allocateNonEmptyString(&((*node) -> stmnt), s);
     checkStringNonEmpty(&((*node) -> stmnt));
 
-    //checkStringEmpty(&(((*node) -> argmnt)[i]), n_args);
     for (i = 0; i < n_args; i++)
     {
         ((*node) -> argmnt)[i] = calloc(1, sizeof(MyString));
@@ -118,37 +105,30 @@ void AllocateAsPrps(PrpsTree **node, char *prps, char **arg, int n_args)
         *(((*node) -> argmnt)[i] -> s) = t[i];
     }
 
-    //*((*node) -> type) = PRPS;
     strcpy((*node) -> stmnt -> stc, prps);
     *((*node) -> stmnt -> s) = s;
     (**node).n_args = n_args;
-
-    //*((*node) -> neg) = neg;
 }
 
 void AllocateAsOprtr(PrpsTree **node, int oprtr)
 {   if (node == NULL || (*node) == NULL) DeathErr("AllocateAsOprtr");
     if ((*node) -> stmnt != NULL) InconsistencyErr("AllocateAsOprtr");
     if ((*node) -> argmnt != NULL) InconsistencyErr("AllocateAsOprtr");
-    if ((*node) -> oprtr != NULL /*|| (*node) -> type != NULL*/)
+    if ((*node) -> oprtr != NULL )
         InconsistencyErr("AllocateAsOprtr");
 
     (*node) -> oprtr = (int *) calloc(1, sizeof(int));
-    //(*node) -> type = (int *) calloc(1, sizeof(int));
     (*node) -> neg = (int *) calloc(1, sizeof(int));
-    if ((*node) -> oprtr == NULL /*|| (*node) -> type == NULL*/) 
+    if ((*node) -> oprtr == NULL) 
         MallocErr("void AllocateAsOprtr");
     if ((*node) -> neg == NULL)
         MallocErr("void AllocateAsOprtr");
     *((*node) -> oprtr) = oprtr;
-    //*((*node) -> type) = OPRTR;
-    //*((*node) -> neg) = neg;
 }
 
 void DeallocateFromPrps(PrpsTree **node)
 {
     int i, n_args;
-    //CheckPrpsTreeNode(node);
     free((*node) -> stmnt -> s);
     free((*node) -> stmnt -> stc);
 
@@ -169,29 +149,13 @@ void DeallocateFromPrps(PrpsTree **node)
 
     free((*node) -> argmnt);
     (*node) -> argmnt = NULL;
-    //(*node) -> stmnt -> s = NULL;
-    //(*node) -> stmnt -> stc = NULL;
-    //free((*node) -> type);
-    //(*node) -> type = NULL;
 }
 
 void DeallocateFromOprtr(PrpsTree **node)
 {
-    //CheckOprtrNode(PrpsTree **tree);
     free((*node) -> oprtr);
     free((*node) -> neg);
-    //free((*node) -> type);
 
     (*node) -> oprtr = NULL;
     (*node) -> neg = NULL;
-    //(*node) -> type = NULL;
 }
-
-//void FreeOprtrNode(PrpsTree **node)
-//{
-//    if (OprtrNode(node))
-//    {
-//        DeallocateFromPrps(node);
-//        
-//    }
-//}

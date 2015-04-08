@@ -23,7 +23,7 @@ void checkHashTableNonEmpty(HashTable **hash)
 }
 
 void checkHashNodeEmpty(HashNode **node_ptr_ptr)
-{   // If the DeathErr() triggers, you're doomed
+{
     if (node_ptr_ptr == NULL)
         NoMallocErr("void checkHashNodeEmpty(HashNode **node_ptr_ptr) a ");
     if ((*node_ptr_ptr) == NULL)
@@ -34,14 +34,10 @@ void checkHashNodeEmpty(HashNode **node_ptr_ptr)
         DeathErr("void checkHashNodeEmpty(HashNode **node_ptr_ptr, int n) 2 ");
     if ((*node_ptr_ptr) -> name != NULL) 
         DeathErr("void checkHashNodeNameEmpty(HashNode **node_ptr_ptr, int n) 3 ");
-    //if ((*node_ptr_ptr) -> next != NULL) 
-    //    DeathErr("void checkHashNodeEmpty(HashNode **node_ptr_ptr, int n) 4 ");
-    //if ((*node_ptr_ptr) -> head != NULL) 
-    //    DeathErr("void checkHashNodeEmpty(HashNode **node_ptr_ptr, int n) 5 ");
 }
 
 void checkHashNodeNonEmpty(HashNode **node_ptr_ptr)
-{   // If the DeathErr() triggers, you're doomed
+{
     if ((node_ptr_ptr) == NULL)
         DeathErr("Something wrong with compiler");
     if ((*node_ptr_ptr) == NULL)
@@ -52,10 +48,6 @@ void checkHashNodeNonEmpty(HashNode **node_ptr_ptr)
         DeathErr("void chechHashNodeNonEmpty(HashNode **node_ptr_ptr, int n) 3 ");
     if ((*node_ptr_ptr) -> name == NULL) 
         DeathErr("void chechHashNodeNonEmpty(HashNode **node_ptr_ptr, int n) 4 ");
-    //if ((*node_ptr_ptr) -> next == NULL) 
-    //    DeathErr("void chechHashNodeNonEmpty(HashNode **node_ptr_ptr, int n) 4 ");
-    //if ((*node_ptr_ptr) -> head == NULL) 
-    //    DeathErr("void chechHashNodeNonEmpty(HashNode **node_ptr_ptr, int n) 5 ");
 }
 
 void checkHashNodeNonEmpty2(HashNode **node_ptr_ptr)
@@ -67,8 +59,6 @@ void checkHashNodeNonEmpty2(HashNode **node_ptr_ptr)
         NoMallocErr("void allocateEmptyArgNode(HashTable **node_ptr_ptr) 3 ");
     if ((*node_ptr_ptr) -> array == NULL)
         NoMallocErr("void allocateEmptyArgNode(HashTable **node_ptr_ptr) 4 ");
-    //if ((*node_ptr_ptr) -> node_ptr -> arg_ptr == NULL)
-    //    DeathErr("void allocateEmptyArgNode(HashTable **node_ptr_ptr) 5 ");
 }
 
 void checkArgNodeNonEmpty(ArgNode **arg_ptr)
@@ -85,8 +75,6 @@ void checkArgNodeNonEmpty(ArgNode **arg_ptr)
 void checkArgNodeEmpty(ArgNode **arg_ptr)
 {   if (arg_ptr == NULL)
         DeathErr("Your compiler is on drugs");
-    //if ((*arg_ptr) != NULL)
-    //    NoMallocErr("void allocateEmptyArgNode(ArgNode **arg_ptr) 1 ");
     if ((*arg_ptr) -> result != NULL)
         NoMallocErr("void allocateEmptyArgNode(ArgNode **arg_ptr) 2 ");
     if ((*arg_ptr) -> next != NULL)
@@ -94,9 +82,7 @@ void checkArgNodeEmpty(ArgNode **arg_ptr)
 }
 
 void checkArgNodeEmpty2(ArgNode **arg_ptr)
-{   //if ((*arg_ptr) != NULL)
-    //    NoMallocErr("void allocateEmptyArgNode(ArgNode **arg_ptr) 1 ");
-    if (arg_ptr == NULL)
+{   if (arg_ptr == NULL)
         DeathErr("Your compiler is on drugs");
     if ((*arg_ptr) -> result != NULL)
         NoMallocErr("void allocateEmptyArgNode(ArgNode **arg_ptr) 2 ");
