@@ -1,6 +1,69 @@
-There are two input files to the propgram: PRPS.txt, ALPHA.txt
+OVERVIEW
 
-Input Files
+    This project performs logical inference on logic sentences which are read from file. 
+    One logic sentence is placed in PRPS.txt, and another is placed in ALPHA.txt. 
+    The software then reads both and deduces whether or not the sentence in ALPHA.txt 
+    is infered from the sentence in PRPS.txt.  When it comes to parsing logic sentences, 
+    the software fully supports existential and universal quantifers which can be nested 
+    to arbitrary depth in other quantifier statements.
+
+    Denote the sentence in PRPS.txt as KB, and the sentence in ALPHA.txt as alpha.
+    After reading and parsing the sentences, the logical equivalent of them is stored
+    in RAM as a binary tree. Specifically, the tree represents KB ^ !alpha, where
+    the exclammation denotes negation.
+
+    Then, this tree is converted into conjuctive normal form and the resolution algorithm
+    is used to determined whether it is a contradictory statement or not.
+    
+    If KB ^ !alpha is contradictory, then inference takes place, otherwise no inference
+    takes place.
+
+    The resolution of each clause in the conjunctive normal form tree is done in a naive
+    way, however, making the algorithm very inneficient, and the NP-Complete nature of it
+    easily becomes apparent on a non-trivial textbook problem (see the README.txt for
+    details on the syntax):
+
+        KB:
+            
+            4 x{ 4 y{Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 4 x{3 z{Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}} ^ 4 x{Animal[x] -> Loves[jack, x]} ^ Kills[jack, tuna] v Kills[curiosity, tuna] ^ Cat[tuna] ^ 4 x{Cat[x] -> Animal[x]}
+        alpha:
+            
+            Kills[curiosity, tuna]
+
+    For this input, the 4GB RAM computer runs out of memory after a few days of computation.
+
+    However, for more trivial examples, the program runs:
+        KB: (A[a] -> B[b]) ^ (B[b] -> C[c])
+        alpha: (A[a] -> C[c])
+
+        KB: A[a] ^ 4 x{A[x] -> B[x]}
+        alpha: B[a]
+
+    and inference takes place for these cases
+
+
+    To solve the first, and complex, textbook problem, binning heuristics need to be 
+    used to intelligently decide which clauses to resolve during the resolution process.
+
+
+    The algorithm has been shown to produce correct result in the following cases:
+        
+        (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) correctly predicts that (A[a] -> D[d]) is infered
+        (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) correctly predicts that !(A[a] -> D[d]) is not infered
+
+
+        KB: A[a] ^ 4 x{A[x] -> B[x]} 
+        alpha: B[a]
+        correctly predicts that B[a] is infered
+
+        KB: A[a] ^ 4 x{A[x] -> B[x]}
+        alpha: A[a] 
+        correctly predicts that A[a] is not infered
+
+INPUT FILES AND THEIR SYNTAX
+
+    Note: in both PRPS.txt and ALPHA.txt, only the first line is read. All other lines are ingored.
+    ===============================================================================================
 
     PRPS.txt
 
@@ -38,14 +101,6 @@ Input Files
     In both files, only the first line is read by the program
 
     
-Inference Algorithm:
-
-    The inference takes place by first reading PRPS.txt into the knowledge base, denoted Kb here, and then reads ALPHA.txt as what will be infered, denoted alpha here.
-
-    Then, the sentece Kb ^ !alpha is constructed as a single sentence, represented in a binary tree.
-    Then the tree is converted into conjuctive normal form, and the resolution algorithm is performed on the clauses to find a contradiction in the sentence, which would mean inference takes place.
-    If the resolution algorithm yields that the sentence is logically self-consistent, no inference takes place.
-
 How to compile:
 
     At the root of the source tree, which contains the README.txt file, just type in
@@ -69,17 +124,10 @@ HOW TO RUN
 
     at the prompt
 
-Further work:
+FURTHER WORK:
     
     The resolution algorithm is done in a basic manner only, and does not have any intelligent means to select which clauses are compared in any way, thus making it very very innefficient for non-trivial logic sentences.
 
-Known Bugs:
+KNOWN BUGS:
     
-    None right now. However, it has not been rigorously tested yet, but is shown to work in the following cases:
-        
-        (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) correctly predicts that (A[a] -> D[d]) is infered
-        (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) correctly predicts that !(A[a] -> D[d]) is not infered
-
-
-        A[a] ^ 4 x{A[x] -> B[x]} correctly predicts that B[a] is infered
-        A[a] ^ 4 x{A[x] -> B[x]} correctly predicts that A[a] is not infered
+    None right now. However, it has not been rigorously tested yet.

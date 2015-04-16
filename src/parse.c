@@ -510,7 +510,7 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
     if (tokens_prps_alpha == NULL)
         MallocErr("Read 1");
 
-    kb_string = ReadKB(m, filename_kb); // UNNEEDED: Reads KB.txt
+    //kb_string = ReadKB(m, filename_kb); // UNNEEDED: Reads KB.txt
     prps = ReadPRPS(filename_prps);     // Reads PRPS.txt
     alpha = ReadPRPS(filename_alpha);   // Reads ALPHA.txt
 

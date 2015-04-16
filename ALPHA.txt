@@ -1,7 +1,7 @@
+!A[a]
 Kills[curiosity, tuna]
 
 (A[a] -> D[d])
-A[a]
 
 !(A[a] -> D[d])
 
@@ -22,8 +22,3 @@ Kills[curiosity, tuna]
 
 
 Loves[baby, human]
-P[a] -> R[a]
-(A[a] ^ C[c])
-(A[a] v B[b])
-~P[a]
-1
