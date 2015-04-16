@@ -19,6 +19,10 @@ char **ReadKB(int m, const char *filename)
 
 char *ReadPRPS(const char *filename)
 {
+    /*  Reads the top line of the file (const char *) filename
+     *  and returns the string.
+     */
+
     char *prps = NULL, *return_val = NULL;
     int n = 0, size;
 

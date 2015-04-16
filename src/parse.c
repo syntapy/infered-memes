@@ -8,33 +8,33 @@
 //      S Y N T A X - R U L E S      //
 //***********************************//
 //
-//      Forall
-//      Exists
+//      Forall: 4
+//      Exists: 3
 //
 //      Arguments: 
 //          Any number of chars: a - z
 //              All Lower Case
+//              Separated by commas
 //          
 //
 //      Proposition functions:
 //          1st char: A - Z
 //              Upper Case
-//          Any number of lower case letters: a - z
-//          Left (
+//          If any, any number of lower case letters: a - z
+//          Left {
 //          One Argument                     .  
-//          Right)                                          
+//          Right}                                          
 //                           .                     ***********
 //      Operators:                                 ***********
-//          and             .   .                  ** **  * **
-//          or                 *                   **  *  * **
-//          implies                                *****  * **
-//          equivalent        .        .           *****  * **
+//          and: ^          .   .                  ** **  * **
+//          or: v              *                   **  *  * **
+//          implies: ->                            *****  * **
+//          equivalent: =     .        .           *****  * **
 //                                                        * **
 //                                                        * **
 //                                                       ** **
 //*************************************************************
 //**************************************************************
-
 
 int IsLowerCase(char c)
 {   int return_val = FALSE;
@@ -76,25 +76,6 @@ int IsOprtr(char token)
     return return_val;
 }
 
-/*char *ReadALPHA(const char *filename)
-{
-    char **alpha = NULL;
-    int m, n;
-
-    alpha = calloc(2, sizeof(char *));
-    if (alpha == NULL)
-        MallocErr("ReadALPHA 1");
-
-    FILE *f = fopen(filename, "r");
-
-    getline(&(alpha[0]), &m, f);
-    getline(&(alpha[1]), &n, f);
-
-    fclose(f);
-
-    return alpha;
-}*/
-
 #include "_read.h"
 
 #include "_list.h"
@@ -103,9 +84,40 @@ int IsOprtr(char token)
 
 int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth)
 {
-    /*
-        contributes return value of 1 as long as (*u_args_ptr) -> token_ptr != NULL AFTER making any modifications to it
-    */
+    /*  THERE MIGHT BE A SUBTLE BUG IN THIS: Duplication of arguments
+     *  
+     *  This is a recursive function that increments the pointers in the
+     *  stack of universally quantified arguments.
+     *
+     *  Alright, here's the deal: the pointers in the (Args **) u_args_ptr stack
+     *  will, at different points in the skolemization process, point to
+     *  a different combination of the arguments in the (Tokens **) arg_list
+     *  linked list.
+     *
+     *  So, at the beginning of the skolemization process, all the pointers
+     *  in the (Args **) u_args_ptr stack will point to the first node in 
+     *  the (Tokens **) arg_list linked list.
+     *  So, lets say (Args **) u_args_ptr has ["x", "y", "z"], three nodes
+     *  in the stack. And suppose the arguments in (Tokens **) arg_list
+     *  are ["cat", "dog", "chicken"].
+     *
+     *  Now, "x", "y", "z" are all nodes in the u_args_ptr, and they each
+     *  have a pointer to one of the nodes in arg_list.
+     *  At the beginning of the skolemization process, each node in u_args_ptr
+     *  stack would point to "cat", and when the literal argument names are 
+     *  generated then "x", "y", and "z" would become "cat".
+     *  
+     *  Run this IncrementConditional(...) once and then "z"'s pointer
+     *  is pointing to "dog" instead, the rest unchanged.
+     "  Run this again and "z"'s pointer points to "chicken"
+     *  Run this again, "z"'s pointer goes back to "cat" but "y"'s pointer
+     *  goes to "dog"
+     *
+     *  This function always returns 1, except when it is called AFTER
+     *  the pointers of "x", "y", and "z" are all pointing to "chicken",
+     *  meaninng that all combinations of u_args_ptr to arg_list pointings
+     *  have been traversed.
+     */
 
     int return_val = 1, next = 0;
 
@@ -140,35 +152,6 @@ int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, int depth)
     return return_val;
 }
 
-//  int IncrementConditional(Tokens **arg_list, Args **u_args_ptr, char quant)
-//  {
-//      /*  returns 0 if (*u_args_ptr) -> token_ptr -> next == NULL
-//       *  i.e. it is at end of linked list (Tokens **) arg_list 
-//       */
-
-//      int return_val = 1;
-
-//      if (quant == '4')
-//      {
-//          if (arg_list == NULL || u_args_ptr == NULL || (*arg_list) == NULL || (*u_args_ptr) == NULL)
-//              return_val = 0;
-
-//          else if ((*u_args_ptr) -> token_ptr -> next == NULL)
-//          {
-//              (*u_args_ptr) -> token_ptr = (*arg_list);
-//              return_val = 0;
-//          }
-
-//          else if (IncrementConditional(arg_list, &((*u_args_ptr) -> next), quant) == 0)
-//              (*u_args_ptr) -> token_ptr = (*u_args_ptr) -> token_ptr -> next;
-//      }
-
-//      else
-//          return_val = 0;
-
-//      return return_val;
-//  }
-
 void GetPrps(char **prps, char *input, int *i)
 {
     int j = *i, s;
@@ -197,8 +180,10 @@ void GetPrps(char **prps, char *input, int *i)
 
 void GetArg(char ***arg, char *input, int *i, int *arg_n)
 {
-    /*  Collects all the arguments to a prps function into an
-     *  array of arrays.
+    /*  Collects all the arguments of a prps function into an
+     *  array of strings, and increments (int *) i to point 
+     *  input[*i] to the next '{' or ']' character, whichever is 
+     *  closer.
      *
      *  For instance:
      *      Loves[human, cat]
@@ -208,15 +193,22 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
      */
 
     int j = *i, k, s, t;
+
+    // Temp linked list that holds the arguments
+    // This will be a memory leak source as its not deallocated
     ArgNmbr *tail = NULL, **head = &tail;
 
     if (arg == NULL)
         DeathErr("GetArg 1");
 
     *arg_n = 0; (*arg) = NULL;
+
+    // Collect argument strings into linked list
     while (input[j] != ']' && input[j] != '{' && input[j] != '}')
     {
-        k = 0;
+        k = 0;  // k is used get str length of current argument
+
+        // Read past one argument
         while (input[j + k] != ',' && input[j + k] != ']' && input[j + k] != '{')
             k++;
 
@@ -227,6 +219,7 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
 
         (**head).s = k;
 
+        // Read pasts comma and spaces
         while (input[j + k] != ']' && input[j + k] != '{' && input[j + k] != '}' && 
             (input[j + k] == ',' || input[j + k] == ' '))
 
@@ -242,6 +235,8 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
     if ((*arg) == NULL)
         MallocErr("GetArg 1.5");
 
+
+    // Collect arguments from linked list into (char ***) arg array of strings
     head = &tail;
     for (j = 0; j < *arg_n; j++)
     {
@@ -265,6 +260,9 @@ void GetArg(char ***arg, char *input, int *i, int *arg_n)
 
 void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_head)
 {
+    /*  
+     */
+
     OprtrArgs **oprtr_tmp = NULL;
 
     if (*oprtr_head == NULL)
@@ -297,19 +295,42 @@ void FreeTopOprtrArg(OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_head)
             **oprtr_head = NULL;
         }
     }
-
-    //else
-    //    DeathErr("FreeTopOprtrArg 2");
 }
 
 void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *arg_n,
         OprtrArgs ***oprtr_head)
 {
-    //*quant_head = calloc(1, sizeof(QuantStack));
-    //if (*quant_head == NULL)
-    //    MallocErr("ReadArgs 1.5");
+    /*  Each quantifier statement is formed as follows:
+     *      4 animal, rock, car {statements...}
+     *              or
+     *      3 penquin, stallion, choochootrain {statements...}
+     *
+     *  Where there could be any number of lower case characters
+     *  after the quantifier
+     *
+     *  This function changes the (int *) i pointer to point to the
+     *  '{' character
+     *  Meanwhile it has to keep track of the variable names it has encountered,
+     *  placing them in the (OprtrArgs ***) oprtr_head linked list
+     *
+     *  ARGUMENTS:
+     *
+     *      (Tokens **) head: a linked list of the non-quantified argument strings.
+     *          Each node contains a unique string corresponding to one such argument.
+     *
+     *      (char ***) arg: 
+     *
+     *      (int *) i: the pointer to the current index.
+     *
+     *      (int *) arg_n: this is set to the number of arguments
+     *
+     *      (Tokens **) oprtr_tail: the base of a linked list consisting of the
+     *          quantified arguments. Each node 
+     *
+     *      (Tokens ***) oprtr_head is the head of the linked list containing
+     */
 
-    //(**quant_head).quant = input[i];
+    // quant is '3' or '4', denoting which quantifier
     int quant = input[*i], j;
     OprtrArgs **oprtr_tmp = NULL;
     while (input[*i] != '{')
@@ -321,7 +342,6 @@ void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *a
                 (**oprtr_head) = calloc(1, sizeof(OprtrArgs));
                 if ((**oprtr_head) == NULL)
                     MallocErr("ReadArgsQuantifier 1.5");
-                //(***oprtr_head).next = calloc(1, sizeof(OprtrArgs));
             }
 
             else
@@ -340,6 +360,9 @@ void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *a
             }
 
             (***oprtr_head).quant = quant;
+
+            // Read args and add them to list of existentiall 
+            // quantified arguments
             GetArg(arg, input, i, arg_n);
             for (j = 0; j < *arg_n; j++)
             {
@@ -356,20 +379,46 @@ void ReadArgs_Quantifier(Tokens **head, char ***arg, char *input, int *i, int *a
 void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quantifier,
         OprtrArgs **oprtr_tail, OprtrArgs ***oprtr_head)
 {
+    /*  Parses the string (char *) input to fill a linked list, (Tokens **) head,
+     *  with the arguments that do not have universal or existential quantification
+     *  applied to them
+     *
+     *  This is a recursive function. The first call parses the entire line, while subsequent calls
+     *  will parse (char *) input from one '{' to the corresponding '}'
+     *
+     *  ARGUMENTS:
+     *
+     *      (Tokens **) head: a linked list of the non-quantified argument strings.
+     *          Each node contains a unique string corresponding to one such argument.
+     *
+     *      (char *) input: the string containing the entire sentence. 
+     *
+     *      (int *) i: the pointer to the current index.
+     *
+     *      (int) n: the length of (char *) input
+     *
+     *      (char) quantifier: depth in nested quantifiers
+     *
+     *      (Tokens **) oprtr_tail: the base of a linked list of linked lists.
+     *          It consists of the quantified arguments corresponding to each
+     *          quantifier statement. For instance, in the following statement:
+     *              4 x, y, z{3 a, b {statements...}}
+     *          (OprtrArgs **) oprtr_tail would become a two node list,
+     *          the first node containing {"x", "y", "z"} and the second containing
+     *          {"a", "b"}
+     *      
+     *      (Tokens ***) oprtr_head: the head of the linked list containing
+     */
+
     int j = 0, arg_n = 0;
     char quant = '\0';
-    //Tokens *tail = NULL;
     Tokens **return_val = NULL;
-    //Tokens **oprtrs = NULL, **oprtrs_tail = NULL;
-
-    //head = calloc(1, sizeof(Tokens *));
-    //oprtrs = calloc(1, sizeof(Tokens *));
-    //tail = calloc(1, sizeof(Tokens));
-    if (head == NULL)// || oprtrs == NULL)
+    if (head == NULL)
         MallocErr("ReadArgs 1");
 
     while (*i < n)
     {
+        // Reads quantified portion of the sentence
         if (input[*i] == '3' || input[*i] == '4')
         {
             ReadArgs_Quantifier(head, arg, input, i, &arg_n, oprtr_head);
@@ -383,13 +432,16 @@ void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quant
             break;
         }
 
+        // Moves past propositional function
         if (IsUpperCase(input[*i]))
             while (input[++(*i)] != '[');
 
+        // Adds args, keeping track of whether
+        // they are quantified arguments
         if (IsLowerCase(input[*i]))
         {
-            //if (!T_Contains(tail, (*arg)[j]))
             GetArg(arg, input, i, &arg_n);
+            
             if (quantifier > 0)
             {
                 for (j = 0; j < arg_n; j++)
@@ -416,18 +468,16 @@ void ReadArgs(Tokens **head, char ***arg, char *input, int *i, int n, char quant
         else
             (*i)++;
     }
-
-    //return_val = calloc(1, sizeof(Tokens *));
-    //if (return_val == NULL)
-    //    MallocErr("ReadArgs 2");
-    //(*return_val) = tail;
-    //print_tokens(tail);
-
-    //return return_val;
 }
 
 void Read(PrpsTree ***tree, int h, int k, int *hash_val)
 {
+    /* This reads PRPS.txt and ALPHA.txt and produces the binary tree
+     * representing the logical sentence. It includes the use of 
+     * skolemization to deal with universal operators, and a simpler
+     * way of dealing with existential operators
+     */
+
     char **kb_string = NULL;
     char **alpha_string = NULL;
     char *prps = NULL, *alpha = NULL, *mid = NULL, *prps_alpha = NULL;
@@ -436,7 +486,6 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
     int m = 4, n;
     int nn = 0, mm = 0;
     int i = 0;
-    //int hash_val;
 
     char quantifier = '\0';
     char *a_prps = NULL, *a_arg = NULL;
@@ -447,28 +496,10 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
     OprtrArgs *oprtr_tail = NULL, **oprtr_mid = &oprtr_tail;
     OprtrArgs **oprtr_head = &oprtr_tail;
 
-    //PrpsTree **return_val = NULL;
-
-    //return_val = calloc(2, sizeof(char *));
-    //if (return_val == NULL)
-    //    MallocErr("Read -1");
-
-    //return_val[0] = calloc(2, sizeof(char));
-    //return_val[1] = calloc(2, sizeof(char));
-
-    //if (return_val[0] == NULL || return_val[1] == NULL)
-    //    MallocErr("Read -2");
-
     PrpsTree **tree_tmp = NULL, **alpha_tree = NULL,  **return_tree = NULL;
     Tokens **tokens_prps_alpha = NULL, **tokens_alpha = NULL;
 
-    Tokens *tail = NULL;//, **head = &tail;
-    //head = calloc(1, sizeof(Tokens *));
-    //if (head == NULL)
-    //    MallocErr("Read -1");
-
-    //  List of argument symbols, and list of symbols generated
-    //  by existential quantifiers
+    Tokens *tail = NULL;
     Tokens **arg_list = &tail, **exist_arg_list = NULL;
 
     a_prps = calloc(2, sizeof(char)); a_arg = calloc(2, sizeof(char));
@@ -476,17 +507,17 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
         MallocErr("Read 0");
 
     tokens_prps_alpha = calloc(1, sizeof(Tokens *));
-    //tokens_alpha = calloc(1, sizeof(Tokens *));
-    if (tokens_prps_alpha == NULL)// || tokens_alpha == NULL)
+    if (tokens_prps_alpha == NULL)
         MallocErr("Read 1");
 
-    kb_string = ReadKB(m, filename_kb);
-    prps = ReadPRPS(filename_prps);
-    alpha = ReadPRPS(filename_alpha);
+    kb_string = ReadKB(m, filename_kb); // UNNEEDED: Reads KB.txt
+    prps = ReadPRPS(filename_prps);     // Reads PRPS.txt
+    alpha = ReadPRPS(filename_alpha);   // Reads ALPHA.txt
 
     fprintf(stdout, "KB: %s\n", prps);
     fprintf(stdout, "alpha: %s\n", alpha);
 
+    // Combines the strings from PRPS.txt and ALPHA.txt to from a single sentence
     prps_alpha = calloc(strlen(prps) + strlen(" ^ !") + strlen(alpha) + 1, sizeof(char));
     if (prps_alpha == NULL)
         MallocErr("Read 3");
@@ -494,16 +525,10 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
     strcat(prps_alpha, prps);
     strcat(prps_alpha, " ^ !");
     strcat(prps_alpha, alpha);
-    //if (mid == NULL)
-    //    MallocErr("Read 2");
-    //mid = strcat(prps, " ^ !");
-
-    //prps_alpha = calloc(strlen(mid) + strlen(alpha) + 1, sizeof(char));
-    //prps_alpha = strcat(mid, alpha);
-
-    //mid = NULL; prps = NULL;
 
     n = strlen((const char *) prps_alpha);
+
+    // Get a list of all hardcoded arguments (without universal/existential operators applied)
     ReadArgs(arg_list, &arg, prps_alpha, &i, n, quantifier, &oprtr_tail, &oprtr_head);
 
     exist_arg_list = calloc(1, sizeof(Tokens *));
@@ -511,12 +536,8 @@ void Read(PrpsTree ***tree, int h, int k, int *hash_val)
         MallocErr("Read 2");
 
     (*tokens_prps_alpha) = PrpsTokenizer(prps_alpha, &nn);
-    //print_tokens(*tokens_prps_alpha);
-    //(*tokens_alpha) = PrpsTokenizer(alpha, &mm);
 
-    //print_tokens((*tokens_prps_alpha));
-    //LearnKB(hash, kb_string, m, h, k);
-
+    // THIS IS WHERE IT GETS COMPLICATED
     (*tree) = TokensToTree(tokens_prps_alpha, arg_list, 0);
     printf("Initial Tree: ");
     tree_print(*tree);

@@ -27,7 +27,9 @@ int main()
     int *array = NULL, *array_ptr = NULL;
     int is_cnf, tree_val = -1;
 
+    // Parsing is all done in the Read function
     Read(&tree, n, l, &hash_val);
+
     TreeConsistency(tree);
 
     printf("Original Formula:\n\t"); tree_print(tree); printf("\n");

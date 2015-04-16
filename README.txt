@@ -59,6 +59,7 @@ How to compile:
         sudo aptitude install colorgcc ctags
 
 HOW TO RUN
+    Note: this program was written and tested only in Linux i386 architecture.
 
     Simply write your knowledge base in the first line of PRPS.txt
     The statement you wish to test if it is implied from the knowledge base goes into ALPHA.txt

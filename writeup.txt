@@ -1,4 +1,4 @@
-First an is read from a text file, then it is stored in memory as a binary tree.
+First, both a knowledge base, and a statement to (try to) be infered from the knowledge base, are read from a text file, and then stored in memory as a single combined binary tree.
 
 The function CNF calls the following functions that modify the equation tree:
 

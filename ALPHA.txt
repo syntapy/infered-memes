@@ -1,8 +1,10 @@
+Kills[curiosity, tuna]
+
+(A[a] -> D[d])
 A[a]
 
 !(A[a] -> D[d])
 
-Kills[curiosity, tuna]
 
 
 
@@ -10,7 +12,6 @@ Criminal[west]
 
 =======
 C[c]
-(A[a] -> E[e])
 
 B[a]
 Criminal[west]

@@ -33,15 +33,32 @@ void FreeTreeList(TreeList **tree_list)
 
 Tokens *PrpsTokenizer(char *input, int *n)
 {
-    /*  char *input: raw input
-        char **sentence[]: tokenized version of input; passed by reference
-        int *n: number of tokens in output; passed by reference
-    */
+    /*  Converts the raw input string (char *) input into
+     *  a linked list of tokens 'as is'. The use of skolemization
+     *  and so forth to handle universally and existentially quantified
+     *  arguments is NOT done here
+     *
+     *  ARGUMENTS:
+     *      (char *) input: Raw input string denoting logical sentence
+     *      (int *) n: Number of tokens in output. Gets set during
+     *          routine
+     *
+     *  RETURNS:
+     *      (Tokens *) tokens: Linked list of tokens to be converted
+     *          into binary tree form representation of logical sentence
+     */
 
     int i, j, arg_n;
-    char *token = NULL, *prps = NULL, **arg = NULL;
+
+    char    *token = NULL,  // temporary token holder
+            *prps = NULL,   // temporary string 
+                            //      for propositional function
+            **arg = NULL;   // temporary array of strings for arguments
+
+    // Sets *n
     *n = strlen(input);
 
+    // Linked list structure to be returned
     Tokens *tokens = NULL, *head = NULL;
     tokens = calloc(1, sizeof(Tokens));
 
@@ -55,6 +72,7 @@ Tokens *PrpsTokenizer(char *input, int *n)
     {
         if (input[i] == '3' || input[i] == '4')
         {
+            // Sets token to "3" or "4"
             token = NULL;
             token = calloc(2, sizeof(char));
             if (token == NULL)
@@ -65,10 +83,12 @@ Tokens *PrpsTokenizer(char *input, int *n)
             AddToken(&head, token);
             token = NULL;
 
+            // Adds argument tokens to (Tokens *) tokens
             while (input[i] != '{')
             {
                 if (input[i] == ' ' || input[i] == ',')
                     i++;
+
                 else if (IsLowerCase(input[i]))
                 {
                     GetArg(&arg, input, &i, &arg_n);
@@ -80,6 +100,8 @@ Tokens *PrpsTokenizer(char *input, int *n)
             AddToken(&head, "{"); i++;
         }
 
+        // Adds either logcal operator (AND, OR, etc...)
+        // or Propositional function with arguments
         if (input[i] != ',' && input[i] != ' ' &&
             input[i] != '[' && input[i] != ']')
         {
@@ -259,6 +281,20 @@ void AdvanceToClosingParenthese(Tokens **tokens)
 
 PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list, int depth)
 {
+    /*  Logially converts a linked list of binary trees into one binary tree
+     *  which is then returned.
+     *
+     *  It also uses the logical operators in (OprtrList *) oprt_list to do this.
+     *
+     *  For instance, tree_list may contain [A^B, CvD, A^D]
+     *  and oprtr_list may contain [->, v].
+     *  The resulting returned tree would be (A^B) -> (CvD) v (A^D)
+     *
+     *  ARGUMENTS:
+     *      (TreeList *) tree_list: linked list of trees
+     *      (OprtrList *) oprtr_list: linked list of logical operators
+     */
+
     PrpsTree **tree = NULL, **tree_tmp = NULL, **tree_new = NULL;
 
     TreeList *tree_list_head = NULL;
@@ -286,9 +322,10 @@ PrpsTree **TreeListToTree(TreeList *tree_list, OprtrList *oprtr_list, int depth)
 PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list, 
     Tokens **e_args, Args **u_args, int depth, char quant, int global_negate)
 {
-    /*  This starts at the opening curly brace, 
-        after the opening portion, eg: 4x 
-    */
+    /*  This starts parsing the list of tokens begining at the opening curly brace
+     *  which directly follows the quantifier token. The result is using the
+     *  list of literal arguments (not quantified) to convert universal
+     */
 
     TreeList *tree_list = NULL, **tree_list_head = NULL; 
     TreeList *tree_list_tmp = NULL, **tree_list_head_tmp = NULL;
@@ -325,8 +362,14 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
     tree_list_head = &tree_list;
     oprtr_list_head = &oprtr_list;
     (*tail) = (*tokens);
-    while (will_continue)
+    
+    // This loop continues until all combinations of connections
+    // from nodes in (Args **) u_args to nodes in (Tokens **) arg_list
+    // have been passed.
+    while (will_continue) // will_continue is determined by function below
     {
+        // (Tokens **) head: *head starts from beginning of 
+        // quantified sentence to end of quantified sentence
         (*head) = (*tail);
         token = (*head) -> token;
 
@@ -352,6 +395,7 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 
             else if (strcmp(token, "}") == 0)
             {
+                // Loop condition is set!
                 if ((*u_args) != NULL)
                     will_continue = IncrementConditional(arg_list, u_args, depth);
                 else
@@ -365,6 +409,7 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
             else if ((*head) == NULL)
                 InconsistencyErr("U_E_QuantifierToTree 6");
 
+            // Negation!
             else if (strcmp(token, "!") == 0)
             {
                 subtree_negate = !subtree_negate;
@@ -372,6 +417,8 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
                 token = (*head) -> token;
             }
 
+            // Parenthesesed statement is converted into binary tree
+            // and added to (TreeList **) tree_list
             else if (strcmp(token, "(") == 0)
             {
                 (*head) = (*head) -> next;
@@ -379,6 +426,7 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
                 ListAddTree(&tree_list_head_tmp, tree, depth);
             }
 
+            // Add single proposition function to 
             else if (IsUpperCase(token[0]))
             {
                 AddTree(head, arg_list, &tree_list_head_tmp, 
@@ -398,6 +446,7 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
                 token = (*head) -> token;
             }
 
+            // Another recursive call to deal with quantifiers.
             else if (strcmp(token, "4") == 0 || strcmp(token, "3") == 0)
             {
                 tree = QuantifierToTree(head, arg_list, e_args, u_args, 
@@ -417,6 +466,7 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
         tree = TreeListToTree(tree_list_tmp, oprtr_list_tmp, depth);
         ListAddTree(&tree_list_head, tree, depth);
 
+        // All the trees are later ANDed together
         if (will_continue)
             AddOprtr(&oprtr_list_head, AND);
 
@@ -428,6 +478,9 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 
     (*tokens) = (*head);
 
+    // Combined all the different trees together.
+    // Skolemization itself will produce multiple trees that 
+    // are identical except for their argument strings.
     return_val = TreeListToTree(tree_list, oprtr_list, depth);
     FreeTreeList(&tree_list);
     FreeOprtrList(&oprtr_list);
@@ -443,14 +496,40 @@ PrpsTree **U_E_QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list, 
     Tokens **e_args, Args **u_args, int depth, int global_negate)
 {
-    /*  Returns a PrpsTree from the 
-            existential / universal quantifier statement
-        Uses skolemization based on args from arg_list
-
-        q_arg_list: list of args that should be 'skolemized'
-            So, if an arg is encountered that is not in q_arg_list
-            it is taken literaly
-    */
+    /*  Parses the linked list of tokens, (Tokens **) tokens, 
+     *  from the '{' after the most recently passed existential /
+     *  universal quantifier, up to the correspondong closing '}'.
+     *
+     *  Returns a PrpsTree from the quantifier statement and
+     *  uses skolemization based on arguments in (Tokens **) arg_list
+     *
+     *  This routine essentially makes the decision of the form
+     *  to be derived from the quantified statement. A quantified
+     *  statement can, for example, be as follows:
+     *
+     *      !(4 x, y {statements...})
+     *
+     *  In this case, it would have to be converted into this form:
+     *
+     *      3 x, y {!statements...}
+     *
+     *  The conversion to an actual tree is done in the 
+     *  U_E_QuantifierToTree(arg...) routine
+     *
+     *  ARGUMENTS:
+     *
+     *      (Tokens **) tokens: linked list of tokens from inputed
+     *          sentence to conduct resolution on
+     *      (Tokens **) arg_list: list of literal arguments
+     *          that are not universally / existentially quantified
+     *      (Tokens **) e_args: list of existentially 
+     *          quantified arguments
+     *      (Args **) u_args: list of universally
+     *          quantified arguments
+     *      (int) depth: current depth of nested quantifiers
+     *      (int) global_negate: whether quantified statement
+     *          has a negation operation applied to it
+     */
 
     char *token, quant = '\0';
     PrpsTree **return_val = NULL;
@@ -460,11 +539,17 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 
     token = (*tokens) -> token;
 
+    // This top if/else statement decides the form of the statement
+    // by pushing arguments into either 
+    //      the (Tokens **) e_args stack
+    //  or
+    //      the (Args **) u_args
     if (strcmp(token, "4") == 0)
     {
         (*tokens) = (*tokens) -> next;
         token = (*tokens) -> token;
 
+        // 4x{stmnts..} -> unchanged
         if (!global_negate)
         {
             quant = '4';
@@ -478,6 +563,7 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
             }
         }
 
+        // !4x{stmnts..} -> 3x{!(stmnts..)}
         else if (global_negate)
         {
             quant = '3';
@@ -497,6 +583,7 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
         (*tokens) = (*tokens) -> next;
         token = (*tokens) -> token;
 
+        // 3x{stmnts..} -> unchanged
         if (!global_negate)
         {
             quant = '3';
@@ -510,6 +597,7 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
             }
         }
 
+        // !3x{stmnts..} -> 4x{!(stmnts..)}
         else if (global_negate)
         {
             quant = '4';
@@ -524,8 +612,14 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
         }
     }
 
+    // This is where the actual work is done
     return_val = U_E_QuantifierToTree(tokens, arg_list, e_args, u_args, depth, quant, global_negate);
 
+
+    // Pop arguments from stack as oppropriate.
+    // Yes, this does facilitate multiple arguments right after
+    // one quantifier token. For instance:
+    //      4x,y{stmnts..}
     if (quant == '4')
         U_FreeTop(u_args);
     else
@@ -537,6 +631,20 @@ PrpsTree **QuantifierToTree(Tokens **tokens, Tokens **arg_list,
 void AddTreeNode(TreeList ***tree_list_head, 
     char *prps, char **arg, int subtree_negate, int arg_n, int depth)
 {
+    /*  Generates a propositional node from the literal propositional
+     *  function and corresponding arguments.
+     *
+     *  ARGUMENTS:
+     *      (TreeList ***) tree_list_head: linked list of propositional
+     *          nodes. Used to generate a binary tree later.
+     *      (char *) prps: propositional function string.
+     *      (char **) arg: array of string pointers to argument strings.
+     *      (int) subtree_negate: is 1 if prps node is to be negated
+     *                            is 0 otherwise
+     *      (int) arg_n: number of argument strings to prps function
+     *      (int) depth: depth inside nested quantifier sentences
+     */
+
     PrpsTree **tree_tmp = NULL;
     tree_tmp = calloc(1, sizeof(PrpsTree *));
     if (tree_tmp == NULL)
@@ -587,6 +695,7 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
     u_args_ptr = u_args;
     token = (*tokens) -> token;
 
+    // Grab the propositional function string
     if (IsUpperCase(token[0]))
     {
         if (prps == NULL)
@@ -604,6 +713,7 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
         (*tokens_ptr_tmp) = (*tokens_ptr);
         token = (*tokens_ptr) -> token;
 
+        // Count number of args to current propositional function
         while (token != NULL && IsLowerCase(token[0]))
         {
             (*tokens_ptr_tmp) = (*tokens_ptr_tmp) -> next;
@@ -611,10 +721,13 @@ void AddTree(Tokens **tokens, Tokens **arg_list,
             n_args++;
         }
 
+        // To hold argument strings
         arg_array = calloc(n_args, sizeof(char *));
         if (arg_array == NULL)
             MallocErr("AddTree 3.5");
 
+        // Determine the literal argument strings to be used.
+        // This is where skolemization is done.
         for (i = 0; i < n_args; i++)
         {
             token = (*tokens_ptr) -> token;
@@ -647,6 +760,10 @@ void AddOprtr(OprtrList ***oprtr_list_head, int oprtr)
 
 void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp, int depth)
 {
+    /*  Adds binary tree (PrpsTree **) tree_tmp to linked list of trees.
+     *  (TreeList ***) tree_list_head is the head of that linked list.
+     */
+
     (**tree_list_head) -> tree = tree_tmp;
     (*tree_list_head) = &((**tree_list_head) -> next);
     (**tree_list_head) = calloc(1, sizeof(TreeList));
@@ -657,12 +774,33 @@ void ListAddTree(TreeList ***tree_list_head, PrpsTree **tree_tmp, int depth)
 PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list, 
     int global_negate)
 {
+    /*  Converts a linked list of tokens into a binary tree form.
+     *  Skolemization is done to handle universally quantified arguments.
+     *  This is a recursive function. The gian while loop converts the list of
+     *  tokens into a list of trees:
+     *
+     *  ARGUMENTS:
+     *      (Tokens **) tokens: a linked list of the tokens:
+     *          quantifiers, argument strings, { & } braces, 
+     *          Propositional function strings, and logical operators
+     *      (Tokens **) arg_list: linked list of non-quantified
+     */
+
     int subtree_negate = 0, oprtr = -1, depth = 0;
     char *prps = NULL, *arg = NULL;
     char *token, quant = '\0';
 
     PrpsTree **tree_tmp = NULL, **return_tree = NULL;
+
+    // Linked list of binary trees, all of which will be 
+    // combined together as one binary tree (after the giant while loop).
+    //
+    // When an opening '(' is encountered in the list of tokens,
+    // everything up to the corresponding ')' is made into a tree
     TreeList *tree_list = NULL, **tree_list_head = NULL;
+
+    // Linked list of logical operators. Essential to logically
+    // combining binary trees in (TreeList *) tree_list
     OprtrList *oprtr_list = NULL, **oprtr_list_head = NULL;
 
     tree_list = calloc(1, sizeof(TreeList));
@@ -671,6 +809,10 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
     oprtr_list = calloc(1, sizeof(OprtrList));
     oprtr_list_head = &oprtr_list;
 
+    // u_args and e_args are used as stacks to contain
+    // quantified argument strings.
+    // Stacks are used to facilitate arbitrary levels of 
+    // nested quantifier statements.
     Args **u_args = NULL;
     Tokens **e_args = NULL;
     if (tree_list == NULL || oprtr_list == NULL ||
@@ -687,6 +829,7 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
             token = (*tokens) -> token;
         }
 
+        // Keeps track of whether next subtree will be negated
         else if (token != NULL && strcmp(token, "!") == 0)
         {
             (*tokens) = (*tokens) -> next;
@@ -694,6 +837,8 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
             subtree_negate = !subtree_negate;
         }
 
+        // Add a statement within '(' and closing ')' to the 
+        // list of trees in (TreeList *) tree_list
         else if (token != NULL && strcmp(token, "(") == 0)
         {
             (*tokens) = (*tokens) -> next;
@@ -731,6 +876,7 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
                     MallocErr("TokensToTree 11");
             }
 
+            // Convert 
             tree_tmp = QuantifierToTree(tokens, arg_list, e_args, u_args, depth+1, global_negate);
             ListAddTree(&tree_list_head, tree_tmp, depth);
 
@@ -740,6 +886,8 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
             quant = '\0';
         }
 
+        // Add current operator to the list of operators in
+        // (OprtrList *) oprtr_list
         else if (IsOprtr(token[0]))
         {
             oprtr = GetOprtr(token[0]);
@@ -757,6 +905,9 @@ PrpsTree **TokensToTree(Tokens **tokens, Tokens **arg_list,
         }
     }
 
+    // Combine all the trees in (TreeList *) tree_list
+    // into one tree, with their logical connection information
+    // stored in (OprtrList *) oprtr_list.
     return_tree = TreeListToTree(tree_list, oprtr_list, depth);
 
     if (global_negate)

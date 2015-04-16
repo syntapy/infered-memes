@@ -2,21 +2,34 @@
 #define PRPS_H
 
 typedef struct MyString
-{   int *s;
-    char *stc;
+{   /* Beefed up string data type.
+     * Not sure why I used this.
+     * Just to prevent using strlen()
+     * ...I guess.
+     */
+
+    int *s;     // String length
+    char *stc;  // String
 } MyString;
 
 typedef struct PrpsTree
 {   
-    /* struct representing a propositional node */
-    //int *type;          // Bool var: 1 if type
+    /*  Node data type in a binary tree to represent
+     *  logical sentences.
+     *
+     *  Each node can be either a propositional node (leaf node)
+     *  or an operator node (internal node).
+     */
+
     int *oprtr;         // var indicating type of logic operator
     int *neg;           // = 1 if negated, otherwise 0
     int value;          // Truth value of subtree
-    int n_args;
+    int n_args;         // Number of arguments to propositional function
+
+    // stmnt: propositional function string
+    // argmnt: array of argument strings
     MyString *stmnt, **argmnt;
 
-    //struct PrpsTree **root;   // ptr_ptr to the root of tree. *root is constant
     struct PrpsTree *p;         // parent node
     struct PrpsTree *left;      // left child
     struct PrpsTree *right;     // right child
