@@ -1,4 +1,4 @@
-CC=colorgcc
+CC=gcc
 CFLAGS=-ggdb3 -Isrc/ -I./ -lm
 
 all: main.c
