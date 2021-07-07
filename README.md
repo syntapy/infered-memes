@@ -1,133 +1,157 @@
 OVERVIEW
+--------
 
-    This project performs logical inference on logic sentences which are read from file. 
-    One logic sentence is placed in PRPS.txt, and another is placed in ALPHA.txt. 
-    The software then reads both and deduces whether or not the sentence in ALPHA.txt 
-    is infered from the sentence in PRPS.txt.  When it comes to parsing logic sentences, 
-    the software fully supports existential and universal quantifers which can be nested 
-    to arbitrary depth in other quantifier statements.
+This is a logical inference engine and associated parser I did for a college class
 
-    Denote the sentence in PRPS.txt as KB, and the sentence in ALPHA.txt as alpha.
-    After reading and parsing the sentences, the logical equivalent of them is stored
-    in RAM as a binary tree. Specifically, the tree represents KB ^ !alpha, where
-    the exclammation denotes negation.
+The user places the input in the files `PRPS.txt` and `ALPHA.txt` using a simple 
+syntax for relational logic sentences specific to this program as described below
 
-    Then, this tree is converted into conjuctive normal form and the resolution algorithm
-    is used to determined whether it is a contradictory statement or not.
-    
-    If KB ^ !alpha is contradictory, then inference takes place, otherwise no inference
-    takes place.
+The software reads both files and deduces whether or not the sentence in `ALPHA.txt` 
+is infered from the sentence in `PRPS.txt`.
 
-    The resolution of each clause in the conjunctive normal form tree is done in a naive
-    way, however, making the algorithm very inneficient, and the NP-Complete nature of it
-    easily becomes apparent on a non-trivial textbook problem (see the README.txt for
-    details on the syntax):
+Only the 1st line of each input file is read by the program
 
-        KB:
-            
-            4 x{ 4 y{Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 4 x{3 z{Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}} ^ 4 x{Animal[x] -> Loves[jack, x]} ^ Kills[jack, tuna] v Kills[curiosity, tuna] ^ Cat[tuna] ^ 4 x{Cat[x] -> Animal[x]}
-        alpha:
-            
-            Kills[curiosity, tuna]
+HOW IT WORKS
+------------
+The code reads the contents of `PRPS.txt` as one sentence, denoted here as `KB`,
+and the contents of `ALPHA.txt` as another sentence, denoted as `alpha`.
 
-    For this input, the 4GB RAM computer runs out of memory after a few days of computation.
+After acquiring `KB` and `alpha`, inference is determined by proving whether `KB & !alpha` 
+is a contradictory (i.e. impossible) statement. If it is contradictory, then `alpha` has to be
+true if `KB` is true
 
-    However, for more trivial examples, the program runs:
-        KB: (A[a] -> B[b]) ^ (B[b] -> C[c])
-        alpha: (A[a] -> C[c])
+The proof is done by converting the sentence `KB & !alpha` into conjunctive normal form,
+and then reducing disjunctive clauses until a simple statement is reached that is obviously
+impossible or obviously true
 
-        KB: A[a] ^ 4 x{A[x] -> B[x]}
-        alpha: B[a]
+ALGORITHM OVERVIEW
+------------------
+Sentences in the program are represented as binary trees in memory. Leaf nodes 
+are relational logic symbols, and internal nodes are logic operators from the set
+(AND, OR, IMPLIES, EQUALS, FORALL, EXISTS). All nodes can be accompanied by a negate 
+operator.
 
-    and inference takes place for these cases
+For instance, the statement `A[a] ^ B[b]` would be converted to a 3 element binary
+tree with the AND operator as the root node, and `A[a]` being the left child, and `B[b]` 
+being the right child
 
+Each node in the tree is a pointer to a struct, which contains info on whether that node
+is a logic operator or a relational logic symbol, and which of either it is
 
-    To solve the first, and complex, textbook problem, binning heuristics need to be 
-    used to intelligently decide which clauses to resolve during the resolution process.
+The parser recursivively handles subsentences in parantheses as sub-trees
 
+Universal quantifiers are processed using skolemization. This involves replicating the 
+universally quantified subtree across all possible combinations of logic functions and 
+their respective arguments, where the space of all possible symbols is limited to those 
+seen during parsing
 
-    The algorithm has been shown to produce correct result in the following cases:
-        
-        (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) correctly predicts that (A[a] -> D[d]) is infered
-        (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d]) correctly predicts that !(A[a] -> D[d]) is not infered
+Existential quantifiers are done by simply generating a new symbol not seen during parsing
+(and not generated yet either)
 
+It is straightforward to combine both quantifier types in a sentence
 
-        KB: A[a] ^ 4 x{A[x] -> B[x]} 
-        alpha: B[a]
-        correctly predicts that B[a] is infered
+The recursive sentence parsing allows quantifiers to be nested to arbitrary depth
+(as limited by recursive stack size and memory)
 
-        KB: A[a] ^ 4 x{A[x] -> B[x]}
-        alpha: A[a] 
-        correctly predicts that A[a] is not infered
+The resolution of each clause in the conjunctive normal form tree is done in a naive
+way, however, making the algorithm very inneficient, and the NP-Complete nature of it
+easily becomes apparent on the following textbook problem where:
+
+`KB = 4 x{ 4 y{Animal[y] -> Loves[x, y]} -> 3 y{Loves[y, x]}} ^ 4 x{3 z{Animal[z] ^ Kills[x, z]} -> 4 y{!Loves[y, x]}} ^ 4 x{Animal[x] -> Loves[jack, x]} ^ Kills[jack, tuna] v Kills[curiosity, tuna] ^ Cat[tuna] ^ 4 x{Cat[x] -> Animal[x]}`
+
+and `alpha = Kills[curiosity, tuna]`
+
+For this input, a 4GB RAM computer runs out of memory after a few days of computation.
+
+However, for more trivial examples, the program runs correctly:
+ - `KB = (A[a] -> B[b]) ^ (B[b] -> C[c])` and `alpha = (A[a] -> C[c])`
+ - `KB = A[a] ^ 4 x{A[x] -> B[x]}` and `alpha = B[a]`
+
+The algorithm has been shown to produce correct result in the following cases as well:
+ -  `KB = (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d])` predicts that `alpha = (A[a] -> D[d])` is infered
+ -  `KB = (A[a] -> B[b]) ^ (B[b] -> C[c]) ^ (C[c] -> D[d])` predicts that `alpha = !(A[a] -> D[d])` is not infered
+ -  `KB = A[a] ^ 4 x{A[x] -> B[x]}` predicts that `alpha = B[a]` is infered
+ -  `KB = A[a] ^ 4 x{A[x] -> B[x]}` predicts that `alpha = A[a]` is not infered
 
 INPUT FILES AND THEIR SYNTAX
+----------------------------
 
-    Note: in both PRPS.txt and ALPHA.txt, only the first line is read. All other lines are ingored.
-    ===============================================================================================
+*Note: in both `PRPS.txt` and `ALPHA.txt`, only the first line is read. All other lines are ingored.*
 
-    PRPS.txt
+**`PRPS.txt`**
 
-        This file contains a propositional sentence using a particular basic syntax.
-            A single character upper case letter followed by any number of a-z characters is a propositional symbol / function
-            Propositional symbols are followd by square brackets with any number of arguments inside them
-            Each argument consists of a string of a-z lowercase characters of arbitrary length
-            Each propositional symbol takes exactly any number of arguments, each seperated by a comma, and a space after the comma
+This file contains a relational sentence using a particular basic syntax.
+ -  A single character upper case letter followed by any number of a-z characters is a relational symbol / function
+ -  Propositional symbols are followd by square brackets with any number of arguments inside them
+ -  Each argument consists of a string of a-z lowercase characters of arbitrary length
+ -  Each relational symbol takes exactly any number of arguments, each seperated by a comma, and a space after the comma
 
-            Foral symbols are represented by the numeral 4; existential operators are represented by numeral 3. 
-                Each is followd by one or more argument symbols and then the containing sentence in curly braces
-                    For instance: 4 creature, animal{(Eats[animal, creature] ^ Insect[creature]) -> Insectivor[animal]}
-                    OR: 4 boy{3 girl{Teaches[girl, boy]}}
+ -  Foral symbols are represented by the numeral 4; existential operators are represented by numeral 3. 
+   - Each is followd by one or more argument symbols and then the containing sentence in curly braces
+         For instance: 
 
-                    This latter one says "For every boy, there is a girl who teaches that boy."
+          - `4 creature, animal{(Eats[animal, creature] ^ Insect[creature]) -> Insectivor[animal]}`
 
-            Operator symbols:
-                ^  -- AND
-                v  -- OR
-                -> -- IMPLIES
-                =  -- TAUTOLOGY
+          - `4 boy{3 girl{Teaches[girl, boy]}}`
 
-                !  -- Negation, i.e. !Car[object] or !(Plane[object])
+         The second one says "For every boy, there is a girl who teaches that boy."
 
-            Statements can be put in ( ) parentheses. For instance: 
-                ((Car[vehicle] ^ Belongs[vehicle, ted]) v (B[a] ^ B[b])) = C[c]
+   - Operator symbols:
 
-    ALPHA.txt
+        `^`  -- AND
 
-        A single propositional sentence with as described in PRPS.txt instructions above
-        This statement is the one that the software is supposed to infer about.
-        It can be a single symbol such as Red[car] or a full fledged sentence (once the bugs are worked out of course)
+        `v`  -- OR
 
+        `->` -- IMPLIES
+
+        `=`  -- TAUTOLOGY
+
+        `!`  -- Negation, i.e. `!Car[object]` or `!(Plane[object])`
+
+
+   - Statements can be put in `(` `)` parentheses. For instance: 
+
+        `((Car[vehicle] ^ Belongs[vehicle, ted]) v (B[a] ^ B[b])) = C[c]`
+
+**`ALPHA.txt`**
+
+A single relational sentence with as described in `PRPS.txt` instructions above
+This statement is the one that the software is supposed to infer about.
+It can be a single symbol such as `Red[car]` or a full fledged sentence
+
+COMPILING
+---------
+
+This was tested on debian-based system
+
+Dependencies are just gcc, ctags, and gnu make:
     
-    In both files, only the first line is read by the program
+    `sudo apt install gcc exuberant-ctags make`
 
+To compile just type:
+
+    `make`
+
+
+USAGE
+-----
+
+Note: this program was written and tested only in Linux i386 architecture.
+
+Simply write your knowledge base in the first line of `PRPS.txt`
+The statement you wish to test if it is implied from the knowledge base goes into `ALPHA.txt`
+After compiling type in
     
-How to compile:
+    ./resolve
 
-    At the root of the source tree, which contains the README.txt file, just type in
-        
-        make
+at the prompt
 
-    at the  prompt
-
-    You'll need colorgcc installed, and ctags also. For these just type in
-        
-        sudo aptitude install colorgcc ctags
-
-HOW TO RUN
-    Note: this program was written and tested only in Linux i386 architecture.
-
-    Simply write your knowledge base in the first line of PRPS.txt
-    The statement you wish to test if it is implied from the knowledge base goes into ALPHA.txt
-    After compiling type in
-        
-        ./resolve
-
-    at the prompt
-
-FURTHER WORK:
+FURTHER WORK
+------------
     
-    The resolution algorithm is done in a basic manner only, and does not have any intelligent means to select which clauses are compared in any way, thus making it very very innefficient for non-trivial logic sentences.
+The resolution algorithm is done in a basic manner only, and does not have any intelligent means to select which clauses are compared in any way, thus making it very very innefficient for non-trivial logic sentences.
 
-KNOWN BUGS:
+KNOWN BUGS
+----------
     
-    None right now. However, it has not been rigorously tested yet.
+None right now. However, it has not been rigorously tested yet.
